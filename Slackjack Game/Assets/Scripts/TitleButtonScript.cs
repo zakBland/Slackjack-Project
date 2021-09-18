@@ -2,50 +2,354 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class TitleButtonScript : MonoBehaviour
 {
-    GameObject gameObject;
+    //comment out code
+    GameObject settingsGameObject;
+    GameObject helpGameObject;
+    GameObject playGameObject;
+    GameObject settingsBlockGameObject;
+    GameObject leftArrowGameObject;
+    GameObject rightArrowGameObject;
+    GameObject leftArrowTextGameObject;
+    GameObject rightArrowTextGameObject;
+    GameObject optionalDisplayGameObject;
+    GameObject helpBlockGameObject;
+    TextMeshProUGUI[] howToPagesGameObjects;
+    TextMeshProUGUI[] rulesPagesGameObjects;
+    GameObject rulesPagesBlockObject;
+    GameObject howToPagesBlockObject;
+    int currentPage;
+    int maxPage;
+    int MIN_PAGE;
+    int whichPage; // 0 == rules, 1 == howTo
 
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.SetActive(false);
+        optionalDisplayGameObject.SetActive(false);
 
+        
+        settingsBlockGameObject.SetActive(false);
+        helpBlockGameObject.SetActive(false);
+        
+        currentPage = 1;
+        MIN_PAGE = 1;
+        whichPage = 0;
+        Debug.Log("plz");
+
+        //default player settings
+        PlayerPrefs.SetInt("soundLevel", 0); //min 0, max 5
+        PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
+        PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
+        PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert 
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void Awake()
     {
-        gameObject = GameObject.Find("SettingsDisplayBlock");
+        howToPagesGameObjects = (GameObject.Find("HowToPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>();
+        rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>();
+        rulesPagesBlockObject = GameObject.Find("RulesPagesBlock");
+        howToPagesBlockObject= GameObject.Find("HowToPagesBlock");
+        
+
+        settingsBlockGameObject = GameObject.Find("SettingsGroupBlock");
+        helpBlockGameObject = GameObject.Find("HelpGroupBlock");
+        settingsGameObject = GameObject.Find("SettingsButton");
+        playGameObject = GameObject.Find("PlayButton");
+        helpGameObject = GameObject.Find("HelpButton");
+        optionalDisplayGameObject = GameObject.Find("OptionalDisplay");
+        leftArrowGameObject = GameObject.Find("LeftArrowButton");
+        rightArrowGameObject = GameObject.Find("RightArrowButton");
+        leftArrowTextGameObject = GameObject.Find("BackText");
+        rightArrowTextGameObject = GameObject.Find("NextText");
+
 
     }
 
     //method that reacts to clicking the play button on titleScreenScene
     public void playButtonAction()
     {
-        Debug.Log("Works");
-
-        //Load game
         SceneManager.LoadScene("GameplayScene");
     }
 
-    public void showSettingsScreen()
+    public void settingsButtonAction()
     {
-        Debug.Log("Inside");
-
-        //GameObject gameObject = GameObject.Find("ButtonsBlock");
-
-        if (gameObject != null)
+        Debug.Log("HIii");
+        if (optionalDisplayGameObject != null)
         {
-            gameObject.SetActive(true);
-            Debug.Log("InsideWorks");
+            currentPage = 1;
+            optionalDisplayGameObject.SetActive(true);
+            settingsGameObject.GetComponent<Button>().enabled = false;
+            helpGameObject.GetComponent<Button>().enabled = false;
+            playGameObject.GetComponent<Button>().enabled = false;
+            settingsBlockGameObject.SetActive(true);
+            helpBlockGameObject.SetActive(false);
+
+
+        }
+    }
+
+    public void helpButtonAction()
+    {
+
+        if (optionalDisplayGameObject != null)
+        {
+            currentPage = 1;
+            optionalDisplayGameObject.SetActive(true);
+            settingsGameObject.GetComponent<Button>().enabled = false;
+            helpGameObject.GetComponent<Button>().enabled = false;
+            playGameObject.GetComponent<Button>().enabled = false;
+            helpBlockGameObject.SetActive(true);
+            settingsBlockGameObject.SetActive(false);
+            leftArrowGameObject.SetActive(true);
+            rightArrowGameObject.SetActive(true);
+
+            (GameObject.Find("HowToPagesBlock")).SetActive(true);
+            (GameObject.Find("RulesPagesBlock")).SetActive(true);
+
+
+            foreach (TextMeshProUGUI obj in howToPagesGameObjects) 
+            {
+                obj.gameObject.SetActive(false);
+            }
+
+            foreach(TextMeshProUGUI obj in rulesPagesGameObjects)
+            {
+                obj.gameObject.SetActive(false);
+            }
+
+            rulesPagesGameObjects[0].gameObject.SetActive(true);
+
         }
 
     }
+
+     public void rulesButtonAction()
+     {
+        foreach (TextMeshProUGUI obj in howToPagesGameObjects)
+        {
+            obj.gameObject.SetActive(false);
+        }
+
+        foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
+        {
+            obj.gameObject.SetActive(false);
+        }
+
+        rulesPagesBlockObject.SetActive(true);
+        howToPagesBlockObject.SetActive(false);
+        whichPage = 0;
+        currentPage = 1;
+        GameObject ruleButtonObject = GameObject.Find("RulesText");
+        GameObject howToButtonObject = GameObject.Find("HowToPlayText");
+
+        TextMeshProUGUI rulesText = ruleButtonObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI howToText = howToButtonObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        
+        rulesText.color = new Color32(255, 255, 255, 255);
+        howToText.color = new Color32(102, 94, 94, 255);
+
+        rulesPagesGameObjects[0].gameObject.SetActive(true);
+       
+        leftArrowGameObject.gameObject.GetComponent<Button>().enabled = false;
+        leftArrowText.color = new Color32(102, 94, 94, 255);
+        rightArrowGameObject.gameObject.GetComponent<Button>().enabled = true;
+        rightArrowText.color = new Color32(255, 255, 255, 255); 
+    }
+
+    public void howToPlayButtonAction()
+     {
+        foreach (TextMeshProUGUI obj in howToPagesGameObjects)
+        {
+            obj.gameObject.SetActive(false);
+        }
+
+        foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
+        {
+            obj.gameObject.SetActive(false);
+        }
+        rulesPagesBlockObject.SetActive(false);
+        howToPagesBlockObject.SetActive(true);
+
+        whichPage = 1;
+        currentPage = 1;
+        GameObject ruleButtonObject = GameObject.Find("RulesText");
+        GameObject howToButtonObject = GameObject.Find("HowToPlayText");
+
+        TextMeshProUGUI rulesText = ruleButtonObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI howToText = howToButtonObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+
+        leftArrowGameObject.gameObject.GetComponent<Button>().enabled = false;
+        leftArrowText.color = new Color32(102, 94, 94, 255); ;
+        rightArrowGameObject.gameObject.GetComponent<Button>().enabled = true;
+        rightArrowText.color = new Color32(255, 255, 255, 255);
+
+        rulesText.color = new Color32(102, 94, 94, 255);
+        howToText.color = new Color32(255, 255, 255, 255);
+
+        howToPagesGameObjects[0].gameObject.SetActive(true);
+    } 
+
+    public void resetButtonAction()
+    {
+        Debug.Log("Works3");
+        
+                PlayerPrefs.SetInt("soundLevel", 0); //min 0, max 5
+                PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
+                PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
+                PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert
+
+                
+    }
+
+    public void saveButtonAction()
+    {
+
+        optionalDisplayGameObject.SetActive(false);
+        settingsGameObject.GetComponent<Button>().enabled = true;
+        helpGameObject.GetComponent<Button>().enabled = true;
+        playGameObject.GetComponent<Button>().enabled = true;
+        settingsBlockGameObject.SetActive(false);
+
+    }
+
+    public void doneButtonAction()
+    {
+
+        optionalDisplayGameObject.SetActive(false);
+        settingsGameObject.GetComponent<Button>().enabled = true;
+        helpGameObject.GetComponent<Button>().enabled = true;
+        playGameObject.GetComponent<Button>().enabled = true;
+        helpBlockGameObject.SetActive(false);
+    }
+
+
+    public void leftArrowButtonAction()
+    {
+        Debug.Log("Works6");
+        
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        
+        //determine which page is active
+        
+        
+        if (currentPage - 1 >= MIN_PAGE)
+        {   
+            if(currentPage == maxPage)
+            {
+                rightArrowText.color = new Color32(255, 255, 255, 255);
+                rightArrowGameObject.GetComponent<Button>().enabled = true; 
+
+            }
+            currentPage--;
+
+            if(currentPage == MIN_PAGE)
+            {
+                leftArrowText.color = new Color32(102, 94, 94, 255);
+                leftArrowGameObject.GetComponent<Button>().enabled = false;
+
+            }
+            
+            if (whichPage == 0)
+            {
+                (rulesPagesGameObjects[currentPage]).gameObject.SetActive(false);
+
+                rulesPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
+            }
+            else
+            {
+                howToPagesGameObjects[currentPage].gameObject.SetActive(false);
+                howToPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
+            }
+        }
+
+        
+
+
+
+
+    }
+
+    public void rightArrowButtonAction()
+    {
+        Debug.Log("Works7");
+        Debug.Log(rulesPagesGameObjects.Length);
+        if(whichPage == 0)
+        {
+            Debug.Log("Worksa");
+
+            maxPage = rulesPagesGameObjects.Length;
+        }
+        else
+        {
+            maxPage = howToPagesGameObjects.Length;
+            Debug.Log("Worksb");
+
+        }
+
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        Debug.Log(leftArrowText == null);
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+
+        //determine which page is active
+
+
+        if (currentPage + 1 <= maxPage)
+        {
+            if (currentPage == MIN_PAGE)
+            {
+                leftArrowText.color = new Color32(255, 255, 255, 255);
+                leftArrowGameObject.GetComponent<Button>().enabled = true;
+                Debug.Log("Worksc");
+
+            }
+            currentPage++;
+
+            Debug.Log("Worksd");
+
+            if (currentPage == maxPage)
+            {
+                Debug.Log("Workse");
+
+                rightArrowText.color = new Color32(102, 94, 94, 255);
+                rightArrowGameObject.GetComponent<Button>().enabled = false;
+
+            }
+
+            if (whichPage == 0)
+            {
+                Debug.Log("Worksf");
+
+                rulesPagesGameObjects[currentPage - 2].gameObject.SetActive(false);
+
+                rulesPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("Worksg");
+
+                howToPagesGameObjects[currentPage - 2].gameObject.SetActive(false);
+                howToPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
+            }
+            Debug.Log("Worksh");
+
+        }
+
+    }
+
 }
