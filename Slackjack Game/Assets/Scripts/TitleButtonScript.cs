@@ -18,7 +18,7 @@ public class TitleButtonScript : MonoBehaviour
     GameObject rightArrowTextGameObject;
     GameObject optionalDisplayGameObject;
     GameObject helpBlockGameObject;
-    TextMeshProUGUI[] howToPagesGameObjects;
+    GameObject[] howToPagesGameObjects;
     TextMeshProUGUI[] rulesPagesGameObjects;
     GameObject rulesPagesBlockObject;
     GameObject howToPagesBlockObject;
@@ -42,7 +42,7 @@ public class TitleButtonScript : MonoBehaviour
         Debug.Log("plz");
 
         //default player settings
-        PlayerPrefs.SetInt("soundLevel", 0); //min 0, max 5
+        PlayerPrefs.SetInt("soundEnabled", 0); //no == 0, yes == 1
         PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
         PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
         PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert 
@@ -56,7 +56,7 @@ public class TitleButtonScript : MonoBehaviour
 
     void Awake()
     {
-        howToPagesGameObjects = (GameObject.Find("HowToPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>();
+        howToPagesGameObjects = GameObject.FindGameObjectsWithTag("Pages");
         rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>();
         rulesPagesBlockObject = GameObject.Find("RulesPagesBlock");
         howToPagesBlockObject= GameObject.Find("HowToPagesBlock");
@@ -118,9 +118,9 @@ public class TitleButtonScript : MonoBehaviour
             (GameObject.Find("RulesPagesBlock")).SetActive(true);
 
 
-            foreach (TextMeshProUGUI obj in howToPagesGameObjects) 
+            foreach (GameObject obj in howToPagesGameObjects) 
             {
-                obj.gameObject.SetActive(false);
+                obj.SetActive(false);
             }
 
             foreach(TextMeshProUGUI obj in rulesPagesGameObjects)
@@ -136,9 +136,9 @@ public class TitleButtonScript : MonoBehaviour
 
      public void rulesButtonAction()
      {
-        foreach (TextMeshProUGUI obj in howToPagesGameObjects)
+        foreach (GameObject obj in howToPagesGameObjects)
         {
-            obj.gameObject.SetActive(false);
+            obj.SetActive(false);
         }
 
         foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
@@ -171,9 +171,9 @@ public class TitleButtonScript : MonoBehaviour
 
     public void howToPlayButtonAction()
      {
-        foreach (TextMeshProUGUI obj in howToPagesGameObjects)
+        foreach (GameObject obj in howToPagesGameObjects)
         {
-            obj.gameObject.SetActive(false);
+            obj.SetActive(false);
         }
 
         foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
@@ -207,11 +207,16 @@ public class TitleButtonScript : MonoBehaviour
     public void resetButtonAction()
     {
         Debug.Log("Works3");
-        
-                PlayerPrefs.SetInt("soundLevel", 0); //min 0, max 5
-                PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
-                PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
-                PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert
+
+        bettingNoEnabled();
+        volumeNoLevel();
+        playerOneButton();
+        difficultyMedButton();
+
+        PlayerPrefs.SetInt("soundEnabled", 0); //min 0, max 5
+        PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
+        PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
+        PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert
 
                 
     }
@@ -287,6 +292,7 @@ public class TitleButtonScript : MonoBehaviour
 
     public void rightArrowButtonAction()
     {
+        Debug.Log("pages length is " + howToPagesGameObjects.Length);
         Debug.Log("Works7");
         Debug.Log(rulesPagesGameObjects.Length);
         if(whichPage == 0)
@@ -322,6 +328,7 @@ public class TitleButtonScript : MonoBehaviour
 
             Debug.Log("Worksd");
 
+            Debug.Log("Current page is " + currentPage);
             if (currentPage == maxPage)
             {
                 Debug.Log("Workse");
@@ -350,6 +357,177 @@ public class TitleButtonScript : MonoBehaviour
 
         }
 
+        
+    }
+    
+    //maybe disable currently used button?? 
+    public void difficultyEasyButton()
+    {
+        PlayerPrefs.SetInt("difficultyLevel", 0);
+        GameObject difficultyButtonObject = GameObject.Find("EasyButton");
+        Debug.Log("Inside dif easy");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("HardButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+        difficultyButtonObject = GameObject.Find("MediumButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
     }
 
+    public void difficultyMedButton()
+    {
+        Debug.Log("Inside dif med");
+        PlayerPrefs.SetInt("difficultyLevel", 1);
+        GameObject difficultyButtonObject = GameObject.Find("MediumButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("EasyButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+        difficultyButtonObject = GameObject.Find("HardButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+    }
+
+    public void difficultyHardButton()
+    {
+        Debug.Log(" Inside dif hard");
+        PlayerPrefs.SetInt("difficultyLevel", 2);
+        GameObject difficultyButtonObject = GameObject.Find("HardButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("EasyButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+        difficultyButtonObject = GameObject.Find("MediumButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+    }
+
+    public void playerOneButton()
+    {
+        Debug.Log("Inside player one");
+        PlayerPrefs.SetInt("playerCount", 1);
+
+        GameObject difficultyButtonObject = GameObject.Find("OneButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("TwoButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+        difficultyButtonObject = GameObject.Find("ThreeButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+    }
+
+    public void playerTwoButton()
+    {
+        Debug.Log("Inside player two");
+        PlayerPrefs.SetInt("playerCount", 2);
+
+        GameObject difficultyButtonObject = GameObject.Find("TwoButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("OneButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+        difficultyButtonObject = GameObject.Find("ThreeButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+    }
+
+    public void playerThreeButton()
+    {
+        Debug.Log("Inside player 3");
+        PlayerPrefs.SetInt("playerCount", 3);
+
+        GameObject difficultyButtonObject = GameObject.Find("ThreeButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("OneButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+        difficultyButtonObject = GameObject.Find("TwoButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+    }
+
+    public void bettingNoEnabled()
+    {
+        Debug.Log("Inside bet No");
+        PlayerPrefs.SetInt("bettingEnabled", 0);
+
+        GameObject difficultyButtonObject = GameObject.Find("NoButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("YesButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+
+
+    }
+
+    public void bettingYesEnabled()
+    {
+        Debug.Log("Inside bet yes");
+        PlayerPrefs.SetInt("bettingEnabled", 1);
+
+        GameObject difficultyButtonObject = GameObject.Find("YesButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("NoButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+
+    }
+
+    public void volumeNoLevel()
+     {
+        Debug.Log("Inside vol no");
+            
+        PlayerPrefs.SetInt("soundEnabled", 0);
+
+        GameObject difficultyButtonObject = GameObject.Find("NoVButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("YesVButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+    }
+
+    public void volumeYesLevel()
+    {
+        Debug.Log("Inside Volume yes");
+        PlayerPrefs.SetInt("soundEnabled", 1);
+
+        GameObject difficultyButtonObject = GameObject.Find("YesVButton");
+        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(29, 255, 3, 255);
+
+        difficultyButtonObject = GameObject.Find("NoVButton");
+        difficultyText = difficultyButtonObject.GetComponent<Image>();
+        difficultyText.color = new Color32(255, 255, 255, 255);
+    }
 }
