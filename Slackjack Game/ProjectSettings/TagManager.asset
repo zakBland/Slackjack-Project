@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Pages
+  - DealerCardAreaBlock
+  - PlayerCardAreaBlock
+  - SamCardAreaBlock
+  - JillCardAreaBlock
   layers:
   - Default
   - TransparentFX

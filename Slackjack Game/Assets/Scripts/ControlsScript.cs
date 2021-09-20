@@ -21,7 +21,7 @@ public class ControlsScript : MonoBehaviour
     public void hitButtonAction()
     {
 
-        Card card = GameFunctionsScript.pickRandomCard();
+        Card card = GameFunctionsScript.pickRandomCard(MainClass.deck);
 
         if(card.pip != 1)
         {
@@ -78,7 +78,39 @@ public class ControlsScript : MonoBehaviour
     {
 
     }
-    
+
+    public void lowAceButtonAction()
+    {
+        MainClass.players[MainClass.currentPlayerNumber].handTotal += 1;
+
+        for (int i = 0; i < MainClass.players[MainClass.currentPlayerNumber].playerHand.Count; i++)
+        {
+            if (MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue == 0)
+            {
+                MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue = -1;
+            }
+
+        }
+        GameObject lowObject = GameObject.Find("LowAceButton");
+        lowObject.SetActive(false);
+    }
+
+    public void highAceButtonAction()
+    {
+        MainClass.players[MainClass.currentPlayerNumber].handTotal += 11;
+
+        for (int i = 0; i < MainClass.players[MainClass.currentPlayerNumber].playerHand.Count; i++)
+        {
+            if (MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue == 0) 
+            {
+                MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue = 1;
+            }
+
+        }
+        GameObject lowObject = GameObject.Find("HighAceButton");
+        lowObject.SetActive(false);
+    }
+
 
 
 }
