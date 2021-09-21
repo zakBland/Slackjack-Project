@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player
 {
 
     public List<Card> playerHand;
@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
         handTotal = 0;
         playerNameBlockString = "";
         cardSlotOrder = "231405";
-        name = "";
+        playerName = "";
         playerNumber = -1;
 
     }

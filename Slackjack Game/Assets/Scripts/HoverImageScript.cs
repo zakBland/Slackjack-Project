@@ -20,8 +20,8 @@ public class HoverImageScript : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     void Awake()
     {
-        
 
+        
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -9,6 +9,7 @@ TagManager:
   - PlayerCardAreaBlock
   - SamCardAreaBlock
   - JillCardAreaBlock
+  - Buttons
   layers:
   - Default
   - TransparentFX

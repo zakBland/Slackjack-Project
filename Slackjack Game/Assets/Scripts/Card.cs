@@ -12,11 +12,12 @@ public class Card
     public int aceValue;
     public const int ACE_LOW = 1;
     public const int ACE_HIGH = 11;
+    
 
-    public Card(int pip, int suit, Sprite sprite)
+    public Card(int suit, int pip, Sprite sprite)
     {
-        this.pip = 0;
-        this.suit = 0;
+        this.pip = pip;
+        this.suit = suit;
         this.sprite = null;
         aceValue = 0;
     }

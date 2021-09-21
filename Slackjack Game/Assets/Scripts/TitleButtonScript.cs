@@ -22,22 +22,19 @@ public class TitleButtonScript : MonoBehaviour
     TextMeshProUGUI[] rulesPagesGameObjects;
     GameObject rulesPagesBlockObject;
     GameObject howToPagesBlockObject;
-    int currentPage;
-    int maxPage;
-    int MIN_PAGE;
+ 
     int whichPage; // 0 == rules, 1 == howTo
 
     // Start is called before the first frame update
     void Start()
     {
         optionalDisplayGameObject.SetActive(false);
-
+        PlayerPrefs.SetInt("currentPage", 1);
         
         settingsBlockGameObject.SetActive(false);
         helpBlockGameObject.SetActive(false);
         
-        currentPage = 1;
-        MIN_PAGE = 1;
+        //MIN_PAGE = 1;
         whichPage = 0;
         Debug.Log("plz");
 
@@ -87,7 +84,8 @@ public class TitleButtonScript : MonoBehaviour
         Debug.Log("HIii");
         if (optionalDisplayGameObject != null)
         {
-            currentPage = 1;
+            PlayerPrefs.SetInt("currentPage", 1);
+
             optionalDisplayGameObject.SetActive(true);
             settingsGameObject.GetComponent<Button>().enabled = false;
             helpGameObject.GetComponent<Button>().enabled = false;
@@ -104,7 +102,8 @@ public class TitleButtonScript : MonoBehaviour
 
         if (optionalDisplayGameObject != null)
         {
-            currentPage = 1;
+            PlayerPrefs.SetInt("currentPage", 1);
+
             optionalDisplayGameObject.SetActive(true);
             settingsGameObject.GetComponent<Button>().enabled = false;
             helpGameObject.GetComponent<Button>().enabled = false;
@@ -149,7 +148,8 @@ public class TitleButtonScript : MonoBehaviour
         rulesPagesBlockObject.SetActive(true);
         howToPagesBlockObject.SetActive(false);
         whichPage = 0;
-        currentPage = 1;
+        PlayerPrefs.SetInt("currentPage", 1);
+
         GameObject ruleButtonObject = GameObject.Find("RulesText");
         GameObject howToButtonObject = GameObject.Find("HowToPlayText");
 
@@ -184,7 +184,8 @@ public class TitleButtonScript : MonoBehaviour
         howToPagesBlockObject.SetActive(true);
 
         whichPage = 1;
-        currentPage = 1;
+        PlayerPrefs.SetInt("currentPage", 1);
+
         GameObject ruleButtonObject = GameObject.Find("RulesText");
         GameObject howToButtonObject = GameObject.Find("HowToPlayText");
 
@@ -246,45 +247,53 @@ public class TitleButtonScript : MonoBehaviour
     public void leftArrowButtonAction()
     {
         Debug.Log("Works6");
-        
-        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-        
-        //determine which page is active
-        
-        
-        if (currentPage - 1 >= MIN_PAGE)
-        {   
-            if(currentPage == maxPage)
-            {
-                rightArrowText.color = new Color32(255, 255, 255, 255);
-                rightArrowGameObject.GetComponent<Button>().enabled = true; 
-
-            }
-            currentPage--;
-
-            if(currentPage == MIN_PAGE)
-            {
-                leftArrowText.color = new Color32(102, 94, 94, 255);
-                leftArrowGameObject.GetComponent<Button>().enabled = false;
-
-            }
-            
-            if (whichPage == 0)
-            {
-                (rulesPagesGameObjects[currentPage]).gameObject.SetActive(false);
-
-                rulesPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
-            }
-            else
-            {
-                howToPagesGameObjects[currentPage].gameObject.SetActive(false);
-                howToPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
-            }
+        int maxPage;
+        if (whichPage == 0)
+        {
+            maxPage = rulesPagesGameObjects.Length;
         }
+        else
+        {
+            maxPage = howToPagesGameObjects.Length;
 
-        
+            TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
 
+            //determine which page is active
+
+
+            if (PlayerPrefs.GetInt("currentPage") - 1 >= 1)
+            {
+                if (PlayerPrefs.GetInt("currentPage") == maxPage)
+                {
+                    rightArrowText.color = new Color32(255, 255, 255, 255);
+                    rightArrowGameObject.GetComponent<Button>().enabled = true;
+
+                }
+                PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") - 1);
+
+                if (PlayerPrefs.GetInt("currentPage") == 1)
+                {
+                    leftArrowText.color = new Color32(102, 94, 94, 255);
+                    leftArrowGameObject.GetComponent<Button>().enabled = false;
+
+                }
+
+                if (whichPage == 0)
+                {
+                    (rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage")]).gameObject.SetActive(false);
+
+                    rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
+                }
+                else
+                {
+                    howToPagesGameObjects[PlayerPrefs.GetInt("currentPage")].gameObject.SetActive(false);
+                    howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
+                }
+            }
+
+
+        }
 
 
 
@@ -292,44 +301,38 @@ public class TitleButtonScript : MonoBehaviour
 
     public void rightArrowButtonAction()
     {
-        Debug.Log("pages length is " + howToPagesGameObjects.Length);
-        Debug.Log("Works7");
-        Debug.Log(rulesPagesGameObjects.Length);
-        if(whichPage == 0)
+        int maxPage;
+        if (whichPage == 0)
         {
-            Debug.Log("Worksa");
-
             maxPage = rulesPagesGameObjects.Length;
         }
         else
         {
             maxPage = howToPagesGameObjects.Length;
-            Debug.Log("Worksb");
 
         }
 
         TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-        Debug.Log(leftArrowText == null);
         TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
 
         //determine which page is active
 
 
-        if (currentPage + 1 <= maxPage)
+        if (PlayerPrefs.GetInt("currentPage", 1) + 1 <= maxPage)
         {
-            if (currentPage == MIN_PAGE)
+            if (PlayerPrefs.GetInt("currentPage", 1) == 1)
             {
                 leftArrowText.color = new Color32(255, 255, 255, 255);
                 leftArrowGameObject.GetComponent<Button>().enabled = true;
                 Debug.Log("Worksc");
 
             }
-            currentPage++;
+            PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") + 1);
+
 
             Debug.Log("Worksd");
 
-            Debug.Log("Current page is " + currentPage);
-            if (currentPage == maxPage)
+            if (PlayerPrefs.GetInt("currentPage", 1) == maxPage)
             {
                 Debug.Log("Workse");
 
@@ -342,16 +345,16 @@ public class TitleButtonScript : MonoBehaviour
             {
                 Debug.Log("Worksf");
 
-                rulesPagesGameObjects[currentPage - 2].gameObject.SetActive(false);
+                rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false);
 
-                rulesPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
+                rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
             }
             else
             {
                 Debug.Log("Worksg");
 
-                howToPagesGameObjects[currentPage - 2].gameObject.SetActive(false);
-                howToPagesGameObjects[currentPage - 1].gameObject.SetActive(true);
+                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false);
+                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
             }
             Debug.Log("Worksh");
 

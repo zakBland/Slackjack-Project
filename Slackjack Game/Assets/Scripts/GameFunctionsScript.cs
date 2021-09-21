@@ -3,35 +3,67 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 
-public static class GameFunctionsScript
+public class GameFunctionsScript : MonoBehaviour
 {
+    public SpriteRenderer spriteRenderer;
+    public Sprite[] spriteArray;
 
-    //initialize deck
-    private static List<Card> initializeDeck()
+    void Start()
     {
-        List<Card> deck = new List<Card>();
+        AsyncOperationHandle<Sprite[]> spriteHandle = Addressables.LoadAssetAsync<Sprite[]>("Assets/");
+        spriteHandle.Completed += LoadSpritesWhenReady;
+
+
+        List<Card> deck = MainClass.deck;
+
+        for (int i = 1; i <= MainClass.SUIT_COUNT; i++)
+        {
+            for (int j = 1; j <= MainClass.PIP_COUNT; j++)
+            {
+                deck.Add(new Card(i, j, spriteArray[0]));
+            }
+        }
+
+        
+        //https://gamedevbeginner.com/how-to-change-a-sprite-from-a-script-in-unity-with-examples/
+    }
+
+    void LoadSpritesWhenReady(AsyncOperationHandle<Sprite[]> handleToCheck)
+    {
+        if(handleToCheck.Status == AsyncOperationStatus.Succeeded)
+        {
+            spriteArray = handleToCheck.Result;
+        }
+    }
+    //initialize deck
+    /*public List<Card> initializeDeck(List<Card> deck)
+    {
+
+        deck = new List<Card>();
 
         for(int i = 1; i <= MainClass.SUIT_COUNT; i++)
         {
             for(int j = 1; j <= MainClass.PIP_COUNT; j++)
             {
-                deck.Add(new Card(i, j, convertSuit(i, j)));
+                deck.Add(new Card(i, j, spriteArray[0]));
             }
         }
 
         return deck;
-    }
+    }*/
     //shuffle
-    public static  List<Card> shuffleDeck()
+    public static List<Card> shuffleDeck(List<Card> deck)
     {
-        List<Card> deck = initializeDeck();
+        
         List<Card> shuffledDeck = new List<Card>();
         
-        for(int i = 0; i < deck.Count; i++)
+        for(int i = 0, j = deck.Count; i < j; i++)
         {
-            int index = Random.Range(0, deck.Count - i - 1);
+            int index = Random.Range(0, deck.Count);
             shuffledDeck.Add(deck[index]);
             deck.RemoveAt(index);
         }
@@ -39,15 +71,17 @@ public static class GameFunctionsScript
         return shuffledDeck;
     }
     //deal
-    public static void dealCards()
+    public void dealCards()
     {
-        MainClass.deck = shuffleDeck();
+        List<Card> deck = MainClass.deck;
+        Player[] players = MainClass.players;
+        deck = shuffleDeck(deck);
 
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 4; i++)
         {
-            for(int j = 0; j < PlayerPrefs.GetInt("playerCount"); j++)
+            for (int j = 0; j < 2 /*PlayerPrefs.GetInt("playerCount")*/; j++)
             {
-                addToDeck(MainClass.players[j], GameFunctionsScript.pickRandomCard(MainClass.deck));
+                addToDeck(players[i], pickRandomCard(deck));
             }
         }
     }
@@ -57,11 +91,9 @@ public static class GameFunctionsScript
     //add to deck
     public static void addToDeck(Player player, Card card)
     {
-        Debug.Log("BEfore question");
-        Debug.Log(card == null);
-        player.playerHand.Add(card);
+        player.playerHand.Add(card);        
         displayCard(card, player);
-        calculateTotal(card, player);
+        //calculateTotal(card, player);
     }
     //display cards
     public static void displayCard(Card card, Player player)
@@ -71,7 +103,7 @@ public static class GameFunctionsScript
         player.cardSlotOrder = player.cardSlotOrder.Substring(1);
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString);
-        areas[slot].GetComponent<Image>().sprite = card.sprite;
+        areas[slot].GetComponent<SpriteRenderer>().sprite = card.sprite;
 
     }
 
@@ -112,10 +144,10 @@ public static class GameFunctionsScript
             }
             else
             {
-                GameObject aceButtonObject = GameObject.Find("LowAceButton");
+               /* GameObject aceButtonObject = GameObject.Find("LowAceButton");
                 aceButtonObject.SetActive(true);
                 aceButtonObject = GameObject.Find("HighAceButton");
-                aceButtonObject.SetActive(true);
+                aceButtonObject.SetActive(true);*/
             }
         }
 
@@ -152,7 +184,7 @@ public static class GameFunctionsScript
         return card;
     }
 
-    public static Sprite convertSuit(int suit, int j)
+    public static string convertSuit(int suit, int j)
     {
         string suitString = "";
 
@@ -162,9 +194,16 @@ public static class GameFunctionsScript
             case 2: { suitString = "D"; break; }
             case 3: { suitString = "C"; break; }
             case 4: { suitString = "H"; break; }
-            
-        }
 
-        return Resources.Load<Sprite>("Sprites/" + suitString + "" + j);
+        } 
+
+        return $"{suitString}{j}";
     }
+
+    /*public static Sprite getCardSprite(string card)
+    {
+        //Debug.Log("Sprites/cardfaces/" + card);
+       // return Resources.Load<Sprite>("Assets/Resources/Sprites/cardfaces/C8");
+    }*/
 }
+
