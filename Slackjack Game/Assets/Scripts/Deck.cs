@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeckControlScript : MonoBehaviour
+public class Deck : MonoBehaviour
 {
     //Array to hold card sprites
     public Sprite[] cardSprites;
