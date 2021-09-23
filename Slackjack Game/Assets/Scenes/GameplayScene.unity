@@ -1346,6 +1346,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13e9d33455dbf4146a3bd0d3f5530f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dealBtn_prototype: {fileID: 680350485}
+  standBtn_prototype: {fileID: 180477974}
+  hitBtn_prototype: {fileID: 125144395}
+  shuffleBtn_prototype: {fileID: 1638237672}
 --- !u!4 &1726466977
 Transform:
   m_ObjectHideFlags: 0
