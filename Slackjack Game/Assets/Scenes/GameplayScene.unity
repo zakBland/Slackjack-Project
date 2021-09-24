@@ -233,6 +233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 19779124}
   - component: {fileID: 19779125}
+  - component: {fileID: 19779126}
   m_Layer: 0
   m_Name: 'DealerCard_1 '
   m_TagString: Untagged
@@ -305,6 +306,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &19779126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19779123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e5418c3bf538d4e8405c439dcba49d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 0
 --- !u!1 &125144393
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,6 +449,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 170219681}
+  - component: {fileID: 170219682}
   m_Layer: 0
   m_Name: Dealer
   m_TagString: Untagged
@@ -458,6 +473,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &170219682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170219680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c713286ea9f6d694b8c096307c994219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  card: {fileID: 1629892069}
+  deck: {fileID: 477648364}
+  handValue: 0
+  hand: []
+  cardIndex: 0
 --- !u!1 &177844397
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,6 +730,7 @@ GameObject:
   m_Component:
   - component: {fileID: 413486990}
   - component: {fileID: 413486991}
+  - component: {fileID: 413486992}
   m_Layer: 0
   m_Name: 'DealerCard_2 '
   m_TagString: Untagged
@@ -770,6 +803,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &413486992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413486989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e5418c3bf538d4e8405c439dcba49d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 0
 --- !u!1 &477648363
 GameObject:
   m_ObjectHideFlags: 0
@@ -1357,6 +1403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1072804492}
   - component: {fileID: 1072804493}
+  - component: {fileID: 1072804494}
   m_Layer: 0
   m_Name: PlayerCard_2
   m_TagString: Untagged
@@ -1429,6 +1476,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1072804494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072804491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e5418c3bf538d4e8405c439dcba49d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 0
 --- !u!1 &1106675195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1474,10 +1534,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c713286ea9f6d694b8c096307c994219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  card: {fileID: 0}
-  deck: {fileID: 0}
+  card: {fileID: 1629892069}
+  deck: {fileID: 477648364}
   handValue: 0
-  hand: []
+  hand:
+  - {fileID: 1629892066}
+  - {fileID: 1072804491}
   cardIndex: 0
 --- !u!1 &1629892066
 GameObject:
@@ -1804,6 +1866,8 @@ MonoBehaviour:
   standBtn_prototype: {fileID: 180477974}
   hitBtn_prototype: {fileID: 125144395}
   shuffleBtn_prototype: {fileID: 1638237672}
+  humanPlayer: {fileID: 1106675197}
+  dealer: {fileID: 0}
 --- !u!4 &1726466977
 Transform:
   m_ObjectHideFlags: 0

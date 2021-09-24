@@ -14,8 +14,8 @@ public class GameManager : MonoBehaviour
     public Button shuffleBtn_prototype;
 
     //Access to Player Classes *For now just player and dealer*
-    Player humanPlayer;
-    Player dealer;
+    public Player humanPlayer;
+    public Player dealer;
 
     // Start is called before the first frame update
     void Start()
