@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
 
     private void DealClicked()
     {
+        GameObject.Find("Deck").GetComponentInParent<Deck>().Shuffle();
         humanPlayer.StartHand();
     }
 }

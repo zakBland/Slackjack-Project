@@ -16,6 +16,7 @@ public class Deck : MonoBehaviour
 
     void Start()
     {
+        AssignCardValues();
         
     }
 
