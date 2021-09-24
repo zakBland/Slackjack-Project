@@ -44,6 +44,12 @@ public class Deck : MonoBehaviour
     {
         return 1;
     }
+
+    //method created to assist card class in getting card back from array
+    public Sprite GetCardBack()
+    {
+        return cardSprites[0];
+    }
     
 
     //Hard Coded Values to match images of card sprites in cardSprites Array.
