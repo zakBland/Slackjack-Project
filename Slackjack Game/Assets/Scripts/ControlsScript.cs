@@ -6,7 +6,7 @@ using TMPro;
 
 public class ControlsScript : MonoBehaviour
 {
-    GameObject helpGroupBlockObject;
+    GameObject helpGroupBlockObject; 
     GameObject[] buttonsBlockObject;
     GameObject leftArrowGameObject;
     GameObject rightArrowGameObject;
@@ -17,10 +17,11 @@ public class ControlsScript : MonoBehaviour
     GameObject rulesPagesBlockObject;
     GameObject howToPagesBlockObject;
     public const int MIN_PAGE = 1;
+
     // Start is called before the first frame update
     void Start()
     {
-        helpGroupBlockObject.SetActive(false);
+        helpGroupBlockObject.SetActive(false); //sets help screen to inactive
 
     }
 
@@ -50,141 +51,139 @@ public class ControlsScript : MonoBehaviour
     public void hitButtonAction()
     {
 
-        Card card = GameFunctionsScript.pickRandomCard(MainClass.deck);
+        Card card = GameFunctionsScript.pickRandomCard(MainClass.deck); //picks random card from MainClass deck
+        Player player = MainClass.players[MainClass.currentPlayerNumber]; //finds current player
 
-        if(card.pip != 1)
-        {
-            //players[1].handTotal += card.pip;
-        }
-        else
-        {
-            //display option to play as 1 or 11
-            //int chosenValue = determineAceValue();
+        //calculate total
+        GameFunctionsScript.calculateTotal(card, player);
 
-            //if(aceValue)
-        }
-        GameObject hitButtonObject = GameObject.Find("HitButtonBlock");
+        //display card to player area
+        GameFunctionsScript.displayCard(card, player);
+
+        //display outcome
+        GameFunctionsScript.showOutcome(card, player, "hit");
+
+        //Unnecessary code for now
+       /* GameObject hitButtonObject = GameObject.Find("HitButtonBlock"); // 
         Button buttonObject = hitButtonObject.GetComponent<Button>();
 
-        buttonObject.enabled = true;
+        buttonObject.enabled = true; */
 
        
     }
 
-    //hitResultAction
-    public void hitResultAction()
-    {
-        
-    }
-
-
     //HelpButtonAction
     public void helpButtonAction()
     {
-        Debug.Log("inside");
-        // currentPage = 1;
-        PlayerPrefs.SetInt("currentPage", 1);
-        helpGroupBlockObject.SetActive(true);
-
-        Debug.Log(buttonsBlockObject == null);
-        /*for (int i = 0; i < buttonsBlockObject.Length; i++)
-        {
-            buttonsBlockObject[i].GetComponent<Button>().enabled = false;
-        }
-        */
+        PlayerPrefs.SetInt("currentPage", 1); //sets current page to 1;
+        helpGroupBlockObject.SetActive(true); //sets help info block to active
       
-        leftArrowGameObject.SetActive(true);
-        rightArrowGameObject.SetActive(true);
-        leftArrowGameObject.GetComponent<Button>().enabled = false;
+        leftArrowGameObject.SetActive(true); //sets left arrow active
+        rightArrowGameObject.SetActive(true); //set right arrow active
+        leftArrowGameObject.GetComponent<Button>().enabled = false; //disables left arrow
 
-        Debug.Log("How to Pages Block is null:");
-        Debug.Log(howToPagesBlockObject == null);
-
-        Debug.Log("How to Pages Block is null:");
-        Debug.Log(rulesPagesBlockObject == null);
-
-        rulesPagesBlockObject.SetActive(true);
-        //(GameObject.Find("HowToPagesBlock")).SetActive(true);
-        //(GameObject.Find("RulesPagesBlock")).SetActive(true);
+        rulesPagesBlockObject.SetActive(true); //sets rules page block active
 
 
+        //maybe disable background buttons (NOT IMPLEMENTED)
+
+
+        //sets how to pages inactive
         foreach (GameObject obj in howToPagesGameObjects)
         {
             obj.SetActive(false);
         }
 
+        //sets rules pages inactive
         foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
         {
             obj.gameObject.SetActive(false);
         }
 
-        rulesPagesGameObjects[0].gameObject.SetActive(true);
+        rulesPagesGameObjects[0].gameObject.SetActive(true); //sets rules first page active
     }
 
+    //done button
     public void doneButtonAction()
     {
 
-        helpGroupBlockObject.SetActive(false);
+        helpGroupBlockObject.SetActive(false); //sets help button block to inactive
+
+        //sets normal game buttons active
         for(int i = 0; i < buttonsBlockObject.Length; i++)
         {
             buttonsBlockObject[i].GetComponent<Button>().enabled = true;
         }
 
     }
-    //LeaveButtonAction
+    //LeaveButtonAction (NOT IMPLEMENTED)
     public void leaveButtonAction()
     {
 
     }
 
-    //StandButtonAction
+    //StandButtonAction (NOT IMPLEMENTED)
     public void standButtonAction()
     {
 
     }
     
-    //LeftArrowAction
+    //LeftArrowAction (NOT IMPLEMENTED)
     public void leftArrowAction()
     {
 
     }
 
-    //RightArrowAction
+    //RightArrowAction (NOT IMPLEMENTED)
     public void rightArrowAction()
     {
 
     }
 
+    //plays ace as low value
     public void lowAceButtonAction()
     {
-        MainClass.players[MainClass.currentPlayerNumber].handTotal += 1;
+        MainClass.players[MainClass.currentPlayerNumber].handTotal += Card.ACE_LOW; //adds low ace value to player hand total
 
+        //sets new ace as low ace value; finds all aces
         for (int i = 0; i < MainClass.players[MainClass.currentPlayerNumber].playerHand.Count; i++)
         {
+            //if ace value is not set, set it 
             if (MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue == 0)
             {
                 MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue = -1;
             }
 
         }
-        GameObject lowObject = GameObject.Find("LowAceButton");
+
+        //finds and disables ace choice buttons
+        /*GameObject lowObject = GameObject.Find("LowAceButton");
         lowObject.SetActive(false);
+        GameObject lowObject = GameObject.Find("HighAceButton");
+        lowObject.SetActive(false); */
     }
 
+    //high ace button
     public void highAceButtonAction()
     {
-        MainClass.players[MainClass.currentPlayerNumber].handTotal += 11;
+        MainClass.players[MainClass.currentPlayerNumber].handTotal += Card.ACE_HIGH; //adds high ace value to player hand total
 
+        //finds all aces; sets ace value to high ace value
         for (int i = 0; i < MainClass.players[MainClass.currentPlayerNumber].playerHand.Count; i++)
         {
+            //if ace value not set, set it
             if (MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue == 0) 
             {
                 MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue = 1;
             }
 
         }
-        GameObject lowObject = GameObject.Find("HighAceButton");
+
+        //finds and disables ace choice buttons
+        /*GameObject lowObject = GameObject.Find("HighAceButton");
         lowObject.SetActive(false);
+        GameObject lowObject = GameObject.Find("LowAceButton");
+        lowObject.SetActive(false); */
     }
 
 

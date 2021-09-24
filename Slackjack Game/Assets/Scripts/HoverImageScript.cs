@@ -6,36 +6,25 @@ using UnityEngine.UI;
 
 public class HoverImageScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    GameObject card;
-    public bool isOver = false;
+    //FINISH LATER
+    GameObject card; //declaration of card to be shown
+    string slotName; //declaration of slot name area for a player where the card will be shown
 
     void Start()
-    {       
-        Debug.Log(card == null);
-        card = GameObject.Find("PCardSlot3");
-        card.GetComponent<Image>().enabled = false;
-        //card.SetActive(false);
-
-    }
-
-    void Awake()
     {
+        slotName = MainClass.players[1].playerNameBlockString; //finds block area for player 1's cards
+        card = GameObject.Find(slotName); //finds cards
+        card.GetComponent<Image>().enabled = false; //set zoomed card to false/hidden
 
-        
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Enter");
-        isOver = true;
-
-        card.GetComponent<Image>().enabled = true;
+        card.GetComponent<Image>().enabled = true; //shows card if mouse is hovering over card
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("Exit");
-        isOver = false;
-        card.GetComponent<Image>().enabled = false;
+        card.GetComponent<Image>().enabled = false; //hides card if mouse isn't hovering over card
     }
 }

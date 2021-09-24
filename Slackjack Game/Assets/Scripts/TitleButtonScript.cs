@@ -97,6 +97,7 @@ public class TitleButtonScript : MonoBehaviour
         }
     }
 
+    //help button
     public void helpButtonAction()
     {
 
@@ -170,7 +171,7 @@ public class TitleButtonScript : MonoBehaviour
     }
 
     public void howToPlayButtonAction()
-     {
+    {
         foreach (GameObject obj in howToPagesGameObjects)
         {
             obj.SetActive(false);
