@@ -1438,6 +1438,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1106675196}
+  - component: {fileID: 1106675197}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1461,6 +1462,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1106675197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106675195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c713286ea9f6d694b8c096307c994219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  card: {fileID: 0}
+  deck: {fileID: 0}
+  handValue: 0
+  hand: []
+  cardIndex: 0
 --- !u!1 &1629892066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1556,6 +1574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89e5418c3bf538d4e8405c439dcba49d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  value: 0
 --- !u!1 &1638237670
 GameObject:
   m_ObjectHideFlags: 0
