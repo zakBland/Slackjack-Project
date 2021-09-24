@@ -54,5 +54,6 @@ public class GameManager : MonoBehaviour
     {
         GameObject.Find("Deck").GetComponentInParent<Deck>().Shuffle();
         humanPlayer.StartHand();
+        dealer.StartHand();
     }
 }
