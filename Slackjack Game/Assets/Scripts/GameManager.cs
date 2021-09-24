@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
     public Button hitBtn_prototype;
     public Button shuffleBtn_prototype;
 
+    //Access to Player Classes *For now just player and dealer*
+    Player humanPlayer;
+    Player dealer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +52,6 @@ public class GameManager : MonoBehaviour
 
     private void DealClicked()
     {
-        throw new NotImplementedException();
+        humanPlayer.StartHand();
     }
 }

@@ -20,9 +20,10 @@ public class Player : MonoBehaviour
     //Tracking aces to dynmically change them from 1 to 11
     List<Card> acesList = new List<Card>();
 
-    void Start()
+    public void StartHand()
     {
-        
+        GetCard();
+        GetCard();
     }
 
     //Add cards to player's hand
