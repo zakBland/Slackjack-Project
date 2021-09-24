@@ -10,6 +10,10 @@ public class Deck : MonoBehaviour
     //Array to hold card values;
     int[] cardValues = new int[53];
 
+    //Index to see how deep we are in the deck.
+    //Ignore index 0 which is card back.
+    int currentIndex = 1;
+
     void Start()
     {
         
@@ -40,9 +44,14 @@ public class Deck : MonoBehaviour
         }
     }
 
-    public int Deal()
+    //Deal from deck by setting value and sprite to card at 
+    //current index of deck and advancing index forward
+    public int Deal(Card card)
     {
-        return 1;
+        card.SetSprite(cardSprites[currentIndex]);
+        card.SetValueOfCard(cardValues[currentIndex]);
+        currentIndex++;
+        return card.GetValueOfCard();
     }
 
     //method created to assist card class in getting card back from array
