@@ -44,6 +44,9 @@ TagManager:
   - name: Cards
     uniqueID: 1507058979
     locked: 0
+  - name: Hide Cards
+    uniqueID: 426872155
+    locked: 0
   - name: User Interface
     uniqueID: 3743342091
     locked: 0
