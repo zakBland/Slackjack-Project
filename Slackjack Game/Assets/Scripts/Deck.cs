@@ -39,6 +39,11 @@ public class Deck : MonoBehaviour
             cardValues[card_B] = tempValue;
         }
     }
+
+    public int Deal()
+    {
+        return 1;
+    }
     
 
     //Hard Coded Values to match images of card sprites in cardSprites Array.
