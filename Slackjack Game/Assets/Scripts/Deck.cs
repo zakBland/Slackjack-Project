@@ -15,6 +15,32 @@ public class Deck : MonoBehaviour
         
     }
 
+    //swap card sprites and corresponding card values at random to shuffle deck
+    public void Shuffle()
+    {
+        //swap cards random number of times
+        //minimum 500 to help randomization.
+        int swaps = UnityEngine.Random.Range(500, 1000);
+
+        for(int i = 0 ; i < swaps; i++) 
+        {
+            //Generate random cards to swap
+            int card_A = UnityEngine.Random.Range(1, 52);
+            int card_B = UnityEngine.Random.Range(1, 52);
+
+            //Swap Sprites
+            Sprite tempSprite = cardSprites[card_A];
+            cardSprites[card_A] = cardSprites[card_B];
+            cardSprites[card_B] = tempSprite;
+
+            //Swap Corresponding Values
+            int tempValue = cardValues[card_A];
+            cardValues[card_A] = cardValues[card_B];
+            cardValues[card_B] = tempValue;
+        }
+    }
+    
+
     //Hard Coded Values to match images of card sprites in cardSprites Array.
     //Suits order is Club(1-13), Diamonds(14-26), Hearts(27-39), Spades(4-52).
     //Loop can be created later if neccesary to apply values, but since values
