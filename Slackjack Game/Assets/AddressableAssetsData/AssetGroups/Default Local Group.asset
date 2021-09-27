@@ -16,11 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 2a4514cc3a6c7044f8a3d897e6d08f7d
-  m_SerializeEntries:
-  - m_GUID: 988c307fce2967c4bbcef33a49b0516e
-    m_Address: Sprites/cardfaces/C1.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 10f1856d60b88504cabe78125d33df23, type: 2}
   m_SchemaSet:

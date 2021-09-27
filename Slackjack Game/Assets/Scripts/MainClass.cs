@@ -30,15 +30,6 @@ public class MainClass : MonoBehaviour
             players[i] = new Player();
         }
 
-        //DEBUGGING
-        for (int i = 0; i < 52; i++)
-        {
-            Debug.Log($"{deck[i].pip}");
-        }
-        
-        //shuffle deck; maybe remove and add function to deck 
-        //deck = GameFunctionsScript.shuffleDeck(deck);
-        
         //initializes the name area of each player
         players[0].playerNameBlockString = "DealerCardAreaBlock";
         players[1].playerNameBlockString = "PlayerCardAreaBlock";
@@ -58,7 +49,7 @@ public class MainClass : MonoBehaviour
         players[3].playerName = "Jill";
 
         //sets current player number/turn to 0;
-        currentPlayerNumber = 0;
+        currentPlayerNumber = 1;
     }
 
 }

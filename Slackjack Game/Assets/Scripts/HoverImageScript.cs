@@ -12,8 +12,8 @@ public class HoverImageScript : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     void Start()
     {
-        slotName = MainClass.players[1].playerNameBlockString; //finds block area for player 1's cards
-        card = GameObject.Find(slotName); //finds cards
+       // slotName = MainClass.players[1].playerNameBlockString; //finds block area for player 1's cards
+        card = GameObject.Find("PCardSlot3"); //finds cards
         card.GetComponent<Image>().enabled = false; //set zoomed card to false/hidden
 
     }

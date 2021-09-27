@@ -9,37 +9,49 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class GameFunctionsScript : MonoBehaviour
 {
-    Sprite[] spriteArray;
+    public Sprite[] spriteArray;
+    List<Card> deck;
 
     void Start()
     {
-        AsyncOperationHandle<Sprite[]> spriteHandle = Addressables.LoadAssetAsync<Sprite[]>("Assets/"); //loads sprites from folder into an array
-        spriteHandle.Completed += LoadSpritesWhenReady; //loads the sprite for instant use
-
-        List<Card> deck = MainClass.deck; //gets reference from deck from MainClass
+        //gets reference from deck from MainClass 
+         deck = MainClass.deck;
 
         //initializes deck
-        for (int i = 1; i <= MainClass.SUIT_COUNT; i++)
+        deck = new List<Card>();
+        //GameObject[] objs = Resources.LoadAll<GameObject[]>($"Sprites/cardfaces/{convertSuit(2, 10)}");
+        Debug.Log("Hellwohow");
+        //Debug.Log(spriteArray == null);
+
+        for (int i = 1, k = 0; i <= MainClass.SUIT_COUNT; i++)
         {
             for (int j = 1; j <= MainClass.PIP_COUNT; j++)
             {
-                deck.Add(new Card(i, j, spriteArray[0]));
+                // AsyncOperationHandle<Sprite[]> spriteHandle = Addressables.LoadAssetAsync<Sprite[]>($"Sprites/cardfaces/{convertSuit(i, j)}"); //loads sprites from folder into an array
+                //spriteHandle.Completed += LoadSpritesWhenReady; //loads the sprite for instant use
+                deck.Add(new Card(i, j, spriteArray[k]));
+                k++;
             }
-        }
 
-        
-        //https://gamedevbeginner.com/how-to-change-a-sprite-from-a-script-in-unity-with-examples/  reference for code
+
+            //https://gamedevbeginner.com/how-to-change-a-sprite-from-a-script-in-unity-with-examples/  reference for code
+        }
     }
 
     //Loads sprites for instant access event
-    void LoadSpritesWhenReady(AsyncOperationHandle<Sprite[]> handleToCheck)
+    /*void LoadSpritesWhenReady(AsyncOperationHandle<Sprite[]> handleToCheck)
     {
         //if successful load, sets results to array
         if(handleToCheck.Status == AsyncOperationStatus.Succeeded)
         {
             spriteArray = handleToCheck.Result;
+            Debug.Log(spriteArray.Length);
+            GameObject fi = GameObject.Find("CardSlot45");
+            Debug.Log(spriteArray[0] == null);
+            Debug.Log(fi == null);
+            fi.GetComponent<SpriteRenderer>().sprite = spriteArray[0];
         }
-    }
+    } */
 
     //initialize deck
     /*public List<Card> initializeDeck(List<Card> deck)
@@ -61,7 +73,7 @@ public class GameFunctionsScript : MonoBehaviour
     //shuffles deck
     public static List<Card> shuffleDeck(List<Card> deck)
     {
-        
+        Debug.Log(deck.Count);
         List<Card> shuffledDeck = new List<Card>(); //initializes shuffled deck to be returned
         
         //randomly picks index of card to add to shuffled deck
@@ -78,11 +90,11 @@ public class GameFunctionsScript : MonoBehaviour
     //deals cards
     public void dealCards()
     {
-        List<Card> deck = MainClass.deck; //gets reference of deck from MainClass
+
         Player[] players = MainClass.players; //gets reference of players from MainClass
 
         deck = shuffleDeck(deck); //shuffles deck
-
+        Debug.Log(deck == null);
         //adds cards to players' hands (playerHand) and to their respective GUI area card clot
         for(int i = 0; i < 4; i++)
         {
@@ -98,7 +110,7 @@ public class GameFunctionsScript : MonoBehaviour
     {
         player.playerHand.Add(card);     //adds to playerHand    
         displayCard(card, player); //displays card
-        //calculateTotal(card, player); //adjusts card total (not implemented yet)
+        calculateTotal(card, player); //adjusts card total (not implemented yet)
     }
 
     //display cards to screen
@@ -109,7 +121,7 @@ public class GameFunctionsScript : MonoBehaviour
         player.cardSlotOrder = player.cardSlotOrder.Substring(1); //updates card order for player
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
-        areas[slot].GetComponent<SpriteRenderer>().sprite = card.sprite; //sets specific slot area to sprite/image
+        areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
 
     }
 
@@ -206,8 +218,12 @@ public class GameFunctionsScript : MonoBehaviour
     //picks random card from deck
     public static Card pickRandomCard(List<Card> deck)
     {
+        Debug.Log("Start");
+        Debug.Log(deck.Count);
         Card card = deck[0]; //pulls first card from shuffled deck
         deck.RemoveAt(0); //removes from deck
+
+        Debug.Log("Done");
         return card; //returns card
     }
 
@@ -219,10 +235,10 @@ public class GameFunctionsScript : MonoBehaviour
         //sets int to corresponding char suit value
         switch (suit)
         {
-            case 1: { suitChar = 'S'; break; } //spades
+            case 1: { suitChar = 'C'; break; } //clubs
             case 2: { suitChar = 'D'; break; }  // diamonds
-            case 3: { suitChar = 'C'; break; } //clubs
-            case 4: { suitChar = 'H'; break; } //hearts
+            case 3: { suitChar = 'H'; break; } //hearts
+            case 4: { suitChar = 'S'; break; } //spades
 
         } 
 

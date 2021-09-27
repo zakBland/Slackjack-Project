@@ -28,7 +28,7 @@ public class TitleButtonScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        optionalDisplayGameObject.SetActive(false);
+        //optionalDisplayGameObject.SetActive(false);
         PlayerPrefs.SetInt("currentPage", 1);
         
         settingsBlockGameObject.SetActive(false);
@@ -256,7 +256,7 @@ public class TitleButtonScript : MonoBehaviour
         else
         {
             maxPage = howToPagesGameObjects.Length;
-
+        }
             TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
             TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
 
@@ -294,11 +294,11 @@ public class TitleButtonScript : MonoBehaviour
             }
 
 
-        }
-
-
-
     }
+
+
+
+    
 
     public void rightArrowButtonAction()
     {
@@ -324,6 +324,7 @@ public class TitleButtonScript : MonoBehaviour
             if (PlayerPrefs.GetInt("currentPage", 1) == 1)
             {
                 leftArrowText.color = new Color32(255, 255, 255, 255);
+                Debug.Log(leftArrowGameObject == null);
                 leftArrowGameObject.GetComponent<Button>().enabled = true;
                 Debug.Log("Worksc");
 

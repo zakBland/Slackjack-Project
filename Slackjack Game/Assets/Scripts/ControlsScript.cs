@@ -50,9 +50,14 @@ public class ControlsScript : MonoBehaviour
     //HitButtonAction
     public void hitButtonAction()
     {
-
+        Debug.Log(MainClass.deck == null);
+        List<Card> deck = MainClass.deck;
+        Debug.Log(deck.Count);
         Card card = GameFunctionsScript.pickRandomCard(MainClass.deck); //picks random card from MainClass deck
+        // Debug.Log(card == null);
+
         Player player = MainClass.players[MainClass.currentPlayerNumber]; //finds current player
+
 
         //calculate total
         GameFunctionsScript.calculateTotal(card, player);
