@@ -10,6 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class GameFunctionsScript : MonoBehaviour
 {
     Sprite[] spriteArray;
+    public static List<string> usedDeck;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class GameFunctionsScript : MonoBehaviour
             }
         }
 
+        usedDeck = new List<string>();
         
         //https://gamedevbeginner.com/how-to-change-a-sprite-from-a-script-in-unity-with-examples/  reference for code
     }
@@ -69,6 +71,7 @@ public class GameFunctionsScript : MonoBehaviour
         {
             int index = Random.Range(0, deck.Count); //set index of randomly chosen card
             shuffledDeck.Add(deck[index]); //adds to shuffled deck
+            
             deck.RemoveAt(index); //removes chosen card so it won't be chosen again
         }
 
@@ -96,7 +99,8 @@ public class GameFunctionsScript : MonoBehaviour
     //adds card to deck (gui and playerHand)
     public static void addToDeck(Player player, Card card)
     {
-        player.playerHand.Add(card);     //adds to playerHand    
+        player.playerHand.Add(card);     //adds to playerHand 
+        usedDeck.Add($"{card.suit}{card.pip}");
         displayCard(card, player); //displays card
         //calculateTotal(card, player); //adjusts card total (not implemented yet)
     }

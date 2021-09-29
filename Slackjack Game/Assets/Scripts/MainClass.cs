@@ -59,6 +59,16 @@ public class MainClass : MonoBehaviour
 
         //sets current player number/turn to 0;
         currentPlayerNumber = 0;
+
+        //start game
+        for(int i = 0; i < players.Length; i++)
+        {
+            if(currentPlayerNumber == 1)
+            {
+               
+            }
+        }
+        
     }
 
 }
