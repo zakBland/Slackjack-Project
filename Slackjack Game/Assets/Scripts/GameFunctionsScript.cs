@@ -9,14 +9,25 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class GameFunctionsScript : MonoBehaviour
 {
+    //disable (you) player buttons
+    GameObject standButton;
+    GameObject hitButton;
+
     public Sprite[] spriteArray;
     List<Card> deck;
     public Sprite dealerCard;
+    float timer = 0;
+    bool startTimer = false;
+    bool timerReached = false;
 
     void Start()
     {
+        //disable (you) player buttons
+
+        standButton.SetActive(false);
+        hitButton.SetActive(false);
         //gets reference from deck from MainClass 
-         deck = MainClass.deck;
+        deck = MainClass.deck;
 
         //initializes deck
         deck = new List<Card>();
@@ -24,7 +35,7 @@ public class GameFunctionsScript : MonoBehaviour
         Debug.Log("Hellwohow");
         //Debug.Log(spriteArray == null);
 
-
+        
         for (int i = 1, k = 0; i <= MainClass.SUIT_COUNT; i++)
         {
             for (int j = 1; j <= MainClass.PIP_COUNT; j++)
@@ -38,11 +49,29 @@ public class GameFunctionsScript : MonoBehaviour
 
             //https://gamedevbeginner.com/how-to-change-a-sprite-from-a-script-in-unity-with-examples/  reference for code
         }
+
+        //disable (you) player buttons
+        standButton.SetActive(false);
+        hitButton.SetActive(false);
+
     }
 
+    void Awake()
+    {
+        //disable (you) player buttons
+        standButton = GameObject.Find("StandButton");
+        hitButton = GameObject.Find("HitButton");
+
+    }
     void Update()
     {
         MainClass.deck = deck;
+        /*if (startTimer && !timerReached)
+        {
+            timer += Time.deltaTime;
+            Debug.Log(timer);
+        }*/
+        
     }
 
     //Loads sprites for instant access event
@@ -99,15 +128,27 @@ public class GameFunctionsScript : MonoBehaviour
     {
 
         Player[] players = MainClass.players; //gets reference of players from MainClass
+                                              //disable (you) player buttons
+
+        standButton.SetActive(true);
+        hitButton.SetActive(true);
 
         deck = shuffleDeck(deck); //shuffles deck
         Debug.Log(deck == null);
         //adds cards to players' hands (playerHand) and to their respective GUI area card clot
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < players.Length; i++)
         {
             for (int j = 0; j < 2 /*PlayerPrefs.GetInt("playerCount")*/; j++) //temporarily just deals to two players rather than the correct amount of players in game
             {
-                addToDeck(players[i], pickRandomCard(deck));
+                startTimer = true;
+                if (true)
+                {
+                    addToDeck(players[i], pickRandomCard(deck));
+                    timer = 0;
+                    timerReached = false;
+                    
+                }
+                
             }
         }
 
@@ -129,12 +170,18 @@ public class GameFunctionsScript : MonoBehaviour
         displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total (not implemented yet)
 
+        
         Debug.Log(player.handTotal);
     }
 
     //display cards to screen
     public static void displayCard(Card card, Player player)
     {
+        if (player.playerHand.Count > 6 && !player.playerName.Equals("Player"))
+        {
+            return;
+        }
+
         int slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
 
 
@@ -143,9 +190,19 @@ public class GameFunctionsScript : MonoBehaviour
 
         if (player.playerName.Equals("Player"))
         {
-            GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
-            zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-            zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
+            if (player.playerHand.Count > 6)
+            {
+                //(NOT IMPLEMENTED) Show second row of cards
+                /*GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock2");
+                zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+                zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;*/
+            }
+            else
+            {
+                GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
+                zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+                zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
+            }
 
         }        
         
@@ -193,7 +250,8 @@ public class GameFunctionsScript : MonoBehaviour
                 {
 
                     //end turn, move to next player
-                    
+                    player.status = "bust";
+
                     //disable (you) player buttons
                     GameObject standButton = GameObject.Find("StandButton");
                     GameObject hitButton = GameObject.Find("HitButton");
@@ -221,7 +279,7 @@ public class GameFunctionsScript : MonoBehaviour
                     standButton.SetActive(false);
                     hitButton.SetActive(false);
 
-                    
+                    player.status = "win";
                 }
             }
             //give player option of playing ace high or low (FINISH IMPLEMENTING)
@@ -244,6 +302,17 @@ public class GameFunctionsScript : MonoBehaviour
         GameObject resultsAreaTextObject = GameObject.Find("ResultText"); //finds result text reference
         GameObject resultsAreaObject = GameObject.Find("ResultImage"); //Finds result area reference
 
+        int next = -1;
+
+        if (player.playerNumber == MainClass.players.Length - 1)
+        {
+            next = 0;
+        }
+        else
+        {
+            next = player.playerNumber + 1;
+        }
+
         //if player hits (presses hit button), show text and card drawn
         if (hitOrStand.Equals("hit"))
         {
@@ -254,11 +323,14 @@ public class GameFunctionsScript : MonoBehaviour
         //if player stands (presses stand button), show text
         else if(hitOrStand.Equals("stand"))
         {
-            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! Player is next!"; //shows player and action if  //fix to have specific name (FINISH)
-            
+            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! {MainClass.players[next].playerName} is next!"; //shows player and action if  //fix to have specific name (FINISH)
+            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+
         }
         else
         {
+            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} Bust! {MainClass.players[next].playerName} is next!"; //shows player and action if  //fix to have specific name (FINISH)
+            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
 
         }
 

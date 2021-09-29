@@ -68,6 +68,8 @@ public class ControlsScript : MonoBehaviour
         if (player.handTotal > 21)
         {
             GameFunctionsScript.showOutcome(card, player, "bust");
+            player.status = "bust";
+
 
         }
         else
@@ -138,6 +140,7 @@ public class ControlsScript : MonoBehaviour
         GameFunctionsScript.showOutcome(null, player, "stand");
         GameObject standButton = GameObject.Find("StandButton");
         GameObject hitButton = GameObject.Find("HitButton");
+        player.status = "stand";
         standButton.SetActive(false);
         hitButton.SetActive(false);
     }

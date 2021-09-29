@@ -21,10 +21,9 @@ public class MainClass : MonoBehaviour
 
     void Start()
     {
-        players = new Player[MAX_PLAYERS]; //initializes the player array with max players; maybe initialize with only amount of actual players
+        players = new Player[PlayerPrefs.GetInt("playerCount") + 1]; //initializes the player array with max players; maybe initialize with only amount of actual players
         deck = new List<Card>(); //initialize deck array
 
-        //initializes player array's player objects
         for(int i = 0; i < players.Length; i++)
         {
             players[i] = new Player();
@@ -33,23 +32,92 @@ public class MainClass : MonoBehaviour
         //initializes the name area of each player
         players[0].playerNameBlockString = "DealerCardAreaBlock";
         players[1].playerNameBlockString = "PlayerCardAreaBlock";
-        players[2].playerNameBlockString = "SamCardAreaBlock";
-        players[3].playerNameBlockString = "JillCardAreaBlock";
-
+        
         //initializes the player turn variable
         players[0].playerNumber = 0;
         players[1].playerNumber = 1;
-        players[2].playerNumber = 2;
-        players[3].playerNumber = 3;
 
         //initializes player name
         players[0].playerName = "Dealer";
         players[1].playerName = "Player";
-        players[2].playerName = "Sam";
-        players[3].playerName = "Jill";
+
+        if(players.Length == 3)
+        {
+            players[2].playerNameBlockString = "SamCardAreaBlock";
+            players[2].playerNumber = 2;        
+            players[2].playerName = "Sam";
+
+            GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock");
+            jillAreaObject.SetActive(false);
+        }
+
+        else if(players.Length == 4)
+        {
+            players[3].playerNameBlockString = "JillCardAreaBlock";
+            players[3].playerNumber = 3;    
+            players[3].playerName = "Jill";
+
+        }
+        else
+        {
+            GameObject samAreaObject = GameObject.Find("SamCardAreaBlock");
+            samAreaObject.SetActive(false);
+
+            GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock");
+            jillAreaObject.SetActive(false);
+        }
+        
 
         //sets current player number/turn to 0;
         currentPlayerNumber = 1;
+        
+        
+        
+    }
+
+    void Update()
+    {
+        if (!players[currentPlayerNumber].status.Equals("playing"))
+        {
+            if(currentPlayerNumber == players.Length - 1)
+            {
+                currentPlayerNumber = 0;
+            }
+            else
+            {
+                currentPlayerNumber++;
+            }
+            changePlayerAction(players[currentPlayerNumber]);
+        }
+
+        /*while (players[players.Length - 1].status.Equals("playing"))
+        {
+            if (players[currentPlayerNumber].status.Equals("stand") || players[currentPlayerNumber].status.Equals("bust"))
+            {
+                if(currentPlayerNumber == players.Length - 1)
+                {
+                    currentPlayerNumber++;
+                }
+                else
+                {
+                    currentPlayerNumber = 0;
+
+                    //dealerPlay();
+                }
+            }
+        }*/
+    }
+
+    public static void changePlayerAction(Player player)
+    {
+        if(player.playerNumber == 0)
+        {
+            Dealer.dealerPlay(player);
+        }
+        else
+        {
+           // AIPlay();
+        }
     }
 
 }
