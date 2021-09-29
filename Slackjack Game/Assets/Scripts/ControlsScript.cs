@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class ControlsScript : MonoBehaviour
 {
@@ -22,7 +24,6 @@ public class ControlsScript : MonoBehaviour
     void Start()
     {
         helpGroupBlockObject.SetActive(false); //sets help screen to inactive
-
     }
 
     void Awake()
@@ -50,11 +51,8 @@ public class ControlsScript : MonoBehaviour
     //HitButtonAction
     public void hitButtonAction()
     {
-        Debug.Log(MainClass.deck == null);
         List<Card> deck = MainClass.deck;
-        Debug.Log(deck.Count);
-        Card card = GameFunctionsScript.pickRandomCard(MainClass.deck); //picks random card from MainClass deck
-        // Debug.Log(card == null);
+        Card card = GameFunctionsScript.pickRandomCard(deck); //picks random card from MainClass deck
 
         Player player = MainClass.players[MainClass.currentPlayerNumber]; //finds current player
 
@@ -66,14 +64,17 @@ public class ControlsScript : MonoBehaviour
         GameFunctionsScript.displayCard(card, player);
 
         //display outcome
-        GameFunctionsScript.showOutcome(card, player, "hit");
 
-        //Unnecessary code for now
-       /* GameObject hitButtonObject = GameObject.Find("HitButtonBlock"); // 
-        Button buttonObject = hitButtonObject.GetComponent<Button>();
+        if (player.handTotal > 21)
+        {
+            GameFunctionsScript.showOutcome(card, player, "bust");
 
-        buttonObject.enabled = true; */
-
+        }
+        else
+        {
+            GameFunctionsScript.showOutcome(card, player, "hit");
+        }
+      
        
     }
 
@@ -124,6 +125,7 @@ public class ControlsScript : MonoBehaviour
     //LeaveButtonAction (NOT IMPLEMENTED)
     public void leaveButtonAction()
     {
+        SceneManager.LoadScene("TitleScreenScene");
 
     }
 
@@ -131,8 +133,15 @@ public class ControlsScript : MonoBehaviour
     public void standButtonAction()
     {
 
+        Player player = MainClass.players[MainClass.currentPlayerNumber]; //finds current player
+
+        GameFunctionsScript.showOutcome(null, player, "stand");
+        GameObject standButton = GameObject.Find("StandButton");
+        GameObject hitButton = GameObject.Find("HitButton");
+        standButton.SetActive(false);
+        hitButton.SetActive(false);
     }
-    
+
     //LeftArrowAction (NOT IMPLEMENTED)
     public void leftArrowAction()
     {
@@ -145,6 +154,7 @@ public class ControlsScript : MonoBehaviour
 
     }
 
+    /*
     //plays ace as low value
     public void lowAceButtonAction()
     {
@@ -165,7 +175,7 @@ public class ControlsScript : MonoBehaviour
         /*GameObject lowObject = GameObject.Find("LowAceButton");
         lowObject.SetActive(false);
         GameObject lowObject = GameObject.Find("HighAceButton");
-        lowObject.SetActive(false); */
+        lowObject.SetActive(false); 
     }
 
     //high ace button
@@ -188,8 +198,8 @@ public class ControlsScript : MonoBehaviour
         /*GameObject lowObject = GameObject.Find("HighAceButton");
         lowObject.SetActive(false);
         GameObject lowObject = GameObject.Find("LowAceButton");
-        lowObject.SetActive(false); */
-    }
+        lowObject.SetActive(false); 
+    }*/
 
 
 

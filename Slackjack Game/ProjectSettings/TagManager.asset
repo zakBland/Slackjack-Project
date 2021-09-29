@@ -10,6 +10,7 @@ TagManager:
   - SamCardAreaBlock
   - JillCardAreaBlock
   - Buttons
+  - PlayerZoomCardAreaBlock
   layers:
   - Default
   - TransparentFX

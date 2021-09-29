@@ -11,6 +11,7 @@ public class GameFunctionsScript : MonoBehaviour
 {
     public Sprite[] spriteArray;
     List<Card> deck;
+    public Sprite dealerCard;
 
     void Start()
     {
@@ -22,6 +23,7 @@ public class GameFunctionsScript : MonoBehaviour
         //GameObject[] objs = Resources.LoadAll<GameObject[]>($"Sprites/cardfaces/{convertSuit(2, 10)}");
         Debug.Log("Hellwohow");
         //Debug.Log(spriteArray == null);
+
 
         for (int i = 1, k = 0; i <= MainClass.SUIT_COUNT; i++)
         {
@@ -36,6 +38,11 @@ public class GameFunctionsScript : MonoBehaviour
 
             //https://gamedevbeginner.com/how-to-change-a-sprite-from-a-script-in-unity-with-examples/  reference for code
         }
+    }
+
+    void Update()
+    {
+        MainClass.deck = deck;
     }
 
     //Loads sprites for instant access event
@@ -103,6 +110,16 @@ public class GameFunctionsScript : MonoBehaviour
                 addToDeck(players[i], pickRandomCard(deck));
             }
         }
+
+        GameObject[] areas = GameObject.FindGameObjectsWithTag(players[0].playerNameBlockString); //finds card slot areas for a player
+        areas[3].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
+        players[0].handTotal -= players[0].playerHand[1].pip;
+        GameObject playerText = GameObject.Find(players[0].playerName + "CountText");
+        playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + "");
+
+        GameObject dealButtonObject = GameObject.Find("DealButton");
+        dealButtonObject.SetActive(false);
+
     }
 
     //adds card to deck (gui and playerHand)
@@ -111,6 +128,8 @@ public class GameFunctionsScript : MonoBehaviour
         player.playerHand.Add(card);     //adds to playerHand    
         displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total (not implemented yet)
+
+        Debug.Log(player.handTotal);
     }
 
     //display cards to screen
@@ -118,10 +137,19 @@ public class GameFunctionsScript : MonoBehaviour
     {
         int slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
 
-        player.cardSlotOrder = player.cardSlotOrder.Substring(1); //updates card order for player
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
         areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
+
+        if (player.playerName.Equals("Player"))
+        {
+            GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
+            zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
+
+        }        
+        
+        player.cardSlotOrder = player.cardSlotOrder.Substring(1); //updates card order for player
 
     }
 
@@ -145,6 +173,8 @@ public class GameFunctionsScript : MonoBehaviour
             //if total is above 21...
             if(player.handTotal > 21)
             {
+                bool loweredAce = false;
+
                 //if there is an ace that is played as a high, play it as low
                 for (int i = 0; i < player.playerHand.Count; i++)
                 {
@@ -152,18 +182,26 @@ public class GameFunctionsScript : MonoBehaviour
                     {
                         player.playerHand[i].aceValue = -1;
                         player.handTotal -= 10;
+                        loweredAce = true;
                         break;
                     }
                 }
-            }
-            //player busted (NOT IMPLEMENTED)
-            else
-            {
-                //end turn, move to next player
+           
+                //player busted (NOT IMPLEMENTED)
 
-                //disable (you) player buttons
+                if (!loweredAce)
+                {
 
+                    //end turn, move to next player
+                    
+                    //disable (you) player buttons
+                    GameObject standButton = GameObject.Find("StandButton");
+                    GameObject hitButton = GameObject.Find("HitButton");
+                    standButton.SetActive(false);
+                    hitButton.SetActive(false);
+                }
             }
+            
         }
         //else, if card is an ace...
         else
@@ -177,41 +215,54 @@ public class GameFunctionsScript : MonoBehaviour
                 //if player hand total is equal to 21, player wins, move turns (NOT IMPLEMENTED)
                 if (player.handTotal == 21)
                 {
-                   //disable "you" player's buttons
+                    //disable "you" player's buttons
+                    GameObject standButton = GameObject.Find("StandButton");
+                    GameObject hitButton = GameObject.Find("HitButton");
+                    standButton.SetActive(false);
+                    hitButton.SetActive(false);
+
+                    
                 }
             }
             //give player option of playing ace high or low (FINISH IMPLEMENTING)
             else
             {
-                GameObject aceButtonObject = GameObject.Find("LowAceButton"); //finds low ace button
-                aceButtonObject.SetActive(true); //sets active low ace button
-                aceButtonObject = GameObject.Find("HighAceButton"); //finds high ace button
-                aceButtonObject.SetActive(true); //set active high ace button
+                player.handTotal += Card.ACE_HIGH;
             }
         }
+
+        GameObject playerText = GameObject.Find(player.playerName + "CountText");
+        playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + "");
 
     }
 
     //shows outcome of card draw
     public static void showOutcome(Card card, Player player, string hitOrStand)
     {
-        //show for few seconds, then disappear (NOT IMPLEMENT)
+        //show for few seconds, then disappear (NOT IMPLEMENTED)
 
-        GameObject resultsAreaObject = GameObject.Find("ResultsArea"); //Finds result area reference
         GameObject resultsAreaTextObject = GameObject.Find("ResultText"); //finds result text reference
+        GameObject resultsAreaObject = GameObject.Find("ResultImage"); //Finds result area reference
 
         //if player hits (presses hit button), show text and card drawn
         if (hitOrStand.Equals("hit"))
         {
             resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} {hitOrStand}!"; //displays text of name and action
+            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
             resultsAreaObject.GetComponent<Image>().sprite = card.sprite; //displays card
         }
         //if player stands (presses stand button), show text
-        else
+        else if(hitOrStand.Equals("stand"))
         {
             resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! Player is next!"; //shows player and action if  //fix to have specific name (FINISH)
             
         }
+        else
+        {
+
+        }
+
+        //IMPLEMENT WAIT FOR X amount of seconds then hide outcome again
 
     }
 

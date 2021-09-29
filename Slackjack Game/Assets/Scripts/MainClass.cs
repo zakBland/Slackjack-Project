@@ -44,7 +44,7 @@ public class MainClass : MonoBehaviour
 
         //initializes player name
         players[0].playerName = "Dealer";
-        players[1].playerName = "You";
+        players[1].playerName = "Player";
         players[2].playerName = "Sam";
         players[3].playerName = "Jill";
 
