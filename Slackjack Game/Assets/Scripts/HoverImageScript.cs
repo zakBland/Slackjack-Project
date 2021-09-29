@@ -9,7 +9,7 @@ public class HoverImageScript : MonoBehaviour, IPointerEnterHandler, IPointerExi
     //FINISH LATER
     GameObject card; //declaration of card to be shown
     string slotName; //declaration of slot name area for a player where the card will be shown
-    public GameObject cardName;
+    public GameObject cardName; //Variable reference to name of card slot
 
     void Start()
     {

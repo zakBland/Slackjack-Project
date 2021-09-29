@@ -9,66 +9,59 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class GameFunctionsScript : MonoBehaviour
 {
-    //disable (you) player buttons
-    GameObject standButton;
-    GameObject hitButton;
+    
+    GameObject standButton; //reference to stand button
+    GameObject hitButton; //reference to hit button
+    public Sprite[] spriteArray; //reference to card image list
+    List<Card> deck; //deck variable reference from MainClass class
+    public Sprite dealerCard; //dealer's hidden card reference
+    public static List<string> usedDeck; //variable for all unused cards
 
-    public Sprite[] spriteArray;
-    List<Card> deck;
-    public Sprite dealerCard;
-    float timer = 0;
-    bool startTimer = false;
-    bool timerReached = false;
-    public static List<string> usedDeck;
+    float timer = 0; //ignore
+    bool startTimer = false; //ignore
+    bool timerReached = false; //ignore
 
     void Start()
     {
         //disable (you) player buttons
-
         standButton.SetActive(false);
         hitButton.SetActive(false);
 
+        //initialized unused deck
         usedDeck = new List<string>();
+
         //gets reference from deck from MainClass 
         deck = MainClass.deck;
 
         //initializes deck
         deck = new List<Card>();
-        //GameObject[] objs = Resources.LoadAll<GameObject[]>($"Sprites/cardfaces/{convertSuit(2, 10)}");
-        Debug.Log("Hellwohow");
-        //Debug.Log(spriteArray == null);
 
-        
+
+        //adds to deck of cards
         for (int i = 1, k = 0; i <= MainClass.SUIT_COUNT; i++)
         {
             for (int j = 1; j <= MainClass.PIP_COUNT; j++)
             {
-                // AsyncOperationHandle<Sprite[]> spriteHandle = Addressables.LoadAssetAsync<Sprite[]>($"Sprites/cardfaces/{convertSuit(i, j)}"); //loads sprites from folder into an array
-                //spriteHandle.Completed += LoadSpritesWhenReady; //loads the sprite for instant use
                 deck.Add(new Card(i, j, spriteArray[k]));
-                k++;
+                k++; //increments variable to get card sprite from sprite array
             }
-
-
-            //https://gamedevbeginner.com/how-to-change-a-sprite-from-a-script-in-unity-with-examples/  reference for code
         }
-
-        //disable (you) player buttons
-        standButton.SetActive(false);
-        hitButton.SetActive(false);
 
     }
 
     void Awake()
     {
-        //disable (you) player buttons
+        //finds and initializes objects for (you) player buttons
         standButton = GameObject.Find("StandButton");
         hitButton = GameObject.Find("HitButton");
 
     }
     void Update()
     {
+        //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
         MainClass.deck = deck;
+
+        //IGNORE
         /*if (startTimer && !timerReached)
         {
             timer += Time.deltaTime;
@@ -77,42 +70,9 @@ public class GameFunctionsScript : MonoBehaviour
         
     }
 
-    //Loads sprites for instant access event
-    /*void LoadSpritesWhenReady(AsyncOperationHandle<Sprite[]> handleToCheck)
-    {
-        //if successful load, sets results to array
-        if(handleToCheck.Status == AsyncOperationStatus.Succeeded)
-        {
-            spriteArray = handleToCheck.Result;
-            Debug.Log(spriteArray.Length);
-            GameObject fi = GameObject.Find("CardSlot45");
-            Debug.Log(spriteArray[0] == null);
-            Debug.Log(fi == null);
-            fi.GetComponent<SpriteRenderer>().sprite = spriteArray[0];
-        }
-    } */
-
-    //initialize deck
-    /*public List<Card> initializeDeck(List<Card> deck)
-    {
-
-        deck = new List<Card>();
-
-        for(int i = 1; i <= MainClass.SUIT_COUNT; i++)
-        {
-            for(int j = 1; j <= MainClass.PIP_COUNT; j++)
-            {
-                deck.Add(new Card(i, j, spriteArray[0]));
-            }
-        }
-
-        return deck;
-    }*/
-
     //shuffles deck
     public static List<Card> shuffleDeck(List<Card> deck)
     {
-        Debug.Log(deck.Count);
         List<Card> shuffledDeck = new List<Card>(); //initializes shuffled deck to be returned
         
         //randomly picks index of card to add to shuffled deck
@@ -131,38 +91,42 @@ public class GameFunctionsScript : MonoBehaviour
     {
 
         Player[] players = MainClass.players; //gets reference of players from MainClass
-                                              //disable (you) player buttons
 
+        //enables/sets active player buttons once cards have been dealt
         standButton.SetActive(true);
         hitButton.SetActive(true);
 
         deck = shuffleDeck(deck); //shuffles deck
-        Debug.Log(deck == null);
+
         //adds cards to players' hands (playerHand) and to their respective GUI area card clot
         for(int i = 0; i < players.Length; i++)
         {
-            for (int j = 0; j < 2 /*PlayerPrefs.GetInt("playerCount")*/; j++) //temporarily just deals to two players rather than the correct amount of players in game
-            {
-                startTimer = true;
+            for (int j = 0; j < 2; j++) //temporarily just deals to two players rather than the correct amount of players in game
+            {                   
+                addToDeck(players[i], pickRandomCard(deck));
+
+                /*
+                //startTimer = true; (IGNORE)
+
                 if (true)
                 {
-                    addToDeck(players[i], pickRandomCard(deck));
+
                     //timer = 0;
                     //timerReached = false;
                     
-                }
+                }*/
                 
             }
         }
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(players[0].playerNameBlockString); //finds card slot areas for a player
         areas[3].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
-        players[0].handTotal -= players[0].playerHand[1].pip;
-        GameObject playerText = GameObject.Find(players[0].playerName + "CountText");
-        playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + "");
+        players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
+        GameObject playerText = GameObject.Find(players[0].playerName + "CountText"); //finds reference to dealer text box
+        playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + ""); //updates dealer value text
 
-        GameObject dealButtonObject = GameObject.Find("DealButton");
-        dealButtonObject.SetActive(false);
+        GameObject dealButtonObject = GameObject.Find("DealButton"); //finds deal button
+        dealButtonObject.SetActive(false); //disables deal button
 
     }
 
@@ -170,17 +134,15 @@ public class GameFunctionsScript : MonoBehaviour
     public static void addToDeck(Player player, Card card)
     {
         player.playerHand.Add(card);     //adds to playerHand    
-        usedDeck.Add(convertSuit(card.suit, card.pip));
+        usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
         displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total (not implemented yet)
-
-        
-        Debug.Log(player.handTotal);
     }
 
     //display cards to screen
     public static void displayCard(Card card, Player player)
     {
+        //(NOT FULLY IMPLEMENTED) setup for if player currently needs to display more than 6 cards
         if (player.playerHand.Count > 6 && !player.playerName.Equals("Player"))
         {
             return;
@@ -188,10 +150,10 @@ public class GameFunctionsScript : MonoBehaviour
 
         int slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
 
-
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
         areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
 
+        //if current player is "you", check to see if card area display needs second page
         if (player.playerName.Equals("Player"))
         {
             if (player.playerHand.Count > 6)
@@ -203,6 +165,7 @@ public class GameFunctionsScript : MonoBehaviour
             }
             else
             {
+                //display hover card
                 GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
                 zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
                 zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
@@ -241,24 +204,26 @@ public class GameFunctionsScript : MonoBehaviour
                 {
                     if (player.playerHand[i].aceValue == 1)
                     {
-                        player.playerHand[i].aceValue = -1;
-                        player.handTotal -= 10;
-                        loweredAce = true;
+                        player.playerHand[i].aceValue = -1; //sets ace value to indicate it's played low
+                        player.handTotal -= 10; //adjust hand total to show it's played low
+                        loweredAce = true; //sets loweredAce flag to true
                         break;
                     }
                 }
            
                 //player busted (NOT IMPLEMENTED)
 
-                if (!loweredAce)
+                if (!loweredAce) //not able to play low, then player bust
                 {
 
                     //end turn, move to next player
-                    player.status = "bust";
+
+
+                    player.status = "bust"; //set player status to bust
 
 
                     //disable (you) player buttons
-                    if (player.playerName.Equals("player"))
+                    if (player.playerName.Equals("player")) //disable buttons if "you" is playing
                     {
                         GameObject standButton = GameObject.Find("StandButton");
                         GameObject hitButton = GameObject.Find("HitButton");
@@ -287,16 +252,18 @@ public class GameFunctionsScript : MonoBehaviour
                     standButton.SetActive(false);
                     hitButton.SetActive(false);
 
-                    player.status = "win";
+                    player.status = "win"; //update player status
                 }
             }
-            //give player option of playing ace high or low (FINISH IMPLEMENTING)
+
+            //play card as high ace as default
             else
             {
-                player.handTotal += Card.ACE_HIGH;
+                player.handTotal += Card.ACE_HIGH; //adds high ace value to hand total
             }
         }
 
+        //update player handTotal text
         GameObject playerText = GameObject.Find(player.playerName + "CountText");
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + "");
 
@@ -310,13 +277,14 @@ public class GameFunctionsScript : MonoBehaviour
         GameObject resultsAreaTextObject = GameObject.Find("ResultText"); //finds result text reference
         GameObject resultsAreaObject = GameObject.Find("ResultImage"); //Finds result area reference
 
-        int next = -1;
+        int next = -1; //sets an initial value for next, which represents an index 
 
+        //if on last player before dealer, move to dealer's turn; helps determine who's next
         if (player.playerNumber == MainClass.players.Length - 1)
         {
             next = 0;
         }
-        else
+        else //else, increment as normal
         {
             next = player.playerNumber + 1;
         }
@@ -325,20 +293,20 @@ public class GameFunctionsScript : MonoBehaviour
         if (hitOrStand.Equals("hit"))
         {
             resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} {hitOrStand}!"; //displays text of name and action
-            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 255); //shows card
             resultsAreaObject.GetComponent<Image>().sprite = card.sprite; //displays card
         }
         //if player stands (presses stand button), show text
         else if(hitOrStand.Equals("stand"))
         {
             resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! {MainClass.players[next].playerName} is next!"; //shows player and action if  //fix to have specific name (FINISH)
-            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0); //hides card
 
         }
         else
         {
             resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} Bust! {MainClass.players[next].playerName} is next!"; //shows player and action if  //fix to have specific name (FINISH)
-            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0); //hides card
 
         }
 
@@ -349,12 +317,8 @@ public class GameFunctionsScript : MonoBehaviour
     //picks random card from deck
     public static Card pickRandomCard(List<Card> deck)
     {
-        Debug.Log("Start");
-        Debug.Log(deck.Count);
         Card card = deck[0]; //pulls first card from shuffled deck
         deck.RemoveAt(0); //removes from deck
-
-        Debug.Log("Done");
         return card; //returns card
     }
 

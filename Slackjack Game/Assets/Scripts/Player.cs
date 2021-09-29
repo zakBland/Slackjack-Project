@@ -11,7 +11,7 @@ public class Player
     public string cardSlotOrder; //declaration of card slot order
     public string playerName; // declaration of player name
     public int playerNumber; //declaration of player order
-    public string status;
+    public string status; //declaration of status variable
 
     //Player constructor
     public Player()
@@ -22,7 +22,7 @@ public class Player
         cardSlotOrder = "231405"; //initializes the order in which cards should be displayed in gui
         playerName = ""; //Name of the player
         playerNumber = -1; //The player's turn number
-        status = "playing";
+        status = "playing"; //sets default player status to playing
 
     }
 

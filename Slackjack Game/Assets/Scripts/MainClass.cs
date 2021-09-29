@@ -41,6 +41,7 @@ public class MainClass : MonoBehaviour
         players[0].playerName = "Dealer";
         players[1].playerName = "Player";
 
+        //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
             players[2].playerNameBlockString = "SamCardAreaBlock";
@@ -51,13 +52,19 @@ public class MainClass : MonoBehaviour
             jillAreaObject.SetActive(false);
         }
 
+        //else initialize Sam and Jill players
         else if(players.Length == 4)
         {
+            players[2].playerNameBlockString = "SamCardAreaBlock";
+            players[2].playerNumber = 2;
+            players[2].playerName = "Sam";
+
             players[3].playerNameBlockString = "JillCardAreaBlock";
             players[3].playerNumber = 3;    
             players[3].playerName = "Jill";
 
         }
+        //else hide Sam and Jill
         else
         {
             GameObject samAreaObject = GameObject.Find("SamCardAreaBlock");
@@ -77,30 +84,32 @@ public class MainClass : MonoBehaviour
 
     void Update()
     {
+        //if current player isn't playing anymore, move to next player
         if (!players[currentPlayerNumber].status.Equals("playing"))
         {
             if(currentPlayerNumber == players.Length - 1)
             {
-                currentPlayerNumber = 0;
+                currentPlayerNumber = 0; //sets to dealer if on last AI player
             }
             else
             {
-                currentPlayerNumber++;
+                currentPlayerNumber++; //else, increments to next AI player
             }
-            changePlayerAction(players[currentPlayerNumber]);
+            changePlayerAction(players[currentPlayerNumber]); //changes player method
         }
 
     }
 
+    //changes player once they win, stand, or bust after "you" gameplay
     public static void changePlayerAction(Player player)
     {
         if(player.playerNumber == 0)
         {
-            Dealer.dealerPlay(player);
+            Dealer.dealerPlay(player);  //if dealer's turn, execute dealer method
         }
         else
         {
-           AIFunction.AIPlay(player);
+           AIFunction.AIPlay(player); //if AI's turn, execute AI methods
         }
     }
 

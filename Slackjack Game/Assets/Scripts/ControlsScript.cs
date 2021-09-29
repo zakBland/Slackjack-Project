@@ -8,17 +8,15 @@ using UnityEngine.SceneManagement;
 
 public class ControlsScript : MonoBehaviour
 {
-    GameObject helpGroupBlockObject; 
-    GameObject[] buttonsBlockObject;
-    GameObject leftArrowGameObject;
-    GameObject rightArrowGameObject;
-    GameObject leftArrowTextGameObject;
-    GameObject rightArrowTextGameObject;
-    GameObject[] howToPagesGameObjects;
-    TextMeshProUGUI[] rulesPagesGameObjects;
-    GameObject rulesPagesBlockObject;
-    GameObject howToPagesBlockObject;
-    public const int MIN_PAGE = 1;
+    GameObject helpGroupBlockObject; //declares HelpGroupBlock object
+    GameObject[] buttonsBlockObject; //declares buttonBlock object
+    GameObject leftArrowGameObject; //declares left arrow object
+    GameObject rightArrowGameObject; //declares right arrow object
+    GameObject[] howToPagesGameObjects; //declares howToPages block object
+    TextMeshProUGUI[] rulesPagesGameObjects; //declares rules pages object
+    GameObject rulesPagesBlockObject; //declares rules pages block object
+    GameObject howToPagesBlockObject; //declares howToPages block object
+    public const int MIN_PAGE = 1; //declares constant for page minimum
 
     // Start is called before the first frame update
     void Start()
@@ -28,34 +26,24 @@ public class ControlsScript : MonoBehaviour
 
     void Awake()
     {
-        helpGroupBlockObject = GameObject.Find("HelpGroupBlock");
-        buttonsBlockObject = GameObject.FindGameObjectsWithTag("Buttons");
-        howToPagesGameObjects = GameObject.FindGameObjectsWithTag("Pages");
-        rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>();
-        rulesPagesBlockObject = GameObject.Find("RulesPagesBlock");
-        howToPagesBlockObject = GameObject.Find("HowToPagesBlock");
-        leftArrowGameObject = GameObject.Find("LeftArrowButton");
-        rightArrowGameObject = GameObject.Find("RightArrowButton");
-        leftArrowTextGameObject = GameObject.Find("BackText");
-        rightArrowTextGameObject = GameObject.Find("NextText");
+        helpGroupBlockObject = GameObject.Find("HelpGroupBlock"); //finds HelpButton
+        buttonsBlockObject = GameObject.FindGameObjectsWithTag("Buttons"); //Finds all buttons on game scene
+        howToPagesGameObjects = GameObject.FindGameObjectsWithTag("Pages"); //finds all pages to control block
+        rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>(); // finds all rules pages
+        rulesPagesBlockObject = GameObject.Find("RulesPagesBlock"); //finds rules block
+        howToPagesBlockObject = GameObject.Find("HowToPagesBlock"); //finds howToPages block
+        leftArrowGameObject = GameObject.Find("LeftArrowButton"); //finds left arrow button
+        rightArrowGameObject = GameObject.Find("RightArrowButton"); //finds right arrow button
 
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     //HitButtonAction
     public void hitButtonAction()
     {
-        List<Card> deck = MainClass.deck;
+        List<Card> deck = MainClass.deck; //assigns reference to deck
         Card card = GameFunctionsScript.pickRandomCard(deck); //picks random card from MainClass deck
-
         Player player = MainClass.players[MainClass.currentPlayerNumber]; //finds current player
-
 
         //calculate total
         GameFunctionsScript.calculateTotal(card, player);
@@ -64,17 +52,14 @@ public class ControlsScript : MonoBehaviour
         GameFunctionsScript.displayCard(card, player);
 
         //display outcome
-
         if (player.handTotal > 21)
         {
-            GameFunctionsScript.showOutcome(card, player, "bust");
-            player.status = "bust";
-
-
+            GameFunctionsScript.showOutcome(card, player, "bust"); //shows outcome
+            player.status = "bust"; //sets status to bust
         }
         else
         {
-            GameFunctionsScript.showOutcome(card, player, "hit");
+            GameFunctionsScript.showOutcome(card, player, "hit"); //shows outcome
         }
       
        
@@ -124,23 +109,26 @@ public class ControlsScript : MonoBehaviour
         }
 
     }
-    //LeaveButtonAction (NOT IMPLEMENTED)
+    //LeaveButtonAction
     public void leaveButtonAction()
     {
-        SceneManager.LoadScene("TitleScreenScene");
+        SceneManager.LoadScene("TitleScreenScene"); //loads title screen
 
     }
 
-    //StandButtonAction (NOT IMPLEMENTED)
+    //StandButtonAction (NOT FULLY IMPLEMENTED)
     public void standButtonAction()
     {
 
         Player player = MainClass.players[MainClass.currentPlayerNumber]; //finds current player
 
-        GameFunctionsScript.showOutcome(null, player, "stand");
-        GameObject standButton = GameObject.Find("StandButton");
+        GameFunctionsScript.showOutcome(null, player, "stand"); // shows outcome
+        
+        player.status = "stand"; //sets player status to stand
+
+        //disables "you" player buttons
+        GameObject standButton = GameObject.Find("StandButton"); 
         GameObject hitButton = GameObject.Find("HitButton");
-        player.status = "stand";
         standButton.SetActive(false);
         hitButton.SetActive(false);
     }
@@ -156,54 +144,5 @@ public class ControlsScript : MonoBehaviour
     {
 
     }
-
-    /*
-    //plays ace as low value
-    public void lowAceButtonAction()
-    {
-        MainClass.players[MainClass.currentPlayerNumber].handTotal += Card.ACE_LOW; //adds low ace value to player hand total
-
-        //sets new ace as low ace value; finds all aces
-        for (int i = 0; i < MainClass.players[MainClass.currentPlayerNumber].playerHand.Count; i++)
-        {
-            //if ace value is not set, set it 
-            if (MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue == 0)
-            {
-                MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue = -1;
-            }
-
-        }
-
-        //finds and disables ace choice buttons
-        /*GameObject lowObject = GameObject.Find("LowAceButton");
-        lowObject.SetActive(false);
-        GameObject lowObject = GameObject.Find("HighAceButton");
-        lowObject.SetActive(false); 
-    }
-
-    //high ace button
-    public void highAceButtonAction()
-    {
-        MainClass.players[MainClass.currentPlayerNumber].handTotal += Card.ACE_HIGH; //adds high ace value to player hand total
-
-        //finds all aces; sets ace value to high ace value
-        for (int i = 0; i < MainClass.players[MainClass.currentPlayerNumber].playerHand.Count; i++)
-        {
-            //if ace value not set, set it
-            if (MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue == 0) 
-            {
-                MainClass.players[MainClass.currentPlayerNumber].playerHand[i].aceValue = 1;
-            }
-
-        }
-
-        //finds and disables ace choice buttons
-        /*GameObject lowObject = GameObject.Find("HighAceButton");
-        lowObject.SetActive(false);
-        GameObject lowObject = GameObject.Find("LowAceButton");
-        lowObject.SetActive(false); 
-    }*/
-
-
 
 }
