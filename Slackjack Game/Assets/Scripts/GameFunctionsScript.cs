@@ -19,6 +19,7 @@ public class GameFunctionsScript : MonoBehaviour
     float timer = 0;
     bool startTimer = false;
     bool timerReached = false;
+    public static List<string> usedDeck;
 
     void Start()
     {
@@ -26,6 +27,8 @@ public class GameFunctionsScript : MonoBehaviour
 
         standButton.SetActive(false);
         hitButton.SetActive(false);
+
+        usedDeck = new List<string>();
         //gets reference from deck from MainClass 
         deck = MainClass.deck;
 
@@ -144,8 +147,8 @@ public class GameFunctionsScript : MonoBehaviour
                 if (true)
                 {
                     addToDeck(players[i], pickRandomCard(deck));
-                    timer = 0;
-                    timerReached = false;
+                    //timer = 0;
+                    //timerReached = false;
                     
                 }
                 
@@ -167,6 +170,7 @@ public class GameFunctionsScript : MonoBehaviour
     public static void addToDeck(Player player, Card card)
     {
         player.playerHand.Add(card);     //adds to playerHand    
+        usedDeck.Add(convertSuit(card.suit, card.pip));
         displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total (not implemented yet)
 
@@ -252,11 +256,15 @@ public class GameFunctionsScript : MonoBehaviour
                     //end turn, move to next player
                     player.status = "bust";
 
+
                     //disable (you) player buttons
-                    GameObject standButton = GameObject.Find("StandButton");
-                    GameObject hitButton = GameObject.Find("HitButton");
-                    standButton.SetActive(false);
-                    hitButton.SetActive(false);
+                    if (player.playerName.Equals("player"))
+                    {
+                        GameObject standButton = GameObject.Find("StandButton");
+                        GameObject hitButton = GameObject.Find("HitButton");
+                        standButton.SetActive(false);
+                        hitButton.SetActive(false);
+                    }
                 }
             }
             

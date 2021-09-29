@@ -90,22 +90,6 @@ public class MainClass : MonoBehaviour
             changePlayerAction(players[currentPlayerNumber]);
         }
 
-        /*while (players[players.Length - 1].status.Equals("playing"))
-        {
-            if (players[currentPlayerNumber].status.Equals("stand") || players[currentPlayerNumber].status.Equals("bust"))
-            {
-                if(currentPlayerNumber == players.Length - 1)
-                {
-                    currentPlayerNumber++;
-                }
-                else
-                {
-                    currentPlayerNumber = 0;
-
-                    //dealerPlay();
-                }
-            }
-        }*/
     }
 
     public static void changePlayerAction(Player player)
@@ -116,7 +100,7 @@ public class MainClass : MonoBehaviour
         }
         else
         {
-           // AIPlay();
+           AIFunction.AIPlay(player);
         }
     }
 
