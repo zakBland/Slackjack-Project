@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Card 
 {
-    //ADD ACCESSORS SOON
 
     public int pip; //pip value declaration
     public int suit; //suit value declaration

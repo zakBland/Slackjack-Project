@@ -79,7 +79,10 @@ public class ControlsScript : MonoBehaviour
 
 
         //maybe disable background buttons (NOT IMPLEMENTED)
-
+        for (int i = 0; i < buttonsBlockObject.Length; i++)
+        {
+            buttonsBlockObject[i].GetComponent<Button>().enabled = false;
+        }
 
         //sets how to pages inactive
         foreach (GameObject obj in howToPagesGameObjects)

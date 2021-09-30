@@ -36,19 +36,12 @@ public class TitleButtonScript : MonoBehaviour
         
         //MIN_PAGE = 1;
         whichPage = 0;
-        Debug.Log("plz");
 
         //default player settings
         PlayerPrefs.SetInt("soundEnabled", 0); //no == 0, yes == 1
         PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
         PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
         PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     void Awake()
@@ -81,7 +74,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void settingsButtonAction()
     {
-        Debug.Log("HIii");
         if (optionalDisplayGameObject != null)
         {
             PlayerPrefs.SetInt("currentPage", 1);
@@ -208,8 +200,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void resetButtonAction()
     {
-        Debug.Log("Works3");
-
         bettingNoEnabled();
         volumeNoLevel();
         playerOneButton();
@@ -247,7 +237,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void leftArrowButtonAction()
     {
-        Debug.Log("Works6");
         int maxPage;
         if (whichPage == 0)
         {
@@ -326,18 +315,11 @@ public class TitleButtonScript : MonoBehaviour
                 leftArrowText.color = new Color32(255, 255, 255, 255);
                 Debug.Log(leftArrowGameObject == null);
                 leftArrowGameObject.GetComponent<Button>().enabled = true;
-                Debug.Log("Worksc");
-
             }
             PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") + 1);
 
-
-            Debug.Log("Worksd");
-
             if (PlayerPrefs.GetInt("currentPage", 1) == maxPage)
             {
-                Debug.Log("Workse");
-
                 rightArrowText.color = new Color32(102, 94, 94, 255);
                 rightArrowGameObject.GetComponent<Button>().enabled = false;
 
@@ -345,7 +327,6 @@ public class TitleButtonScript : MonoBehaviour
 
             if (whichPage == 0)
             {
-                Debug.Log("Worksf");
 
                 rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false);
 
@@ -353,12 +334,10 @@ public class TitleButtonScript : MonoBehaviour
             }
             else
             {
-                Debug.Log("Worksg");
 
                 howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false);
                 howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
             }
-            Debug.Log("Worksh");
 
         }
 
@@ -370,7 +349,6 @@ public class TitleButtonScript : MonoBehaviour
     {
         PlayerPrefs.SetInt("difficultyLevel", 0);
         GameObject difficultyButtonObject = GameObject.Find("EasyButton");
-        Debug.Log("Inside dif easy");
         Image difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(29, 255, 3, 255);
 
@@ -385,7 +363,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void difficultyMedButton()
     {
-        Debug.Log("Inside dif med");
         PlayerPrefs.SetInt("difficultyLevel", 1);
         GameObject difficultyButtonObject = GameObject.Find("MediumButton");
         Image difficultyText = difficultyButtonObject.GetComponent<Image>();
@@ -420,7 +397,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void playerOneButton()
     {
-        Debug.Log("Inside player one");
         PlayerPrefs.SetInt("playerCount", 1);
 
         GameObject difficultyButtonObject = GameObject.Find("OneButton");
@@ -439,7 +415,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void playerTwoButton()
     {
-        Debug.Log("Inside player two");
         PlayerPrefs.SetInt("playerCount", 2);
 
         GameObject difficultyButtonObject = GameObject.Find("TwoButton");
@@ -458,7 +433,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void playerThreeButton()
     {
-        Debug.Log("Inside player 3");
         PlayerPrefs.SetInt("playerCount", 3);
 
         GameObject difficultyButtonObject = GameObject.Find("ThreeButton");
@@ -477,7 +451,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void bettingNoEnabled()
     {
-        Debug.Log("Inside bet No");
         PlayerPrefs.SetInt("bettingEnabled", 0);
 
         GameObject difficultyButtonObject = GameObject.Find("NoButton");
@@ -494,7 +467,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void bettingYesEnabled()
     {
-        Debug.Log("Inside bet yes");
         PlayerPrefs.SetInt("bettingEnabled", 1);
 
         GameObject difficultyButtonObject = GameObject.Find("YesButton");
@@ -509,7 +481,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void volumeNoLevel()
      {
-        Debug.Log("Inside vol no");
             
         PlayerPrefs.SetInt("soundEnabled", 0);
 
@@ -524,7 +495,6 @@ public class TitleButtonScript : MonoBehaviour
 
     public void volumeYesLevel()
     {
-        Debug.Log("Inside Volume yes");
         PlayerPrefs.SetInt("soundEnabled", 1);
 
         GameObject difficultyButtonObject = GameObject.Find("YesVButton");

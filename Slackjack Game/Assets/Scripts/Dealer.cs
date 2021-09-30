@@ -27,6 +27,7 @@ public class Dealer : MonoBehaviour
             //end game, show outcome of dealer, show results of all players
             GameFunctionsScript.showOutcome(null, player, "stand"); //show outcome
             player.status = "stand"; //update player status to stand
+            Debug.Log("Dealer stands");
         }
 
         //else, hit
@@ -58,25 +59,42 @@ public class Dealer : MonoBehaviour
                 //display card to player area
                 GameFunctionsScript.displayCard(card, player);
 
+                Debug.Log($"Dealer hand total is {player.handTotal}");
+
                 //display outcome
                 if (player.handTotal > 21)
                 {
                     GameFunctionsScript.showOutcome(null, player, "bust"); //show outcome
                     player.status = "bust"; //update player status to bust
+                    break;
 
-
+                }
+                else if(player.handTotal >= 17)
+                {
+                    GameFunctionsScript.showOutcome(null, player, "stand");
+                    player.status = "stand";
+                    break;
+                }
+                else if(player.handTotal == 21)
+                {
+                    GameFunctionsScript.showOutcome(null, player, "stand");
+                    player.status = "win";
+                    break;
                 }
                 else
                 {
-                    GameFunctionsScript.showOutcome(null, player, "hit"); //show outcome
+                    GameFunctionsScript.showOutcome(card, player, "hit"); //show outcome
                 }
+
+                // if player.handTotal == 21 (NOT IMPLEMENTED)
                 
             }
             //keep hitting until 17 or above
             while (player.handTotal < 17);
-            
-            
 
-        }
+            //MainClass.continueGame = false;
+        }            
+        PlayerPrefs.SetInt("continueGame", 0);
+
     }
 }

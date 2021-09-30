@@ -56,6 +56,7 @@ public class GameFunctionsScript : MonoBehaviour
         hitButton = GameObject.Find("HitButton");
 
     }
+
     void Update()
     {
         //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
@@ -74,7 +75,9 @@ public class GameFunctionsScript : MonoBehaviour
     public static List<Card> shuffleDeck(List<Card> deck)
     {
         List<Card> shuffledDeck = new List<Card>(); //initializes shuffled deck to be returned
-        
+
+        deck = MainClass.deck;
+
         //randomly picks index of card to add to shuffled deck
         for(int i = 0, j = deck.Count; i < j; i++)
         {
@@ -136,7 +139,7 @@ public class GameFunctionsScript : MonoBehaviour
         player.playerHand.Add(card);     //adds to playerHand    
         usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
         displayCard(card, player); //displays card
-        calculateTotal(card, player); //adjusts card total (not implemented yet)
+        calculateTotal(card, player); //adjusts card total 
     }
 
     //display cards to screen
@@ -211,7 +214,7 @@ public class GameFunctionsScript : MonoBehaviour
                     }
                 }
            
-                //player busted (NOT IMPLEMENTED)
+                //player busted (NOT FULLY IMPLEMENTED)
 
                 if (!loweredAce) //not able to play low, then player bust
                 {
@@ -223,7 +226,7 @@ public class GameFunctionsScript : MonoBehaviour
 
 
                     //disable (you) player buttons
-                    if (player.playerName.Equals("player")) //disable buttons if "you" is playing
+                    if (player.playerName.Equals("Player")) //disable buttons if "you" is playing
                     {
                         GameObject standButton = GameObject.Find("StandButton");
                         GameObject hitButton = GameObject.Find("HitButton");
@@ -243,14 +246,17 @@ public class GameFunctionsScript : MonoBehaviour
                 player.handTotal += Card.ACE_LOW; //adds l
                 card.aceValue = -1; //sets ace type to -1(low ace)
 
-                //if player hand total is equal to 21, player wins, move turns (NOT IMPLEMENTED)
+                //if player hand total is equal to 21, player wins, move turns (NOT FULLY IMPLEMENTED)
                 if (player.handTotal == 21)
                 {
-                    //disable "you" player's buttons
-                    GameObject standButton = GameObject.Find("StandButton");
-                    GameObject hitButton = GameObject.Find("HitButton");
-                    standButton.SetActive(false);
-                    hitButton.SetActive(false);
+                    if (player.playerName.Equals("Player"))
+                    {
+                        //disable "you" player's buttons
+                        GameObject standButton = GameObject.Find("StandButton");
+                        GameObject hitButton = GameObject.Find("HitButton");
+                        standButton.SetActive(false);
+                        hitButton.SetActive(false);
+                    }
 
                     player.status = "win"; //update player status
                 }
@@ -323,7 +329,7 @@ public class GameFunctionsScript : MonoBehaviour
     }
 
     //converts suit to suitable sprite/image card name
-    public static string convertSuit(int suit, int j)
+    public static string convertSuit(int suit, int pip)
     {
         char suitChar = 'a'; //initializes string variable
 
@@ -337,7 +343,7 @@ public class GameFunctionsScript : MonoBehaviour
 
         } 
 
-        return $"{suitChar}{j}"; //returns card string
+        return $"{suitChar}{pip}"; //returns card string
     }
 
 }

@@ -6,10 +6,7 @@ public class MainClass : MonoBehaviour
 {
 
     //add arrows to gui
-    //add soft hand button options
-    //add card total currently
     //change color of name for current player
-    //show how softhand is played
 
     public const int DECK_SIZE = 52; //constant max card variables
     public const int SUIT_COUNT = 4; //number of suits
@@ -18,9 +15,13 @@ public class MainClass : MonoBehaviour
     public static Player[] players; //array of all players
     public static List<Card> deck; //deck of cards list varaible
     public static int currentPlayerNumber; //a variable that represents which player's turn it is
+    //public static bool continueGame;
 
     void Start()
     {
+        //continueGame = true;
+        PlayerPrefs.SetInt("continueGame", 1);
+
         players = new Player[PlayerPrefs.GetInt("playerCount") + 1]; //initializes the player array with max players; maybe initialize with only amount of actual players
         deck = new List<Card>(); //initialize deck array
 
@@ -84,10 +85,27 @@ public class MainClass : MonoBehaviour
 
     void Update()
     {
+        //
+        if (PlayerPrefs.GetInt("continueGame") == 1);
+        {
+            testPlayer();
+        }
+
+    }
+
+    public static void testPlayer()
+    {
         //if current player isn't playing anymore, move to next player
+        if(PlayerPrefs.GetInt("continueGame") == 0)
+        {
+            return;
+        }
+
         if (!players[currentPlayerNumber].status.Equals("playing"))
         {
-            if(currentPlayerNumber == players.Length - 1)
+            Debug.Log(players[currentPlayerNumber].playerName);
+
+            if (currentPlayerNumber == players.Length - 1)
             {
                 currentPlayerNumber = 0; //sets to dealer if on last AI player
             }
@@ -95,14 +113,16 @@ public class MainClass : MonoBehaviour
             {
                 currentPlayerNumber++; //else, increments to next AI player
             }
+
+            Debug.Log(players[currentPlayerNumber].playerName);
             changePlayerAction(players[currentPlayerNumber]); //changes player method
         }
-
     }
 
     //changes player once they win, stand, or bust after "you" gameplay
     public static void changePlayerAction(Player player)
     {
+        Debug.Log($"{player.playerName}{player.playerNumber}");
         if(player.playerNumber == 0)
         {
             Dealer.dealerPlay(player);  //if dealer's turn, execute dealer method
