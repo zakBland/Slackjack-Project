@@ -68,6 +68,25 @@ public class ControlsScript : MonoBehaviour
     //HelpButtonAction
     public void helpButtonAction()
     {
+       
+       //Pages must be disabled first before block is loaded in,
+       //to stop all pages from appearing on first load in.
+
+       //sets how to pages inactive
+        foreach (GameObject obj in howToPagesGameObjects)
+        {
+            obj.SetActive(false);
+        }
+
+        //sets rules pages inactive
+        foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
+        {
+            obj.gameObject.SetActive(false);
+        }
+
+        rulesPagesGameObjects[0].gameObject.SetActive(true); //sets rules first page active
+
+
         PlayerPrefs.SetInt("currentPage", 1); //sets current page to 1;
         helpGroupBlockObject.SetActive(true); //sets help info block to active
       
@@ -84,19 +103,7 @@ public class ControlsScript : MonoBehaviour
             buttonsBlockObject[i].GetComponent<Button>().enabled = false;
         }
 
-        //sets how to pages inactive
-        foreach (GameObject obj in howToPagesGameObjects)
-        {
-            obj.SetActive(false);
-        }
-
-        //sets rules pages inactive
-        foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
-        {
-            obj.gameObject.SetActive(false);
-        }
-
-        rulesPagesGameObjects[0].gameObject.SetActive(true); //sets rules first page active
+     
     }
 
     //done button
