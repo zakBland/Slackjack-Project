@@ -4,10 +4,24 @@ using UnityEngine;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 
 public class Dealer : MonoBehaviour
 {
+    static GameObject playAgainClassObject;
+
+    void Start()
+    {
+        playAgainClassObject.SetActive(false);
+
+    }
+
+    void Awake()
+    {
+        playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
+
+    }
 
     public static void dealerPlay(Player player)
     {
@@ -95,6 +109,8 @@ public class Dealer : MonoBehaviour
             //MainClass.continueGame = false;
         }            
         PlayerPrefs.SetInt("continueGame", 0);
+
+        playAgainClassObject.SetActive(true);
 
     }
 }

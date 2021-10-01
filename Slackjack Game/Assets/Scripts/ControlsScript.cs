@@ -17,11 +17,14 @@ public class ControlsScript : MonoBehaviour
     GameObject rulesPagesBlockObject; //declares rules pages block object
     GameObject howToPagesBlockObject; //declares howToPages block object
     public const int MIN_PAGE = 1; //declares constant for page minimum
+    public static bool playAgain = false;
+    static GameObject playAgainClassObject;
 
     // Start is called before the first frame update
     void Start()
     {
-        helpGroupBlockObject.SetActive(false); //sets help screen to inactive
+        helpGroupBlockObject.SetActive(false); //sets help screen to inactive        
+
     }
 
     void Awake()
@@ -34,7 +37,6 @@ public class ControlsScript : MonoBehaviour
         howToPagesBlockObject = GameObject.Find("HowToPagesBlock"); //finds howToPages block
         leftArrowGameObject = GameObject.Find("LeftArrowButton"); //finds left arrow button
         rightArrowGameObject = GameObject.Find("RightArrowButton"); //finds right arrow button
-
 
     }
 
@@ -145,6 +147,27 @@ public class ControlsScript : MonoBehaviour
     //RightArrowAction (NOT IMPLEMENTED)
     public void rightArrowAction()
     {
+    }
+
+    public static void playAgainAction()
+    {
+        /*GameObject scriptClassObject = GameObject.Find("GameFunctonsScript");
+        scriptClassObject.GetComponent<GameFunctionsScript>().enabled = false;
+        scriptClassObject.GetComponent<GameFunctionsScript>().enabled = true;
+
+        scriptClassObject = GameObject.Find("MainClassScriptBlock");
+        scriptClassObject.GetComponent<MainClass>().enabled = false;
+        scriptClassObject.GetComponent<MainClass>().enabled = true;
+        */
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
+        playAgainClassObject.SetActive(false);
+
+    }
+    public static void leaveGameButtonAction()
+    {
+        SceneManager.LoadScene("TitleScreenScene"); //loads title screen
 
     }
 

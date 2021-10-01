@@ -124,6 +124,17 @@ public class GameFunctionsScript : MonoBehaviour
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(players[0].playerNameBlockString); //finds card slot areas for a player
         areas[3].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
+
+
+        if(players[0].playerHand[1].aceValue == 1)
+        {
+            players[0].handTotal -= Card.ACE_HIGH; //subtracts value of hidden card from dealer hand total 
+
+        }
+        if (players[0].playerHand[1].pip == 1)
+        {
+            players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
+        }
         players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
         GameObject playerText = GameObject.Find(players[0].playerName + "CountText"); //finds reference to dealer text box
         playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + ""); //updates dealer value text
