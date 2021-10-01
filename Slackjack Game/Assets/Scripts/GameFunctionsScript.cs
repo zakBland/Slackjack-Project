@@ -316,13 +316,32 @@ public class GameFunctionsScript : MonoBehaviour
         //if player stands (presses stand button), show text
         else if(hitOrStand.Equals("stand"))
         {
-            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! {MainClass.players[next].playerName} is next!"; //shows player and action if  //fix to have specific name (FINISH)
-            resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0); //hides card
+            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! "; //shows player and action if  //fix to have specific name (FINISH)
+            if (player.playerName.Equals("Dealer"))
+            {
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += "Game Over!"; //shows player and action if  //fix to have specific name (FINISH)
+
+            }
+            else
+            {
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += $" {MainClass.players[next].playerName} is next! "; //shows player and action if  //fix to have specific name (FINISH)
+            }
+                resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0); //hides card
 
         }
         else
         {
-            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} Bust! {MainClass.players[next].playerName} is next!"; //shows player and action if  //fix to have specific name (FINISH)
+            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} Bust!"; //shows player and action if  //fix to have specific name (FINISH)
+            if (player.playerName.Equals("Dealer"))
+            {
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += " Game Over!"; //shows player and action if  //fix to have specific name (FINISH)
+
+            }
+            else
+            {
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += $" {MainClass.players[next].playerName} is next! "; //shows player and action if  //fix to have specific name (FINISH)
+
+            }
             resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0); //hides card
 
         }

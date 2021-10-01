@@ -28,10 +28,15 @@ public class TitleButtonScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        optionalDisplayGameObject.SetActive(false);
+        if (SceneManager.GetActiveScene().name.Equals("TitleScreenScene"))
+        {
+            optionalDisplayGameObject.SetActive(false);        
+            settingsBlockGameObject.SetActive(false);
+
+
+        }
         PlayerPrefs.SetInt("currentPage", 1);
         
-        settingsBlockGameObject.SetActive(false);
         helpBlockGameObject.SetActive(false);
         
         //MIN_PAGE = 1;
