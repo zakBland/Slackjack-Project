@@ -12,18 +12,24 @@ public class ControlsScript : MonoBehaviour
     GameObject[] buttonsBlockObject; //declares buttonBlock object
     GameObject leftArrowGameObject; //declares left arrow object
     GameObject rightArrowGameObject; //declares right arrow object
+    GameObject leftArrowRoundsObject; //declares left arrow object
+    GameObject rightArrowRoundsObject; //declares right arrow object
     GameObject[] howToPagesGameObjects; //declares howToPages block object
     TextMeshProUGUI[] rulesPagesGameObjects; //declares rules pages object
     GameObject rulesPagesBlockObject; //declares rules pages block object
     GameObject howToPagesBlockObject; //declares howToPages block object
+    GameObject roundTextObject;
+    GameObject roundsGroupBlockObject;
+
     public const int MIN_PAGE = 1; //declares constant for page minimum
     static GameObject playAgainClassObject;
+    public static int currentRounds;
 
     // Start is called before the first frame update
     void Start()
     {
         helpGroupBlockObject.SetActive(false); //sets help screen to inactive        
-
+        currentRounds = 1;
     }
 
     void Awake()
@@ -36,6 +42,10 @@ public class ControlsScript : MonoBehaviour
         howToPagesBlockObject = GameObject.Find("HowToPagesBlock"); //finds howToPages block
         leftArrowGameObject = GameObject.Find("LeftArrowButton"); //finds left arrow button
         rightArrowGameObject = GameObject.Find("RightArrowButton"); //finds right arrow button
+        roundTextObject = GameObject.Find("RoundsNumberText");
+        leftArrowRoundsObject = GameObject.Find("LeftRoundsButton"); //finds left arrow button
+        rightArrowRoundsObject = GameObject.Find("RightRoundsButton"); //finds right arrow button
+        roundsGroupBlockObject = GameObject.Find("RoundsGroupBlock");
 
 
     }
@@ -152,14 +162,6 @@ public class ControlsScript : MonoBehaviour
 
     public static void playAgainAction()
     {
-        /*GameObject scriptClassObject = GameObject.Find("GameFunctonsScript");
-        scriptClassObject.GetComponent<GameFunctionsScript>().enabled = false;
-        scriptClassObject.GetComponent<GameFunctionsScript>().enabled = true;
-
-        scriptClassObject = GameObject.Find("MainClassScriptBlock");
-        scriptClassObject.GetComponent<MainClass>().enabled = false;
-        scriptClassObject.GetComponent<MainClass>().enabled = true;
-        */
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
@@ -172,5 +174,80 @@ public class ControlsScript : MonoBehaviour
 
     }
 
+    public void leftArrowRoundsButtonAction()
+    {
+        int maxRounds = 10;
 
+        TextMeshProUGUI roundsArrowText = roundTextObject.GetComponent<TextMeshProUGUI>();
+        Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>();
+        Button rightArrowButtonObject = rightArrowRoundsObject.GetComponent<Button>();
+        Image leftArrowImageObject = leftArrowRoundsObject.GetComponent<Image>();
+        Button leftArrowButtonObject = leftArrowRoundsObject.GetComponent<Button>();
+
+
+        //determine which page is active
+        if (currentRounds - 1 >= 1)
+        {
+            if (currentRounds == maxRounds)
+            {
+                rightArrowImageObject.color = new Color32(255, 255, 255, 255);
+                rightArrowButtonObject.GetComponent<Button>().enabled = true;
+
+            }
+            
+            currentRounds--;          
+
+            if (currentRounds == 1)
+            {
+                leftArrowImageObject.color = new Color32(102, 94, 94, 255);
+                leftArrowButtonObject.GetComponent<Button>().enabled = false;
+
+            }
+
+            roundsArrowText.text = currentRounds + "";
+        }
+    }
+
+
+    public void rightArrowRoundsButtonAction()
+    {
+        int maxRounds = 10;
+
+        TextMeshProUGUI roundsArrowText = roundTextObject.GetComponent<TextMeshProUGUI>();
+        Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>();
+        Button rightArrowButtonObject = rightArrowRoundsObject.GetComponent<Button>();
+        Image leftArrowImageObject = leftArrowRoundsObject.GetComponent<Image>();
+        Button leftArrowButtonObject = leftArrowRoundsObject.GetComponent<Button>();
+
+
+
+        if (currentRounds + 1 <= maxRounds)
+        {
+            if (currentRounds == 1)
+            {
+                leftArrowImageObject.color = new Color32(255, 255, 255, 255);
+                leftArrowButtonObject.GetComponent<Button>().enabled = true;
+            }
+
+            currentRounds++;
+
+            if (currentRounds == maxRounds)
+            {
+                rightArrowImageObject.color = new Color32(102, 94, 94, 255);
+                rightArrowButtonObject.GetComponent<Button>().enabled = false;
+
+            }
+
+            roundsArrowText.text = currentRounds + "";
+
+
+        }
+
+        
+    }
+
+    public void doneRoundsButtonAction()
+    {
+        roundsGroupBlockObject.SetActive(false);
+    }
 }

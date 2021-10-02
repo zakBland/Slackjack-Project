@@ -80,7 +80,11 @@ public class MainClass : MonoBehaviour
         currentPlayerNumber = 1;
         
         
-        
+        if(rounds != 1)
+        {
+            SceneManager.LoadScene(SceneMAnager.GetActiveScene().name);
+            PlayerPrefs.SetInt("rounds", rounds)
+        }
     }
 
     void Update()
