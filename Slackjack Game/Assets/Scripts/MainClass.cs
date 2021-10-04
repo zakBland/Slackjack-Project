@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainClass : MonoBehaviour
 {
@@ -78,13 +79,13 @@ public class MainClass : MonoBehaviour
 
         //sets current player number/turn to 0;
         currentPlayerNumber = 1;
-        
+        /*
         
         if(rounds != 1)
         {
-            SceneManager.LoadScene(SceneMAnager.GetActiveScene().name);
-            PlayerPrefs.SetInt("rounds", rounds)
-        }
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            PlayerPrefs.SetInt("rounds", rounds);
+        }*/
     }
 
     void Update()
