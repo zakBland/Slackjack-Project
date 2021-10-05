@@ -30,6 +30,15 @@ public class ControlsScript : MonoBehaviour
     {
         helpGroupBlockObject.SetActive(false); //sets help screen to inactive        
         currentRounds = 1;
+        Debug.Log($"rounds at start are {PlayerPrefs.GetInt("rounds")}");
+        if(PlayerPrefs.GetInt("rounds") > 1)
+        {
+            roundsGroupBlockObject.SetActive(false);            
+            PlayerPrefs.SetInt("rounds", PlayerPrefs.GetInt("rounds") - 1);
+
+        }
+       
+        
     }
 
     void Awake()
@@ -248,6 +257,9 @@ public class ControlsScript : MonoBehaviour
 
     public void doneRoundsButtonAction()
     {
+        PlayerPrefs.SetInt("rounds", currentRounds);
+        PlayerPrefs.SetInt("setRounds", 1);
+        Debug.Log($"player rounds are {currentRounds}");
         roundsGroupBlockObject.SetActive(false);
     }
 }

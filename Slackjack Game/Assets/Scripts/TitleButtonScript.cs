@@ -28,6 +28,11 @@ public class TitleButtonScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (PlayerPrefs.GetInt("setRounds") == 0)
+        {
+            PlayerPrefs.SetInt("rounds", 0);
+        }
+        
         optionalDisplayGameObject.SetActive(false);
         PlayerPrefs.SetInt("currentPage", 1);
         

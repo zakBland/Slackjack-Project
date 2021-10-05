@@ -18,12 +18,18 @@ public class GameFunctionsScript : MonoBehaviour
     public Sprite dealerCard; //dealer's hidden card reference
     public static List<string> usedDeck; //variable for all unused cards
 
+    static bool start;
+
     float timer = 0; //ignore
     bool startTimer = false; //ignore
     bool timerReached = false; //ignore
 
     void Start()
     {
+        //start = false;
+        //StartCoroutine("delayDislay", start);
+        //needToDisplay
+
         //disable (you) player buttons
         standButton.SetActive(false);
         hitButton.SetActive(false);
@@ -55,7 +61,7 @@ public class GameFunctionsScript : MonoBehaviour
         //finds and initializes objects for (you) player buttons
         standButton = GameObject.Find("StandButton");
         hitButton = GameObject.Find("HitButton");
-
+        
     }
 
     void Update()
@@ -70,6 +76,17 @@ public class GameFunctionsScript : MonoBehaviour
             Debug.Log(timer);
         }*/
         
+    }
+
+    IEnumerator delayDislay(bool start)
+    {
+        while(start)
+        {
+            yield return new WaitForSeconds(10);        
+            start = false;
+
+        }
+
     }
 
     //shuffles deck
@@ -87,13 +104,15 @@ public class GameFunctionsScript : MonoBehaviour
             deck.RemoveAt(index); //removes chosen card so it won't be chosen again
         }
 
+        
+
         return shuffledDeck; //returns shuffled deck
     }
 
     //deals cards
     public void dealCards()
     {
-
+        Debug.Log($"inside deal rounds are {PlayerPrefs.GetInt("rounds")}");
         Player[] players = MainClass.players; //gets reference of players from MainClass
 
         //enables/sets active player buttons once cards have been dealt
@@ -154,7 +173,7 @@ public class GameFunctionsScript : MonoBehaviour
     {
         player.playerHand.Add(card);     //adds to playerHand    
         usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
-        displayCard(card, player); //displays card
+        //displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total 
     }
 
@@ -171,6 +190,7 @@ public class GameFunctionsScript : MonoBehaviour
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
         areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
+        //start = true;
 
         //if current player is "you", check to see if card area display needs second page
         if (player.playerName.Equals("Player"))
