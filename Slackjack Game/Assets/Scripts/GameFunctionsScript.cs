@@ -6,12 +6,11 @@ using TMPro;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
-
-
+using System.Threading.Tasks;
 public class GameFunctionsScript : MonoBehaviour
 {
     
-    GameObject standButton; //reference to stand button
+    static GameObject standButton; //reference to stand button
     GameObject hitButton; //reference to hit button
     public Sprite[] spriteArray; //reference to card image list
     List<Card> deck; //deck variable reference from MainClass class
@@ -19,6 +18,7 @@ public class GameFunctionsScript : MonoBehaviour
     public static List<string> usedDeck; //variable for all unused cards
 
     static bool start;
+    static bool delayingDisplay;
 
     float timer = 0; //ignore
     bool startTimer = false; //ignore
@@ -26,9 +26,12 @@ public class GameFunctionsScript : MonoBehaviour
 
     void Start()
     {
-        //start = false;
+        start = false;
+        delayingDisplay = false;
+
         //StartCoroutine("delayDislay", start);
         //needToDisplay
+           // StartCoroutine(delayDislay());
 
         //disable (you) player buttons
         standButton.SetActive(false);
@@ -68,7 +71,13 @@ public class GameFunctionsScript : MonoBehaviour
     {
         //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
         MainClass.deck = deck;
+        delayingDisplay = start;
 
+       /* if (start)
+        {
+            Debug.Log("Inside delay");
+            
+        }
         //IGNORE
         /*if (startTimer && !timerReached)
         {
@@ -78,16 +87,46 @@ public class GameFunctionsScript : MonoBehaviour
         
     }
 
-   /* IEnumerator delayDislay(bool start)
+    IEnumerator delayDislay()
     {
-        while(start)
+        Debug.Log("Start waiting before");
+
+        while (!delayingDisplay)
+        {
+
+            Debug.Log("not waiting");
+
+            yield return null;
+
+            Debug.Log("After not waiting");
+
+        }
+
+        Debug.Log("before waiting 15");
+        
+        yield return new WaitForSeconds(15);
+        /*while(start)
         {
             yield return new WaitForSeconds(10);        
             start = false;
 
-        }
+        }*/
+        /*
+        while (!delayingDisplay)
+        {
+            Debug.Log("Not delaying");
+            yield return null;
+        } */
 
-    }*/
+
+        Debug.Log("Delaying");
+ //start = false;
+       // delayingDisplay = false;
+       // yield return new WaitForSeconds(15);
+
+        Debug.Log("After wait");
+       
+    }
 
     //shuffles deck
     public static List<Card> shuffleDeck(List<Card> deck)
@@ -125,9 +164,12 @@ public class GameFunctionsScript : MonoBehaviour
         for(int i = 0; i < players.Length; i++)
         {
             for (int j = 0; j < 2; j++) //temporarily just deals to two players rather than the correct amount of players in game
-            {                   
+            {
+                Debug.Log("Before adding");
                 addToDeck(players[i], pickRandomCard(deck));
-
+                start = true;
+                //delayingDisplay = true;
+                Debug.Log("After adding");
                 /*
                 //startTimer = true; (IGNORE)
 
@@ -152,12 +194,23 @@ public class GameFunctionsScript : MonoBehaviour
         }
         else if (players[0].playerHand[1].aceValue == -1)
         {
+            Debug.Log($"Inside low ace. Card is {players[0].playerHand[1].suit}{players[0].playerHand[1].pip} and aceValue is {players[0].playerHand[1].aceValue}");
             players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
         }
         else
         {
-            players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
+            if (players[0].playerHand[1].pip >= 11)
+            {
+                players[0].handTotal -= 10;
+            }
+            else
+            {
+                players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
+            }
         }
+
+        Debug.Log($"Dealers cards are {players[0].playerHand[0].suit}{players[0].playerHand[0].pip} and {players[0].playerHand[1].suit}{players[0].playerHand[1].pip}");
+        Debug.Log($"Dealer hand is {players[0].handTotal}");
 
         GameObject playerText = GameObject.Find(players[0].playerName + "CountText"); //finds reference to dealer text box
         playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + ""); //updates dealer value text
@@ -168,13 +221,31 @@ public class GameFunctionsScript : MonoBehaviour
 
     }
 
+    public static void testMethod()
+    {
+        standButton.SetActive(false);
+    }
+
     //adds card to deck (gui and playerHand)
     public static void addToDeck(Player player, Card card)
     {
+
         player.playerHand.Add(card);     //adds to playerHand    
         usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
-        displayCard(card, player); //displays card
+
+        System.Threading.Timer timer = null;
+        timer = new System.Threading.Timer((obj) =>
+        {
+            //displayCard(card, player);
+            testMethod();
+            timer.Dispose();
+        }, null, 15, System.Threading.Timeout.Infinite);
+
+        //Task.Delay(15).ContinueWith(t => displayCard(card, player));
+
+        //displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total 
+
     }
 
     //display cards to screen
@@ -276,8 +347,29 @@ public class GameFunctionsScript : MonoBehaviour
         //else, if card is an ace...
         else
         {
+            if(player.handTotal + Card.ACE_HIGH <= 21)
+            {
+                player.handTotal += Card.ACE_HIGH;
+                card.aceValue = 1;
+
+                if (player.handTotal == 21)
+                {
+                    if (player.playerName.Equals("Player"))
+                    {
+                        //disable "you" player's buttons
+                        GameObject standButton = GameObject.Find("StandButton");
+                        GameObject hitButton = GameObject.Find("HitButton");
+                        standButton.SetActive(false);
+                        hitButton.SetActive(false);
+                    }
+
+                    player.status = "win"; //update player status
+                }
+
+            }
+
             //if playing ace high will result in bust, play low
-            if(player.handTotal + Card.ACE_HIGH > 21)
+            else if(player.handTotal + Card.ACE_HIGH > 21)
             {
                 player.handTotal += Card.ACE_LOW; //adds l
                 card.aceValue = -1; //sets ace type to -1(low ace)
@@ -297,11 +389,21 @@ public class GameFunctionsScript : MonoBehaviour
                     player.status = "win"; //update player status
                 }
             }
-
             //play card as high ace as default
             else
             {
                 player.handTotal += Card.ACE_HIGH; //adds high ace value to hand total
+
+                if (player.playerName.Equals("Player"))
+                {
+                    //disable "you" player's buttons
+                    GameObject standButton = GameObject.Find("StandButton");
+                    GameObject hitButton = GameObject.Find("HitButton");
+                    standButton.SetActive(false);
+                    hitButton.SetActive(false);
+                }
+
+                player.status = "bust";
             }
         }
 

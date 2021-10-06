@@ -313,9 +313,9 @@ public class TitleButtonScript : MonoBehaviour
         //determine which page is active
 
 
-        if (PlayerPrefs.GetInt("currentPage", 1) + 1 <= maxPage)
+        if (PlayerPrefs.GetInt("currentPage") + 1 <= maxPage)
         {
-            if (PlayerPrefs.GetInt("currentPage", 1) == 1)
+            if (PlayerPrefs.GetInt("currentPage") == 1)
             {
                 leftArrowText.color = new Color32(255, 255, 255, 255);
                 Debug.Log(leftArrowGameObject == null);
@@ -323,7 +323,7 @@ public class TitleButtonScript : MonoBehaviour
             }
             PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") + 1);
 
-            if (PlayerPrefs.GetInt("currentPage", 1) == maxPage)
+            if (PlayerPrefs.GetInt("currentPage") == maxPage)
             {
                 rightArrowText.color = new Color32(102, 94, 94, 255);
                 rightArrowGameObject.GetComponent<Button>().enabled = false;

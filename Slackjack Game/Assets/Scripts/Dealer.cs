@@ -30,7 +30,31 @@ public class Dealer : MonoBehaviour
         areas[3].GetComponent<Image>().sprite = player.playerHand[1].sprite; ; //sets specific slot area to sprite/image
 
         //update hand total
-        player.handTotal += player.playerHand[1].pip; //adds to total
+
+        if (player.playerHand[1].aceValue == 1)
+        {
+            player.handTotal += Card.ACE_HIGH; //subtracts value of hidden card from dealer hand total 
+
+        }
+        else if (player.playerHand[1].aceValue == -1)
+        {
+            Debug.Log($"Inside low ace. Card is {player.playerHand[1].suit}{player.playerHand[1].pip} and aceValue is {player.playerHand[1].aceValue}");
+            player.handTotal += player.playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
+        }
+        else
+        {
+            if (player.playerHand[1].pip >= 11)
+            {
+                player.handTotal += 10;
+            }
+            else
+            {
+                player.handTotal += player.playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
+            }
+        }
+
+
+        //player.handTotal += player.playerHand[1].pip; //adds to total
         GameObject playerText = GameObject.Find(player.playerName + "CountText"); //finds textbox
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + ""); //update textbox
 

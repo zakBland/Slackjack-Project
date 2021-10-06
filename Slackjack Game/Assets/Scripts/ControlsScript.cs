@@ -98,11 +98,17 @@ public class ControlsScript : MonoBehaviour
 
         rulesPagesBlockObject.SetActive(true); //sets rules page block active
 
-
+        Debug.Log("ButtonBlockObject length is " + buttonsBlockObject.Length);
         //maybe disable background buttons (NOT IMPLEMENTED)
         for (int i = 0; i < buttonsBlockObject.Length; i++)
         {
-            buttonsBlockObject[i].GetComponent<Button>().enabled = false;
+            Debug.Log($"Button {i} is {buttonsBlockObject[i].GetComponent<Button>() == null}"); //.enabled = false;
+
+            if(buttonsBlockObject[i].GetComponent<Button>() != null)
+            {
+                Debug.Log($"Name of button that is not null is {buttonsBlockObject[i].GetComponent<Button>().name}");
+                buttonsBlockObject[i].GetComponent<Button>().enabled = false;
+            }
         }
 
         //sets how to pages inactive
@@ -129,7 +135,10 @@ public class ControlsScript : MonoBehaviour
         //sets normal game buttons active
         for(int i = 0; i < buttonsBlockObject.Length; i++)
         {
-            buttonsBlockObject[i].GetComponent<Button>().enabled = true;
+            if (buttonsBlockObject[i].GetComponent<Button>() != null)
+            {
+                buttonsBlockObject[i].GetComponent<Button>().enabled = true;
+            }
         }
 
     }
