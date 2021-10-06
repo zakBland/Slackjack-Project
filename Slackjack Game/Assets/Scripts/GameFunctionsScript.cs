@@ -78,7 +78,7 @@ public class GameFunctionsScript : MonoBehaviour
         
     }
 
-    IEnumerator delayDislay(bool start)
+   /* IEnumerator delayDislay(bool start)
     {
         while(start)
         {
@@ -87,7 +87,7 @@ public class GameFunctionsScript : MonoBehaviour
 
         }
 
-    }
+    }*/
 
     //shuffles deck
     public static List<Card> shuffleDeck(List<Card> deck)
@@ -173,7 +173,7 @@ public class GameFunctionsScript : MonoBehaviour
     {
         player.playerHand.Add(card);     //adds to playerHand    
         usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
-        //displayCard(card, player); //displays card
+        displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total 
     }
 
