@@ -23,15 +23,21 @@ public class GameFunctionsScript : MonoBehaviour
     float timer = 0; //ignore
     bool startTimer = false; //ignore
     bool timerReached = false; //ignore
+    static Card cardRoutine;
+    static Player playerRoutine;
 
     void Start()
     {
+
+        cardRoutine = null;
+        playerRoutine = null;
+
         start = false;
         delayingDisplay = false;
 
         //StartCoroutine("delayDislay", start);
         //needToDisplay
-           // StartCoroutine(delayDislay());
+        //StartCoroutine(delayDislay(cardRoutine, playerRoutine));
 
         //disable (you) player buttons
         standButton.SetActive(false);
@@ -71,30 +77,35 @@ public class GameFunctionsScript : MonoBehaviour
     {
         //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
         MainClass.deck = deck;
-        delayingDisplay = start;
 
-       /* if (start)
-        {
-            Debug.Log("Inside delay");
-            
-        }
-        //IGNORE
-        /*if (startTimer && !timerReached)
-        {
-            timer += Time.deltaTime;
-            Debug.Log(timer);
-        }*/
-        
+        StartCoroutine(delayDislay(cardRoutine, playerRoutine));
+
+        /* if (start)
+         {
+             Debug.Log("Inside delay");
+
+         }
+         //IGNORE
+         /*if (startTimer && !timerReached)
+         {
+             timer += Time.deltaTime;
+             Debug.Log(timer);
+         }*/
+
     }
 
-    IEnumerator delayDislay()
+    IEnumerator delayDislay(Card card, Player player)
     {
         Debug.Log("Start waiting before");
+        Debug.Log(card == null);
+        Debug.Log(player == null);
+        Debug.Log(delayingDisplay);
 
-        while (!delayingDisplay)
+        while (card == null && player == null && !delayingDisplay)
         {
 
             Debug.Log("not waiting");
+            
 
             yield return null;
 
@@ -104,7 +115,17 @@ public class GameFunctionsScript : MonoBehaviour
 
         Debug.Log("before waiting 15");
         
-        yield return new WaitForSeconds(15);
+        yield return new WaitForSeconds(5);
+
+        Debug.Log("after waiting 15");
+
+        Debug.Log(card == null);
+        Debug.Log(player == null);
+        Debug.Log(delayingDisplay);
+        displayCard(cardRoutine, playerRoutine);
+        //cardRoutine = null;
+        //playerRoutine = null;
+        delayingDisplay = false;
         /*while(start)
         {
             yield return new WaitForSeconds(10);        
@@ -167,19 +188,9 @@ public class GameFunctionsScript : MonoBehaviour
             {
                 Debug.Log("Before adding");
                 addToDeck(players[i], pickRandomCard(deck));
-                start = true;
                 //delayingDisplay = true;
                 Debug.Log("After adding");
-                /*
-                //startTimer = true; (IGNORE)
-
-                if (true)
-                {
-
-                    //timer = 0;
-                    //timerReached = false;
-                    
-                }*/
+              
                 
             }
         }
@@ -221,10 +232,11 @@ public class GameFunctionsScript : MonoBehaviour
 
     }
 
+    /*
     public static void testMethod()
     {
         standButton.SetActive(false);
-    }
+    } */
 
     //adds card to deck (gui and playerHand)
     public static void addToDeck(Player player, Card card)
@@ -233,15 +245,10 @@ public class GameFunctionsScript : MonoBehaviour
         player.playerHand.Add(card);     //adds to playerHand    
         usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
 
-        System.Threading.Timer timer = null;
-        timer = new System.Threading.Timer((obj) =>
-        {
-            //displayCard(card, player);
-            testMethod();
-            timer.Dispose();
-        }, null, 15, System.Threading.Timeout.Infinite);
+        cardRoutine = card;
+        playerRoutine = player;
 
-        //Task.Delay(15).ContinueWith(t => displayCard(card, player));
+        delayingDisplay = true;
 
         //displayCard(card, player); //displays card
         calculateTotal(card, player); //adjusts card total 
