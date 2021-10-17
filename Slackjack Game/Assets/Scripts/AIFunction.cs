@@ -10,10 +10,14 @@ public class AIFunction: MonoBehaviour
     public static double probability;
     //public static Player player;
     public static int difficulty;
+    public static bool startAIPlay;
+    public static Player player;
 
     // Start is called before the first frame update
     void Start()
     {
+        startAIPlay = false;
+
         Debug.Log(MainClass.deck == null);
 
         deck = MainClass.deck;
@@ -29,9 +33,82 @@ public class AIFunction: MonoBehaviour
     void Update()
     {
         usedDeck = GameFunctionsScript.usedDeck;
+        Debug.Log("StartAIPlay is " + startAIPlay);
+        if (startAIPlay)
+        {
+            StartCoroutine("AIPlayFunction");
+            Debug.Log("Inside coroutine");
+        }
         
     }
 
+    IEnumerator AIPlayFunction()
+    {
+        Debug.Log("inside AIFunction");
+        //AIPlay(player);
+        startAIPlay = false;
+        yield return new WaitForSeconds(2f);
+
+
+        while (true)
+        {
+            probability = probabilityOfCard(player);
+
+            Debug.Log($"probability of drawing valid card is {probability}%");
+            Debug.Log($"difficulty is {difficulty}");
+
+            bool loweredAce = false;
+
+            if (player.handTotal > 21)
+            {
+                for (int i = 0; i < player.playerHand.Count; i++)
+                {
+                    //if so, make sure to play as high, if it will total less than 22 and greater than 16
+                    if ((player.handTotal > 21) && player.playerHand[i].aceValue == -1)
+                    {
+                        player.playerHand[i].aceValue = 1; //update ace value to high, if possible
+                        player.handTotal += 10;
+                        loweredAce = true;
+                        break;
+                    }
+                }
+            }
+
+            if (player.handTotal == 21)
+            {
+                stand(player);
+                Debug.Log("player won");
+                break;
+            }
+            else if (player.handTotal > 21)
+            {
+                GameFunctionsScript.showOutcome(null, player, "bust");
+                player.status = "bust";
+                Debug.Log("Player bust");
+                break;
+
+            }
+            else if ((difficulty == 0 && probability > 40) || (difficulty == 1 && probability > 65) || (difficulty == 2 && probability > 90) && player.handTotal < 21)
+            {
+                Debug.Log("player hit");
+                //hit
+                hit(player);
+
+            }
+            else
+            {
+                Debug.Log("Probability was too low. Current player stood");
+                stand(player);
+                break;
+            }
+
+            yield return new WaitForSeconds(1.5f);
+
+        }
+
+        yield return new WaitForSeconds(1.5f);
+
+    }
 
     //Determine how many cards remain    
     //Determine hand total
@@ -74,75 +151,22 @@ public class AIFunction: MonoBehaviour
         probability = (possibleCards / (cardsRemaining * 1.0)) * 100.0;
         Debug.Log($"Prob inside is {probability}");
         return probability;
-    }
+    } 
 
-    public static void AIPlay(Player player)
+  /*  public static void AIPlay(Player player)
     {
-        
+
 
         
 
-        while (true)
-        {
-            probability = probabilityOfCard(player);
-
-            Debug.Log($"probability of drawing valid card is {probability}%");
-            Debug.Log($"difficulty is {difficulty}");
-
-            bool loweredAce = false;
-
-            if (player.handTotal > 21)
-            {
-                for (int i = 0; i < player.playerHand.Count; i++)
-                {
-                    //if so, make sure to play as high, if it will total less than 22 and greater than 16
-                    if ((player.handTotal > 21) && player.playerHand[i].aceValue == -1)
-                    {
-                        player.playerHand[i].aceValue = 1; //update ace value to high, if possible
-                        player.handTotal += 10;
-                        loweredAce = true;
-                        break;
-                    }
-                }
-            }
-
-            if (player.handTotal == 21)
-            {
-                stand(player);
-                Debug.Log("player won");
-                break;
-            }
-            else if(player.handTotal > 21)
-            {
-                GameFunctionsScript.showOutcome(null, player, "bust");
-                player.status = "bust";
-                Debug.Log("Player bust");
-                break;
-
-            }
-            else if ((difficulty == 0 && probability > 40) || (difficulty == 1 && probability > 65) || (difficulty == 2 && probability > 90) && player.handTotal < 21)
-            {
-                Debug.Log("player hit");
-                //hit
-                hit(player);
-
-            }
-            else
-            {
-                Debug.Log("Probability was too low. Current player stood");
-                stand(player);
-                break;
-            }
-        }
-
-    }
-
+    }*/
+  
     
     //hit
     public static void hit(Player player)
     {
         Card card = GameFunctionsScript.pickRandomCard(MainClass.deck); 
-        GameFunctionsScript.addToDeck(player, card);
+        GameFunctionsScript.addToDeck(player, card, null);
         GameFunctionsScript.showOutcome(card, player, "hit");
 
         Debug.Log($"The card drawn is {card.suit}{card.pip}");

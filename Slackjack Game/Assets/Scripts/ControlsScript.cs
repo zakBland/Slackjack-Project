@@ -70,7 +70,7 @@ public class ControlsScript : MonoBehaviour
         GameFunctionsScript.calculateTotal(card, player);
 
         //display card to player area
-        GameFunctionsScript.displayCard(card, player);
+        GameFunctionsScript.displayCard(card, player, null);
 
         //display outcome
         if (player.handTotal > 21)

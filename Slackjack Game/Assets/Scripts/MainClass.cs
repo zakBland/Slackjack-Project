@@ -96,6 +96,8 @@ public class MainClass : MonoBehaviour
             testPlayer();
         }
 
+        AIFunction.player = players[currentPlayerNumber];
+        Dealer.player = players[currentPlayerNumber];
     }
 
     public static void testPlayer()
@@ -130,11 +132,14 @@ public class MainClass : MonoBehaviour
         Debug.Log($"{player.playerName}{player.playerNumber}");
         if(player.playerNumber == 0)
         {
-            Dealer.dealerPlay(player);  //if dealer's turn, execute dealer method
+            //Dealer.dealerPlay(player);  //if dealer's turn, execute dealer method
+            Dealer.dealerStart = true;
         }
         else
         {
-           AIFunction.AIPlay(player); //if AI's turn, execute AI methods
+            //AIFunction.AIPlay(player); //if AI's turn, execute AI methods
+            Debug.Log("Inside AI");
+            AIFunction.startAIPlay = true;
         }
     }
 

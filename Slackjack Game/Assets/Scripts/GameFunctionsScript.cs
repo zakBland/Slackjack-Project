@@ -9,7 +9,8 @@ using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 public class GameFunctionsScript : MonoBehaviour
 {
-    
+    public static GameFunctionsScript instance;
+
     static GameObject standButton; //reference to stand button
     GameObject hitButton; //reference to hit button
     public Sprite[] spriteArray; //reference to card image list
@@ -19,6 +20,7 @@ public class GameFunctionsScript : MonoBehaviour
 
     static bool start;
     static bool delayingDisplay;
+    static bool startDelay;
 
     float timer = 0; //ignore
     bool startTimer = false; //ignore
@@ -28,14 +30,14 @@ public class GameFunctionsScript : MonoBehaviour
 
     void Start()
     {
-
+        startDelay = false;
         cardRoutine = null;
         playerRoutine = null;
 
         start = false;
         delayingDisplay = false;
 
-        //StartCoroutine("delayDislay", start);
+        //StartCoroutine("delayDislay");
         //needToDisplay
         //StartCoroutine(delayDislay(cardRoutine, playerRoutine));
 
@@ -70,15 +72,24 @@ public class GameFunctionsScript : MonoBehaviour
         //finds and initializes objects for (you) player buttons
         standButton = GameObject.Find("StandButton");
         hitButton = GameObject.Find("HitButton");
+
+        instance = this;
         
     }
 
     void Update()
     {
-        //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
         MainClass.deck = deck;
+        //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
+        if (start)
+        {
+            StartCoroutine("delayDislay");
 
-        StartCoroutine(delayDislay(cardRoutine, playerRoutine));
+        }
+        /*if (start)
+        {
+            StartCoroutine(delayDislay());
+        }
 
         /* if (start)
          {
@@ -94,109 +105,36 @@ public class GameFunctionsScript : MonoBehaviour
 
     }
 
-    IEnumerator delayDislay(Card card, Player player)
-    {
-        Debug.Log("Start waiting before");
-        Debug.Log(card == null);
-        Debug.Log(player == null);
-        Debug.Log(delayingDisplay);
-
-        while (card == null && player == null && !delayingDisplay)
-        {
-
-            Debug.Log("not waiting");
-            
-
-            yield return null;
-
-            Debug.Log("After not waiting");
-
-        }
-
-        Debug.Log("before waiting 15");
-        
-        yield return new WaitForSeconds(5);
-
-        Debug.Log("after waiting 15");
-
-        Debug.Log(card == null);
-        Debug.Log(player == null);
-        Debug.Log(delayingDisplay);
-        displayCard(cardRoutine, playerRoutine);
-        //cardRoutine = null;
-        //playerRoutine = null;
-        delayingDisplay = false;
-        /*while(start)
-        {
-            yield return new WaitForSeconds(10);        
-            start = false;
-
-        }*/
-        /*
-        while (!delayingDisplay)
-        {
-            Debug.Log("Not delaying");
-            yield return null;
-        } */
-
-
-        Debug.Log("Delaying");
- //start = false;
-       // delayingDisplay = false;
-       // yield return new WaitForSeconds(15);
-
-        Debug.Log("After wait");
-       
-    }
-
-    //shuffles deck
-    public static List<Card> shuffleDeck(List<Card> deck)
-    {
-        List<Card> shuffledDeck = new List<Card>(); //initializes shuffled deck to be returned
-
-        deck = MainClass.deck;
-
-        //randomly picks index of card to add to shuffled deck
-        for(int i = 0, j = deck.Count; i < j; i++)
-        {
-            int index = Random.Range(0, deck.Count); //set index of randomly chosen card
-            shuffledDeck.Add(deck[index]); //adds to shuffled deck
-            deck.RemoveAt(index); //removes chosen card so it won't be chosen again
-        }
-
-        
-
-        return shuffledDeck; //returns shuffled deck
-    }
-
-    //deals cards
-    public void dealCards()
+    IEnumerator delayDislay()
     {
         Debug.Log($"inside deal rounds are {PlayerPrefs.GetInt("rounds")}");
         Player[] players = MainClass.players; //gets reference of players from MainClass
-
+        start = false;
+        GameObject dealButtonObject = GameObject.Find("DealButton"); //finds deal button
+        dealButtonObject.SetActive(false); //disables deal button
         //enables/sets active player buttons once cards have been dealt
         standButton.SetActive(true);
         hitButton.SetActive(true);
-
+        deck = MainClass.deck;
         deck = shuffleDeck(deck); //shuffles deck
 
         //adds cards to players' hands (playerHand) and to their respective GUI area card clot
-        for(int i = 0; i < players.Length; i++)
+        for (int i = 0; i < 2; i++)
         {
-            for (int j = 0; j < 2; j++) //temporarily just deals to two players rather than the correct amount of players in game
+            for (int j = 0; j < players.Length; j++) //temporarily just deals to two players rather than the correct amount of players in game
             {
                 Debug.Log("Before adding");
-                addToDeck(players[i], pickRandomCard(deck));
-                //delayingDisplay = true;
+                Debug.Log("index is " + i + " and player is " + players[j] + ". The deck length " + deck.Count);
+                addToDeck(players[j], pickRandomCard(deck), dealerCard);
+                yield return new WaitForSeconds(0.6f);
                 Debug.Log("After adding");
-              
-                
+
+
             }
         }
 
-        GameObject[] areas = GameObject.FindGameObjectsWithTag(players[0].playerNameBlockString); //finds card slot areas for a player
-        areas[3].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
+        //GameObject[] areas = GameObject.FindGameObjectsWithTag(players[0].playerNameBlockString); //finds card slot areas for a player
+        //areas[3].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
 
         if (players[0].playerHand[1].aceValue == 1)
         {
@@ -226,8 +164,35 @@ public class GameFunctionsScript : MonoBehaviour
         GameObject playerText = GameObject.Find(players[0].playerName + "CountText"); //finds reference to dealer text box
         playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + ""); //updates dealer value text
 
-        GameObject dealButtonObject = GameObject.Find("DealButton"); //finds deal button
-        dealButtonObject.SetActive(false); //disables deal button
+        
+    }
+
+    //shuffles deck
+    public static List<Card> shuffleDeck(List<Card> deck)
+    {
+        List<Card> shuffledDeck = new List<Card>(); //initializes shuffled deck to be returned
+
+        deck = MainClass.deck;
+
+
+        //randomly picks index of card to add to shuffled deck
+        for(int i = 0, j = deck.Count; i < j; i++)
+        {
+            int index = Random.Range(0, deck.Count); //set index of randomly chosen card
+            shuffledDeck.Add(deck[index]); //adds to shuffled deck
+            deck.RemoveAt(index); //removes chosen card so it won't be chosen again
+        }
+
+        
+
+        return shuffledDeck; //returns shuffled deck
+    }
+
+    //deals cards
+    public void dealCards()
+    {
+        start = true;
+        
 
 
     }
@@ -238,36 +203,54 @@ public class GameFunctionsScript : MonoBehaviour
         standButton.SetActive(false);
     } */
 
+    public void testDelay()
+    {
+        Debug.Log("hi");
+    }
+
     //adds card to deck (gui and playerHand)
-    public static void addToDeck(Player player, Card card)
+    public static void addToDeck(Player player, Card card, Sprite dealerCard)
     {
 
         player.playerHand.Add(card);     //adds to playerHand    
         usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
 
+        delayingDisplay = true;
+     
+        displayCard(card, player, dealerCard); //displays card
         cardRoutine = card;
         playerRoutine = player;
-
-        delayingDisplay = true;
-
-        //displayCard(card, player); //displays card
+        //instance.Invoke("testDelay", 7.0f);
         calculateTotal(card, player); //adjusts card total 
 
     }
 
+    
+
     //display cards to screen
-    public static void displayCard(Card card, Player player)
+    public static void displayCard(Card card, Player player, Sprite dealerCard)
     {
+        Debug.Log("Inside display");
         //(NOT FULLY IMPLEMENTED) setup for if player currently needs to display more than 6 cards
         if (player.playerHand.Count > 6 && !player.playerName.Equals("Player"))
         {
             return;
         }
 
+        //start = true;
         int slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
-        areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
+        if (player.playerName.Equals("Dealer") && slot == 3)
+        {
+            areas[slot].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
+
+        }
+        else
+        {
+            areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
+
+        }
         //start = true;
 
         //if current player is "you", check to see if card area display needs second page
@@ -297,6 +280,7 @@ public class GameFunctionsScript : MonoBehaviour
     //calculate total of hand
     public static void calculateTotal(Card card, Player player)
     {
+        
         //if the card isn't an ace...
         if(card.pip != 1)
         {
@@ -415,6 +399,12 @@ public class GameFunctionsScript : MonoBehaviour
         }
 
         //update player handTotal text
+
+        if(player.playerName.Equals("Dealer") && player.playerHand.Count == 2)
+        {
+            return;
+        }
+
         GameObject playerText = GameObject.Find(player.playerName + "CountText");
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + "");
 
@@ -488,6 +478,7 @@ public class GameFunctionsScript : MonoBehaviour
     //picks random card from deck
     public static Card pickRandomCard(List<Card> deck)
     {
+        Debug.Log("Deck pickRandom length is " + deck.Count);
         Card card = deck[0]; //pulls first card from shuffled deck
         deck.RemoveAt(0); //removes from deck
         return card; //returns card

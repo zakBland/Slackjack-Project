@@ -12,10 +12,13 @@ public class Dealer : MonoBehaviour
 
 {
     public static GameObject playAgainClassObject;
+    public static bool dealerStart;
+    public static Player player;
 
     void Start()
     {
         playAgainClassObject.SetActive(false);
+        dealerStart = false;
 
     }
 
@@ -23,8 +26,22 @@ public class Dealer : MonoBehaviour
     {
         playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
     }
-    public static void dealerPlay(Player player)
+
+    void Update()
     {
+        if (dealerStart)
+        {
+            StartCoroutine("dealerPlayFunction");
+        }
+    }
+
+
+    IEnumerator dealerPlayFunction()
+    {
+        dealerStart = false;
+
+        yield return new WaitForSeconds(2);
+
         //reveal hidden card
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
         areas[3].GetComponent<Image>().sprite = player.playerHand[1].sprite; ; //sets specific slot area to sprite/image
@@ -66,6 +83,7 @@ public class Dealer : MonoBehaviour
             GameFunctionsScript.showOutcome(null, player, "stand"); //show outcome
             player.status = "stand"; //update player status to stand
             Debug.Log("Dealer stands");
+            yield return new WaitForSeconds(1.5f);
         }
 
         //else, hit
@@ -95,7 +113,7 @@ public class Dealer : MonoBehaviour
                 GameFunctionsScript.calculateTotal(card, player);
 
                 //display card to player area
-                GameFunctionsScript.displayCard(card, player);
+                GameFunctionsScript.displayCard(card, player, null);
 
                 Debug.Log($"Dealer hand total is {player.handTotal}");
 
@@ -107,13 +125,13 @@ public class Dealer : MonoBehaviour
                     break;
 
                 }
-                else if(player.handTotal >= 17)
+                else if (player.handTotal >= 17)
                 {
                     GameFunctionsScript.showOutcome(null, player, "stand");
                     player.status = "stand";
                     break;
                 }
-                else if(player.handTotal == 21)
+                else if (player.handTotal == 21)
                 {
                     GameFunctionsScript.showOutcome(null, player, "stand");
                     player.status = "win";
@@ -124,16 +142,25 @@ public class Dealer : MonoBehaviour
                     GameFunctionsScript.showOutcome(card, player, "hit"); //show outcome
                 }
 
+                yield return new WaitForSeconds(1.5f);
                 // if player.handTotal == 21 (NOT IMPLEMENTED)
-                
+
             }
             //keep hitting until 17 or above
             while (player.handTotal < 17);
 
             //MainClass.continueGame = false;
-        }            
+        }
+
         PlayerPrefs.SetInt("continueGame", 0);
         playAgainClassObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+
+
+    }
+    public static void dealerPlay(Player player)
+    {
+        
 
     }
 }
