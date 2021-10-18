@@ -46,7 +46,7 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.SetInt("soundEnabled", 0); //no == 0, yes == 1
         PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
         PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
-        PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert 
+        PlayerPrefs.Save();
     }
 
     void Awake()
@@ -226,6 +226,7 @@ public class TitleButtonScript : MonoBehaviour
         helpGameObject.GetComponent<Button>().enabled = true;
         playGameObject.GetComponent<Button>().enabled = true;
         settingsBlockGameObject.SetActive(false);
+        PlayerPrefs.Save();
 
     }
 
@@ -364,6 +365,9 @@ public class TitleButtonScript : MonoBehaviour
         difficultyButtonObject = GameObject.Find("MediumButton");
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
+
+        PlayerPrefs.Save();
+
     }
 
     public void difficultyMedButton()
@@ -380,6 +384,9 @@ public class TitleButtonScript : MonoBehaviour
         difficultyButtonObject = GameObject.Find("HardButton");
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
+
+        PlayerPrefs.Save();
+
 
     }
 
@@ -398,6 +405,9 @@ public class TitleButtonScript : MonoBehaviour
         difficultyButtonObject = GameObject.Find("MediumButton");
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
+
+        PlayerPrefs.Save();
+
     }
 
     public void playerOneButton()
@@ -415,6 +425,9 @@ public class TitleButtonScript : MonoBehaviour
         difficultyButtonObject = GameObject.Find("ThreeButton");
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
+
+        PlayerPrefs.Save();
+
 
     }
 
@@ -434,6 +447,8 @@ public class TitleButtonScript : MonoBehaviour
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
 
+        PlayerPrefs.Save();
+
     }
 
     public void playerThreeButton()
@@ -452,6 +467,9 @@ public class TitleButtonScript : MonoBehaviour
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
 
+        PlayerPrefs.Save();
+
+
     }
 
     public void bettingNoEnabled()
@@ -466,6 +484,7 @@ public class TitleButtonScript : MonoBehaviour
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
 
+        PlayerPrefs.Save();
 
 
     }
@@ -482,6 +501,8 @@ public class TitleButtonScript : MonoBehaviour
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
 
+        PlayerPrefs.Save();
+
     }
 
     public void volumeNoLevel()
@@ -496,6 +517,9 @@ public class TitleButtonScript : MonoBehaviour
         difficultyButtonObject = GameObject.Find("YesVButton");
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
+
+        PlayerPrefs.Save();
+
     }
 
     public void volumeYesLevel()
@@ -509,5 +533,18 @@ public class TitleButtonScript : MonoBehaviour
         difficultyButtonObject = GameObject.Find("NoVButton");
         difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(255, 255, 255, 255);
+
+        PlayerPrefs.Save();
+
+    }
+
+    public void exitGame()
+    {
+        #if UNITY_EDITOR
+
+        Application.Quit();
+
+        #endif
+        UnityEditor.EditorApplication.isPlaying = false;
     }
 }

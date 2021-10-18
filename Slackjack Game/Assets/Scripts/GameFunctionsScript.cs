@@ -19,12 +19,7 @@ public class GameFunctionsScript : MonoBehaviour
     public static List<string> usedDeck; //variable for all unused cards
 
     static bool start;
-    static bool delayingDisplay;
     static bool startDelay;
-
-    float timer = 0; //ignore
-    bool startTimer = false; //ignore
-    bool timerReached = false; //ignore
     static Card cardRoutine;
     static Player playerRoutine;
 
@@ -35,11 +30,6 @@ public class GameFunctionsScript : MonoBehaviour
         playerRoutine = null;
 
         start = false;
-        delayingDisplay = false;
-
-        //StartCoroutine("delayDislay");
-        //needToDisplay
-        //StartCoroutine(delayDislay(cardRoutine, playerRoutine));
 
         //disable (you) player buttons
         standButton.SetActive(false);
@@ -86,22 +76,6 @@ public class GameFunctionsScript : MonoBehaviour
             StartCoroutine("delayDislay");
 
         }
-        /*if (start)
-        {
-            StartCoroutine(delayDislay());
-        }
-
-        /* if (start)
-         {
-             Debug.Log("Inside delay");
-
-         }
-         //IGNORE
-         /*if (startTimer && !timerReached)
-         {
-             timer += Time.deltaTime;
-             Debug.Log(timer);
-         }*/
 
     }
 
@@ -132,9 +106,6 @@ public class GameFunctionsScript : MonoBehaviour
 
             }
         }
-
-        //GameObject[] areas = GameObject.FindGameObjectsWithTag(players[0].playerNameBlockString); //finds card slot areas for a player
-        //areas[3].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
 
         if (players[0].playerHand[1].aceValue == 1)
         {
@@ -192,20 +163,6 @@ public class GameFunctionsScript : MonoBehaviour
     public void dealCards()
     {
         start = true;
-        
-
-
-    }
-
-    /*
-    public static void testMethod()
-    {
-        standButton.SetActive(false);
-    } */
-
-    public void testDelay()
-    {
-        Debug.Log("hi");
     }
 
     //adds card to deck (gui and playerHand)
@@ -213,14 +170,10 @@ public class GameFunctionsScript : MonoBehaviour
     {
 
         player.playerHand.Add(card);     //adds to playerHand    
-        usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck
-
-        delayingDisplay = true;
-     
+        usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck     
         displayCard(card, player, dealerCard); //displays card
         cardRoutine = card;
         playerRoutine = player;
-        //instance.Invoke("testDelay", 7.0f);
         calculateTotal(card, player); //adjusts card total 
 
     }
@@ -312,7 +265,7 @@ public class GameFunctionsScript : MonoBehaviour
                     }
                 }
            
-                //player busted (NOT FULLY IMPLEMENTED)
+                //player busted
 
                 if (!loweredAce) //not able to play low, then player bust
                 {
@@ -355,6 +308,8 @@ public class GameFunctionsScript : MonoBehaviour
                     }
 
                     player.status = "win"; //update player status
+                    showOutcome(null, player, "stand");
+
                 }
 
             }
@@ -402,12 +357,14 @@ public class GameFunctionsScript : MonoBehaviour
 
         if(player.playerName.Equals("Dealer") && player.playerHand.Count == 2)
         {
+            Debug.Log("inside dealer skip");
             return;
         }
 
         GameObject playerText = GameObject.Find(player.playerName + "CountText");
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + "");
 
+        Debug.Log("Inside calculate. " + player.playerName + "'s hand total is " + player.handTotal);
     }
 
     //shows outcome of card draw

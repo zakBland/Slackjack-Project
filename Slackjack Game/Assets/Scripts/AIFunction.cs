@@ -24,7 +24,6 @@ public class AIFunction: MonoBehaviour
         Debug.Log(deck == null);
         cardsRemaining = deck.Count;
         probability = 0;
-        //player = MainClass.players[MainClass.currentPlayerNumber];
         usedDeck = GameFunctionsScript.usedDeck;
         difficulty = PlayerPrefs.GetInt("difficultyLevel");
     }
@@ -45,7 +44,6 @@ public class AIFunction: MonoBehaviour
     IEnumerator AIPlayFunction()
     {
         Debug.Log("inside AIFunction");
-        //AIPlay(player);
         startAIPlay = false;
         yield return new WaitForSeconds(2f);
 
@@ -88,7 +86,7 @@ public class AIFunction: MonoBehaviour
                 break;
 
             }
-            else if ((difficulty == 0 && probability > 40) || (difficulty == 1 && probability > 65) || (difficulty == 2 && probability > 90) && player.handTotal < 21)
+            else if ((difficulty == 0 && probability > 30) || (difficulty == 1 && probability > 50) || (difficulty == 2 && probability > 65) && player.handTotal < 21) // e: 40 m: 65 h: 90
             {
                 Debug.Log("player hit");
                 //hit
@@ -106,7 +104,7 @@ public class AIFunction: MonoBehaviour
 
         }
 
-        yield return new WaitForSeconds(1.5f);
+        //yield return new WaitForSeconds(1.5f);
 
     }
 
@@ -122,6 +120,7 @@ public class AIFunction: MonoBehaviour
         int possibleCards = 0;
 
         Debug.Log($"max value is {maxValue}");
+        Debug.Log("AI player " + player.playerName + " hand total is " + player.handTotal);
         if (maxValue > 13)
         {   
             //fix to set maxValue max
@@ -150,29 +149,19 @@ public class AIFunction: MonoBehaviour
         Debug.Log($"possible cards are {possibleCards} and cards remaining is {cardsRemaining}");
         probability = (possibleCards / (cardsRemaining * 1.0)) * 100.0;
         Debug.Log($"Prob inside is {probability}");
+        Debug.Log("Difficulty is " + difficulty);
         return probability;
     } 
-
-  /*  public static void AIPlay(Player player)
-    {
-
-
-        
-
-    }*/
-  
     
     //hit
     public static void hit(Player player)
     {
         Card card = GameFunctionsScript.pickRandomCard(MainClass.deck); 
         GameFunctionsScript.addToDeck(player, card, null);
+        GameFunctionsScript.usedDeck.Add(GameFunctionsScript.convertSuit(card.suit, card.pip));
         GameFunctionsScript.showOutcome(card, player, "hit");
 
         Debug.Log($"The card drawn is {card.suit}{card.pip}");
-        
-
-
     }
 
     //stand and move turn

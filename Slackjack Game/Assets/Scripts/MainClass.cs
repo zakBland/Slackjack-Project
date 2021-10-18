@@ -7,7 +7,6 @@ public class MainClass : MonoBehaviour
 {
 
     //add arrows to gui
-    //change color of name for current player
 
     public const int DECK_SIZE = 52; //constant max card variables
     public const int SUIT_COUNT = 4; //number of suits
@@ -16,11 +15,9 @@ public class MainClass : MonoBehaviour
     public static Player[] players; //array of all players
     public static List<Card> deck; //deck of cards list varaible
     public static int currentPlayerNumber; //a variable that represents which player's turn it is
-    //public static bool continueGame;
 
     void Start()
     {
-        //continueGame = true;
         PlayerPrefs.SetInt("continueGame", 1);
 
         players = new Player[PlayerPrefs.GetInt("playerCount") + 1]; //initializes the player array with max players; maybe initialize with only amount of actual players
@@ -79,18 +76,12 @@ public class MainClass : MonoBehaviour
 
         //sets current player number/turn to 0;
         currentPlayerNumber = 1;
-        /*
         
-        if(rounds != 1)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            PlayerPrefs.SetInt("rounds", rounds);
-        }*/
+        
     }
 
     void Update()
     {
-        //
         if (PlayerPrefs.GetInt("continueGame") == 1);
         {
             testPlayer();
@@ -112,7 +103,11 @@ public class MainClass : MonoBehaviour
         {
             Debug.Log(players[currentPlayerNumber].playerName);
 
-            if (currentPlayerNumber == players.Length - 1)
+            if (currentPlayerNumber == 0)
+            {
+                return;
+            }
+            else if (currentPlayerNumber == players.Length - 1)
             {
                 currentPlayerNumber = 0; //sets to dealer if on last AI player
             }
@@ -132,12 +127,10 @@ public class MainClass : MonoBehaviour
         Debug.Log($"{player.playerName}{player.playerNumber}");
         if(player.playerNumber == 0)
         {
-            //Dealer.dealerPlay(player);  //if dealer's turn, execute dealer method
             Dealer.dealerStart = true;
         }
         else
         {
-            //AIFunction.AIPlay(player); //if AI's turn, execute AI methods
             Debug.Log("Inside AI");
             AIFunction.startAIPlay = true;
         }

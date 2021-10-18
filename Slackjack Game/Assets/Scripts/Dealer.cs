@@ -8,8 +8,6 @@ using UnityEngine.SceneManagement;
 
 
 public class Dealer : MonoBehaviour
-
-
 {
     public static GameObject playAgainClassObject;
     public static bool dealerStart;
@@ -40,7 +38,7 @@ public class Dealer : MonoBehaviour
     {
         dealerStart = false;
 
-        yield return new WaitForSeconds(2);
+        //yield return new WaitForSeconds(2);
 
         //reveal hidden card
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
@@ -75,6 +73,8 @@ public class Dealer : MonoBehaviour
         GameObject playerText = GameObject.Find(player.playerName + "CountText"); //finds textbox
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + ""); //update textbox
 
+        Debug.Log("Dealer handTotal is " + player.handTotal);
+        yield return new WaitForSeconds(1.5f);
 
         //if total is 17 or more, stand
         if (player.handTotal >= 17)
@@ -109,6 +109,9 @@ public class Dealer : MonoBehaviour
                 List<Card> deck = MainClass.deck; //gets deck reference
                 Card card = GameFunctionsScript.pickRandomCard(deck); //picks random card from MainClass deck
 
+                player.playerHand.Add(card);     //adds to playerHand 
+                GameFunctionsScript.showOutcome(card, player, "hit");
+                GameFunctionsScript.usedDeck.Add(GameFunctionsScript.convertSuit(card.suit, card.pip)); //adds chosen card to used deck   
                 //calculate total
                 GameFunctionsScript.calculateTotal(card, player);
 
@@ -116,7 +119,7 @@ public class Dealer : MonoBehaviour
                 GameFunctionsScript.displayCard(card, player, null);
 
                 Debug.Log($"Dealer hand total is {player.handTotal}");
-
+                yield return new WaitForSeconds(1.5f);
                 //display outcome
                 if (player.handTotal > 21)
                 {
@@ -125,42 +128,44 @@ public class Dealer : MonoBehaviour
                     break;
 
                 }
-                else if (player.handTotal >= 17)
-                {
-                    GameFunctionsScript.showOutcome(null, player, "stand");
-                    player.status = "stand";
-                    break;
-                }
                 else if (player.handTotal == 21)
                 {
                     GameFunctionsScript.showOutcome(null, player, "stand");
                     player.status = "win";
                     break;
                 }
+                else if (player.handTotal >= 17)
+                {
+                    GameFunctionsScript.showOutcome(null, player, "stand");
+                    player.status = "stand";
+                    break;
+                }     
                 else
                 {
-                    GameFunctionsScript.showOutcome(card, player, "hit"); //show outcome
+                 //   GameFunctionsScript.showOutcome(card, player, "hit"); //show outcome
                 }
 
                 yield return new WaitForSeconds(1.5f);
-                // if player.handTotal == 21 (NOT IMPLEMENTED)
 
             }
             //keep hitting until 17 or above
             while (player.handTotal < 17);
 
-            //MainClass.continueGame = false;
+            yield return new WaitForSeconds(2);
+
+
         }
 
+        Debug.Log("Done1");
         PlayerPrefs.SetInt("continueGame", 0);
+        Debug.Log("Done2");
         playAgainClassObject.SetActive(true);
+        Debug.Log("Done3");            
         yield return new WaitForSeconds(2);
 
 
-    }
-    public static void dealerPlay(Player player)
-    {
-        
+       
 
     }
+
 }
