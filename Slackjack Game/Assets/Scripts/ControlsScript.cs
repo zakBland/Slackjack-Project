@@ -24,12 +24,15 @@ public class ControlsScript : MonoBehaviour
     public const int MIN_PAGE = 1; //declares constant for page minimum
     static GameObject playAgainClassObject;
     public static int currentRounds;
+    public static int cardPage;
+    public static int index;
 
     // Start is called before the first frame update
     void Start()
     {
         helpGroupBlockObject.SetActive(false); //sets help screen to inactive        
         currentRounds = 1;
+        index = 0;
         Debug.Log($"rounds at start are {PlayerPrefs.GetInt("rounds")}");
         if(PlayerPrefs.GetInt("rounds") > 1)
         {
@@ -37,7 +40,8 @@ public class ControlsScript : MonoBehaviour
             PlayerPrefs.SetInt("rounds", PlayerPrefs.GetInt("rounds") - 1);
 
         }
-       
+
+        cardPage = 0;
         
     }
 
@@ -146,7 +150,7 @@ public class ControlsScript : MonoBehaviour
     public void leaveButtonAction()
     {
         SceneManager.LoadScene("TitleScreenScene"); //loads title screen
-
+        PlayerPrefs.SetInt("rounds", 1);
     }
 
     //StandButtonAction (NOT FULLY IMPLEMENTED)
@@ -170,12 +174,52 @@ public class ControlsScript : MonoBehaviour
     public void leftArrowAction()
     {
 
+        if (cardPage > 0 && MainClass.players[1].playerHand.Count > 6)
+        {
+            GameObject[] playArea = GameObject.FindGameObjectsWithTag(MainClass.players[1].playerNameBlockString);
+
+            for (int i = 5; i >= 0; i--)
+            {
+                if (i == 0)
+                {
+                    playArea[i].GetComponent<Image>().sprite = playArea[i + 1].GetComponent<Image>().sprite;
+                }
+                else
+                {
+                    playArea[i].GetComponent<Image>().sprite = MainClass.players[1].playerHand[i - 1].sprite;
+                    index--;
+                }
+            }
+
+
+            cardPage++;
+        }
+
     }
 
     //RightArrowAction (NOT IMPLEMENTED)
     public void rightArrowAction()
     {
+        if (cardPage > 0 && MainClass.players[1].playerHand.Count > 6)
+        {
+            GameObject[] playArea = GameObject.FindGameObjectsWithTag(MainClass.players[1].playerNameBlockString);
 
+            for (int i = 0; i < 6; i++)
+            {
+                if (i < 5)
+                {
+                    playArea[i].GetComponent<Image>().sprite = playArea[i + 1].GetComponent<Image>().sprite;
+                }
+                else
+                {
+                    playArea[i].GetComponent<Image>().sprite = MainClass.players[1].playerHand[6 + index].sprite;
+                    index--;
+                }
+            }
+
+
+            cardPage--;
+        }
     }
 
     public static void playAgainAction()
@@ -189,6 +233,7 @@ public class ControlsScript : MonoBehaviour
     public static void leaveGameButtonAction()
     {
         SceneManager.LoadScene("TitleScreenScene"); //loads title screen
+        PlayerPrefs.SetInt("rounds", 1);
 
     }
 

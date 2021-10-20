@@ -32,7 +32,42 @@ public class TitleButtonScript : MonoBehaviour
         {
             PlayerPrefs.SetInt("rounds", 0);
         }
-        
+
+        if (PlayerPrefs.GetInt("playerCount") == 0)
+        {
+            PlayerPrefs.SetInt("playerCount", 1);
+        }
+        else if(PlayerPrefs.GetInt("playerCount") == 1)
+        {
+            playerOneButton();
+        }
+        else if (PlayerPrefs.GetInt("playerCount") == 2)
+        {
+            playerTwoButton();
+        }
+        else if (PlayerPrefs.GetInt("playerCount") == 3)
+        {
+            playerThreeButton();
+        }
+
+        if (PlayerPrefs.GetInt("difficultyLevel") == 0)
+        {
+            PlayerPrefs.SetInt("difficultyLevel", 2);
+        }
+        else if (PlayerPrefs.GetInt("difficultyLevel") == 1)
+        {
+            difficultyEasyButton();
+        }
+        else if (PlayerPrefs.GetInt("difficultyLevel") == 2)
+        {
+            difficultyMedButton();
+        }
+        else if (PlayerPrefs.GetInt("difficultyLevel") == 3)
+        {
+            difficultyHardButton();
+        }
+
+
         optionalDisplayGameObject.SetActive(false);
         PlayerPrefs.SetInt("currentPage", 1);
         
@@ -45,7 +80,7 @@ public class TitleButtonScript : MonoBehaviour
         //default player settings
         PlayerPrefs.SetInt("soundEnabled", 0); //no == 0, yes == 1
         PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
-        PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
+       // PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
         PlayerPrefs.Save();
     }
 
@@ -213,7 +248,7 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.SetInt("soundEnabled", 0); //min 0, max 5
         PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
         PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
-        PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert
+        PlayerPrefs.SetInt("difficultyLevel", 2); // 0 == beginner, 1 == normal, 2 == expert
 
                 
     }
@@ -353,7 +388,7 @@ public class TitleButtonScript : MonoBehaviour
     //maybe disable currently used button?? 
     public void difficultyEasyButton()
     {
-        PlayerPrefs.SetInt("difficultyLevel", 0);
+        PlayerPrefs.SetInt("difficultyLevel", 1);
         GameObject difficultyButtonObject = GameObject.Find("EasyButton");
         Image difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(29, 255, 3, 255);
@@ -372,7 +407,7 @@ public class TitleButtonScript : MonoBehaviour
 
     public void difficultyMedButton()
     {
-        PlayerPrefs.SetInt("difficultyLevel", 1);
+        PlayerPrefs.SetInt("difficultyLevel", 2);
         GameObject difficultyButtonObject = GameObject.Find("MediumButton");
         Image difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(29, 255, 3, 255);
@@ -393,7 +428,7 @@ public class TitleButtonScript : MonoBehaviour
     public void difficultyHardButton()
     {
         Debug.Log(" Inside dif hard");
-        PlayerPrefs.SetInt("difficultyLevel", 2);
+        PlayerPrefs.SetInt("difficultyLevel", 3);
         GameObject difficultyButtonObject = GameObject.Find("HardButton");
         Image difficultyText = difficultyButtonObject.GetComponent<Image>();
         difficultyText.color = new Color32(29, 255, 3, 255);
@@ -540,8 +575,11 @@ public class TitleButtonScript : MonoBehaviour
 
     public void exitGame()
     {
+        optionalDisplayGameObject.SetActive(true);
+        settingsBlockGameObject.SetActive(true);
+        resetButtonAction(); //this causes problems
         #if UNITY_EDITOR
-
+        
         Application.Quit();
 
         #endif

@@ -45,7 +45,7 @@ public class AIFunction: MonoBehaviour
     {
         Debug.Log("inside AIFunction");
         startAIPlay = false;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
 
 
         while (true)
@@ -86,11 +86,13 @@ public class AIFunction: MonoBehaviour
                 break;
 
             }
-            else if ((difficulty == 0 && probability > 30) || (difficulty == 1 && probability > 50) || (difficulty == 2 && probability > 65) && player.handTotal < 21) // e: 40 m: 65 h: 90
+            else if ((difficulty == 1 && probability > 30) || (difficulty == 2 && probability > 45) || (difficulty == 3 && probability > 60) && player.handTotal < 21) // e: 40 m: 65 h: 90
             {
                 Debug.Log("player hit");
                 //hit
-                hit(player);
+                hit(player);            
+                yield return new WaitForSeconds(1.5f);
+
 
             }
             else
@@ -100,7 +102,6 @@ public class AIFunction: MonoBehaviour
                 break;
             }
 
-            yield return new WaitForSeconds(1.5f);
 
         }
 
@@ -115,12 +116,28 @@ public class AIFunction: MonoBehaviour
 
     public static double probabilityOfCard(Player player)
     {
-        int maxValue = 21 - player.handTotal;
+
+        int playerHandTotal = player.handTotal;
+        
+        for(int i = 0; i < player.playerHand.Count; i++)
+        {
+            if(player.playerHand[i].aceValue == 1)
+            {
+                Debug.Log("inside where AI prob ace is high");
+
+                playerHandTotal -= 10;
+                break;
+            }
+        }
+
+        int maxValue = 21 - playerHandTotal;
+
         cardsRemaining = MainClass.deck.Count;
         int possibleCards = 0;
 
         Debug.Log($"max value is {maxValue}");
         Debug.Log("AI player " + player.playerName + " hand total is " + player.handTotal);
+        Debug.Log(GameFunctionsScript.usedDeck == null);
         if (maxValue > 13)
         {   
             //fix to set maxValue max
@@ -158,7 +175,7 @@ public class AIFunction: MonoBehaviour
     {
         Card card = GameFunctionsScript.pickRandomCard(MainClass.deck); 
         GameFunctionsScript.addToDeck(player, card, null);
-        GameFunctionsScript.usedDeck.Add(GameFunctionsScript.convertSuit(card.suit, card.pip));
+        GameFunctionsScript.usedDeck.Add(card.suit + "" + card.pip);
         GameFunctionsScript.showOutcome(card, player, "hit");
 
         Debug.Log($"The card drawn is {card.suit}{card.pip}");

@@ -87,8 +87,7 @@ public class GameFunctionsScript : MonoBehaviour
         GameObject dealButtonObject = GameObject.Find("DealButton"); //finds deal button
         dealButtonObject.SetActive(false); //disables deal button
         //enables/sets active player buttons once cards have been dealt
-        standButton.SetActive(true);
-        hitButton.SetActive(true);
+        
         deck = MainClass.deck;
         deck = shuffleDeck(deck); //shuffles deck
 
@@ -107,6 +106,8 @@ public class GameFunctionsScript : MonoBehaviour
             }
         }
 
+        standButton.SetActive(true);
+        hitButton.SetActive(true);
         if (players[0].playerHand[1].aceValue == 1)
         {
             players[0].handTotal -= Card.ACE_HIGH; //subtracts value of hidden card from dealer hand total 
@@ -170,7 +171,7 @@ public class GameFunctionsScript : MonoBehaviour
     {
 
         player.playerHand.Add(card);     //adds to playerHand    
-        usedDeck.Add(convertSuit(card.suit, card.pip)); //adds chosen card to used deck     
+        usedDeck.Add(card.suit + "" + card.pip); //adds chosen card to used deck     
         displayCard(card, player, dealerCard); //displays card
         cardRoutine = card;
         playerRoutine = player;
