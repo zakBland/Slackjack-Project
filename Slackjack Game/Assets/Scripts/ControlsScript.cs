@@ -173,34 +173,7 @@ public class ControlsScript : MonoBehaviour
     //LeftArrowAction (NOT IMPLEMENTED)
     public void leftArrowAction()
     {
-
-        if (cardPage > 0 && MainClass.players[1].playerHand.Count > 6)
-        {
-            GameObject[] playArea = GameObject.FindGameObjectsWithTag(MainClass.players[1].playerNameBlockString);
-
-            for (int i = 5; i >= 0; i--)
-            {
-                if (i == 0)
-                {
-                    playArea[i].GetComponent<Image>().sprite = playArea[i + 1].GetComponent<Image>().sprite;
-                }
-                else
-                {
-                    playArea[i].GetComponent<Image>().sprite = MainClass.players[1].playerHand[i - 1].sprite;
-                    index--;
-                }
-            }
-
-
-            cardPage++;
-        }
-
-    }
-
-    //RightArrowAction (NOT IMPLEMENTED)
-    public void rightArrowAction()
-    {
-        if (cardPage > 0 && MainClass.players[1].playerHand.Count > 6)
+        if (true)//cardPage > 0 )//&& MainClass.players[1].playerHand.Count > 6)
         {
             GameObject[] playArea = GameObject.FindGameObjectsWithTag(MainClass.players[1].playerNameBlockString);
 
@@ -219,6 +192,39 @@ public class ControlsScript : MonoBehaviour
 
 
             cardPage--;
+        }
+
+        
+
+    }
+
+    //RightArrowAction (NOT IMPLEMENTED)
+    public void rightArrowAction()
+    {
+        if (true) //cardPage > 0 )&& MainClass.players[1].playerHand.Count > 6)
+        {
+            GameObject[] playArea = GameObject.FindGameObjectsWithTag(MainClass.players[1].playerNameBlockString);
+            Debug.Log(playArea.Length + " is area size");
+            for (int i = 4; i >= 0; i--)
+            {
+                /*if (i == 0)
+                {
+                    playArea[i].GetComponent<Image>().sprite = playArea[i + 1].GetComponent<Image>().sprite;
+                }
+                else
+                {*/
+                Debug.Log("Inside rightArrow. i is " + i);
+                //Debug.Log(playArea[i].GetComponent<Image>().sprite == null);
+                if (i - 1 < MainClass.players[1].playerHand.Count)
+                {
+                    playArea[i].GetComponent<Image>().sprite = MainClass.players[1].playerHand[i - 1].sprite;
+                    index--;
+                }
+                //}
+            }
+
+
+            cardPage++;
         }
     }
 

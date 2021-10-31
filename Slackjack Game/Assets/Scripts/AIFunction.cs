@@ -53,7 +53,8 @@ public class AIFunction: MonoBehaviour
             probability = probabilityOfCard(player);
 
             Debug.Log($"probability of drawing valid card is {probability}%");
-            Debug.Log($"difficulty is {difficulty}");
+            Debug.Log($"difficulty is {PlayerPrefs.GetInt("difficultyLevel")}");
+            difficulty = PlayerPrefs.GetInt("difficultyLevel");
 
             bool loweredAce = false;
 
@@ -86,7 +87,7 @@ public class AIFunction: MonoBehaviour
                 break;
 
             }
-            else if ((difficulty == 1 && probability > 30) || (difficulty == 2 && probability > 45) || (difficulty == 3 && probability > 60) && player.handTotal < 21) // e: 40 m: 65 h: 90
+            else if ((difficulty == 1 && probability > 30) || (difficulty == 2 && probability > 45) || (difficulty == 3 && probability > 55) && player.handTotal < 21) // e: 40 m: 65 h: 90
             {
                 Debug.Log("player hit");
                 //hit
@@ -104,7 +105,7 @@ public class AIFunction: MonoBehaviour
 
 
         }
-
+        Debug.Log("AIEnd");
         //yield return new WaitForSeconds(1.5f);
 
     }

@@ -127,6 +127,7 @@ public class MainClass : MonoBehaviour
         Debug.Log($"{player.playerName}{player.playerNumber}");
         if(player.playerNumber == 0)
         {
+            Debug.Log("Starting debug");
             Dealer.dealerStart = true;
         }
         else
