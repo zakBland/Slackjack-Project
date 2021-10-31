@@ -20,12 +20,17 @@ public class ControlsScript : MonoBehaviour
     GameObject howToPagesBlockObject; //declares howToPages block object
     GameObject roundTextObject;
     GameObject roundsGroupBlockObject;
+    GameObject bettingGroupBlockObject;
+    GameObject leftArrowBettingObject;
+    GameObject rightArrowBettingObject;
+    GameObject bettingTextObject;
 
     public const int MIN_PAGE = 1; //declares constant for page minimum
     static GameObject playAgainClassObject;
     public static int currentRounds;
     public static int cardPage;
     public static int index;
+    public static int currentBet;
 
     // Start is called before the first frame update
     void Start()
@@ -38,11 +43,16 @@ public class ControlsScript : MonoBehaviour
         {
             roundsGroupBlockObject.SetActive(false);            
             PlayerPrefs.SetInt("rounds", PlayerPrefs.GetInt("rounds") - 1);
+            bettingGroupBlockObject.SetActive(true);
 
         }
 
         cardPage = 0;
-        
+
+        if (PlayerPrefs.GetInt("setRounds") == 1)
+        {
+            currentBet = 2;
+        }
     }
 
     void Awake()
@@ -59,7 +69,10 @@ public class ControlsScript : MonoBehaviour
         leftArrowRoundsObject = GameObject.Find("LeftRoundsButton"); //finds left arrow button
         rightArrowRoundsObject = GameObject.Find("RightRoundsButton"); //finds right arrow button
         roundsGroupBlockObject = GameObject.Find("RoundsGroupBlock");
-
+        bettingGroupBlockObject = GameObject.Find("BettingGroupBlock");
+        leftArrowBettingObject = GameObject.Find("LeftBetButton");
+        rightArrowBettingObject = GameObject.Find("RightBetButton");
+        bettingTextObject = GameObject.Find("BetNumberText");
 
     }
 
@@ -218,6 +231,7 @@ public class ControlsScript : MonoBehaviour
                 if (i - 1 < MainClass.players[1].playerHand.Count)
                 {
                     playArea[i].GetComponent<Image>().sprite = MainClass.players[1].playerHand[i - 1].sprite;
+
                     index--;
                 }
                 //}
@@ -321,5 +335,83 @@ public class ControlsScript : MonoBehaviour
         PlayerPrefs.SetInt("setRounds", 1);
         Debug.Log($"player rounds are {currentRounds}");
         roundsGroupBlockObject.SetActive(false);
+        bettingGroupBlockObject.SetActive(true);
     }
-}
+
+
+    public void leftArrowBettingButtonAction()
+    {
+        int maxBet = 500;
+
+        TextMeshProUGUI bettingArrowText = roundTextObject.GetComponent<TextMeshProUGUI>();
+        Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>();
+        Button rightArrowButtonObject = rightArrowRoundsObject.GetComponent<Button>();
+        Image leftArrowImageObject = leftArrowRoundsObject.GetComponent<Image>();
+        Button leftArrowButtonObject = leftArrowRoundsObject.GetComponent<Button>();
+
+
+        //determine which page is active
+        if (currentRounds - 1 >= 2)
+        {
+            if (currentBet == maxBet)
+            {
+                rightArrowImageObject.color = new Color32(255, 255, 255, 255);
+                rightArrowButtonObject.GetComponent<Button>().enabled = true;
+
+            }
+
+            currentBet--;
+
+            if (currentBet == 2)
+            {
+                leftArrowImageObject.color = new Color32(102, 94, 94, 255);
+                leftArrowButtonObject.GetComponent<Button>().enabled = false;
+
+            }
+
+            bettingArrowText.text = currentBet + "";
+        }
+    }
+
+
+    public void rightArrowBettingButtonAction()
+    {
+        int maxBet = 500;
+
+        TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>();
+        Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>();
+        Button rightArrowButtonObject = rightArrowBettingObject.GetComponent<Button>();
+        Image leftArrowImageObject = leftArrowBettingObject.GetComponent<Image>();
+        Button leftArrowButtonObject = leftArrowBettingObject.GetComponent<Button>();
+
+
+
+        if (currentBet + 1 <= maxBet)
+        {
+            if (currentBet == 2)
+            {
+                leftArrowImageObject.color = new Color32(255, 255, 255, 255);
+                leftArrowButtonObject.GetComponent<Button>().enabled = true;
+            }
+
+            currentBet++;
+
+            if (currentBet == maxBet)
+            {
+                rightArrowImageObject.color = new Color32(102, 94, 94, 255);
+                rightArrowButtonObject.GetComponent<Button>().enabled = false;
+
+            }
+
+            bettingArrowText.text = currentBet + "";
+
+
+        }
+    }
+        public void doneBettingButtonAction()
+        {
+            MainClass.players[1].betAmount = currentBet;
+            Debug.Log($"player rounds are {currentBet}");
+            bettingGroupBlockObject.SetActive(false);
+        }
+    }

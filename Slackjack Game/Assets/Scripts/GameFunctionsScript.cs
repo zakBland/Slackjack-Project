@@ -460,5 +460,10 @@ public class GameFunctionsScript : MonoBehaviour
         return $"{suitChar}{pip}"; //returns card string
     }
 
+    public static void calculateResults(Player[] players)
+    {
+
+    }
+
 }
 

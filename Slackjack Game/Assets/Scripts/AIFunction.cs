@@ -189,5 +189,12 @@ public class AIFunction: MonoBehaviour
         player.status = "stand";
 
     }
+
+    public static void generateBetAmount(Player player)
+    {
+        int bet = Random.Range(2, player.playerTotalMoney + 1);
+        player.betAmount = bet;
+
+    }
     
 }

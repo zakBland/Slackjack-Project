@@ -76,7 +76,25 @@ public class MainClass : MonoBehaviour
 
         //sets current player number/turn to 0;
         currentPlayerNumber = 1;
-        
+
+        if (PlayerPrefs.GetInt("setRounds") == 1)
+        {
+            for (int i = 1; i < 4; i++)
+            {
+                //show betBlocks
+                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingBlock");
+                playerBetBlockObject.SetActive(true);
+
+                //calculate bets for AI
+                if (i != 1)
+                {
+                    AIFunction.generateBetAmount(players[i]);
+                }
+
+                //update text to accurately reflect this
+                //playerBetBlockObject.
+            }
+        }
         
     }
 
@@ -105,11 +123,13 @@ public class MainClass : MonoBehaviour
 
             if (currentPlayerNumber == 0)
             {
+                GameFunctionsScript.calculateResults(players);
                 return;
             }
             else if (currentPlayerNumber == players.Length - 1)
             {
                 currentPlayerNumber = 0; //sets to dealer if on last AI player
+
             }
             else
             {

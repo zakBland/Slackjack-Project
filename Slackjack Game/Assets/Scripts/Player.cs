@@ -12,6 +12,8 @@ public class Player
     public string playerName; // declaration of player name
     public int playerNumber; //declaration of player order
     public string status; //declaration of status variable
+    public int betAmount;
+    public int playerTotalMoney;
 
     //Player constructor
     public Player()
@@ -23,7 +25,8 @@ public class Player
         playerName = ""; //Name of the player
         playerNumber = -1; //The player's turn number
         status = "playing"; //sets default player status to playing
-
+        betAmount = 2;
+        playerTotalMoney = 500;
     }
 
 
