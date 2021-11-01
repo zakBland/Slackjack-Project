@@ -43,15 +43,20 @@ public class ControlsScript : MonoBehaviour
         {
             roundsGroupBlockObject.SetActive(false);            
             PlayerPrefs.SetInt("rounds", PlayerPrefs.GetInt("rounds") - 1);
-            bettingGroupBlockObject.SetActive(true);
 
         }
 
         cardPage = 0;
 
-        if (PlayerPrefs.GetInt("setRounds") == 1)
+        if (PlayerPrefs.GetInt("bettingEnabled") == 1)
         {
             currentBet = 2;
+            bettingGroupBlockObject.SetActive(true);
+
+        }
+        else
+        {
+            bettingGroupBlockObject.SetActive(false);
         }
     }
 
@@ -411,6 +416,8 @@ public class ControlsScript : MonoBehaviour
         public void doneBettingButtonAction()
         {
             MainClass.players[1].betAmount = currentBet;
+            GameObject playerBetText = GameObject.Find("PlayerAmountBetText");
+            playerBetText.GetComponent<TextMeshProUGUI>().text = currentBet + "";
             Debug.Log($"player rounds are {currentBet}");
             bettingGroupBlockObject.SetActive(false);
         }

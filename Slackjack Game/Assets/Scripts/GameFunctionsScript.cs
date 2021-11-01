@@ -462,7 +462,34 @@ public class GameFunctionsScript : MonoBehaviour
 
     public static void calculateResults(Player[] players)
     {
+        int dealerScore = players[0].handTotal;
 
+        for(int i = 1; i < players.Length; i++)
+        {
+            if(players[i].handTotal > dealerScore && players[i].handTotal <= 21)
+            {
+                //win; collect money
+                players[i].playerTotalMoney += players[i].betAmount;
+                
+            }
+            else if(players[i].handTotal > 21 || (players[i].handTotal < dealerScore && dealerScore <= 21) )
+            {
+                //bust or less than dealer; lose money 
+                players[i].playerTotalMoney -= players[i].betAmount;
+            }
+            else if (players[i].handTotal == dealerScore && dealerScore <= 21)
+            {
+                //tie, no payout
+                players[i].playerTotalMoney -= 0;
+            }
+            else if(players[i].handTotal <= 21 && dealerScore > 21)
+            {
+                //win, dealer bust; win money
+                players[i].playerTotalMoney += players[i].betAmount;
+            }
+
+            Debug.Log(players[i].playerName + " bet " + players[i].betAmount + ". New totalMoney is " + players[i].playerTotalMoney);
+        }
     }
 
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MainClass : MonoBehaviour
 {
@@ -77,12 +78,12 @@ public class MainClass : MonoBehaviour
         //sets current player number/turn to 0;
         currentPlayerNumber = 1;
 
-        if (PlayerPrefs.GetInt("setRounds") == 1)
+        if (PlayerPrefs.GetInt("bettingEnabled") == 1)
         {
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i < players.Length; i++)
             {
                 //show betBlocks
-                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingBlock");
+                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingAmountBlock");
                 playerBetBlockObject.SetActive(true);
 
                 //calculate bets for AI
@@ -92,7 +93,18 @@ public class MainClass : MonoBehaviour
                 }
 
                 //update text to accurately reflect this
-                //playerBetBlockObject.
+                playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountBetText");
+                playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountText");
+                playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
+            }
+        }
+        else
+        {
+            for(int i = 1; i < players.Length; i++)
+            {
+                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingAmountBlock");
+                playerBetBlockObject.SetActive(false);
             }
         }
         
