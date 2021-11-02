@@ -184,6 +184,8 @@ public class GameFunctionsScript : MonoBehaviour
     //display cards to screen
     public static void displayCard(Card card, Player player, Sprite dealerCard)
     {
+
+        int slot = 0;
         Debug.Log("Inside display");
         //(NOT FULLY IMPLEMENTED) setup for if player currently needs to display more than 6 cards
         if (player.playerHand.Count > 6 && !player.playerName.Equals("Player"))
@@ -192,7 +194,16 @@ public class GameFunctionsScript : MonoBehaviour
         }
 
         //start = true;
-        int slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
+        if (player.cardSlotOrder.Length == 2)
+        {
+            slot = int.Parse(player.cardSlotOrder[0] + "" + player.cardSlotOrder[1]); //finds correct slot number
+
+        }
+        else
+        {
+            slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
+
+        }
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
         if (player.playerName.Equals("Dealer") && slot == 3)
@@ -220,9 +231,9 @@ public class GameFunctionsScript : MonoBehaviour
             else
             {
                 //display hover card
-                GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
-                zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-                zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
+                //GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
+                //zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+                //zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
             }
 
         }        

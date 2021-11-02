@@ -21,7 +21,7 @@ public class Player
         playerHand = new List<Card>(); //initializes player's hand
         handTotal = 0; //initializes hand total to zero
         playerNameBlockString = ""; // initializes String name of player's area
-        cardSlotOrder = "231405"; //initializes the order in which cards should be displayed in gui
+        cardSlotOrder = "546372819010"; //initializes the order in which cards should be displayed in gui
         playerName = ""; //Name of the player
         playerNumber = -1; //The player's turn number
         status = "playing"; //sets default player status to playing
