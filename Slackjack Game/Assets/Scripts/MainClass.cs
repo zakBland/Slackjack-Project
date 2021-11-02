@@ -20,14 +20,15 @@ public class MainClass : MonoBehaviour
     void Start()
     {
         PlayerPrefs.SetInt("continueGame", 1);
-
+        Debug.Log("EXECUTED");
         players = new Player[PlayerPrefs.GetInt("playerCount") + 1]; //initializes the player array with max players; maybe initialize with only amount of actual players
         deck = new List<Card>(); //initialize deck array
 
-        for(int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Length; i++)
         {
             players[i] = new Player();
         }
+
 
         //initializes the name area of each player
         players[0].playerNameBlockString = "DealerCardAreaBlock";
@@ -73,12 +74,13 @@ public class MainClass : MonoBehaviour
             GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock");
             jillAreaObject.SetActive(false);
         }
+
         
 
         //sets current player number/turn to 0;
         currentPlayerNumber = 1;
 
-        if (PlayerPrefs.GetInt("bettingEnabled") == 1)
+        if (PlayerPrefs.GetInt("bettingEnabled") == 2)
         {
             for (int i = 1; i < players.Length; i++)
             {
@@ -92,11 +94,21 @@ public class MainClass : MonoBehaviour
                     AIFunction.generateBetAmount(players[i]);
                 }
 
+                if (PlayerPrefs.GetInt("playersMoney" + i) == 0) {
+                    PlayerPrefs.SetInt("playersMoney" + i, 500);
+
+                }
+
+                players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i);
+
                 //update text to accurately reflect this
                 playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountBetText");
                 playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                Debug.Log(players[i].playerName + " money amount is " + players[i].playerTotalMoney);
                 playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountText");
+                Debug.Log(playerBetBlockObject == null);
                 playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
+                Debug.Log("DONEEEE");
             }
         }
         else
@@ -107,6 +119,8 @@ public class MainClass : MonoBehaviour
                 playerBetBlockObject.SetActive(false);
             }
         }
+
+        PlayerPrefs.Save();
         
     }
 
@@ -135,7 +149,7 @@ public class MainClass : MonoBehaviour
 
             if (currentPlayerNumber == 0)
             {
-                GameFunctionsScript.calculateResults(players);
+                Debug.Log("inside results");
                 return;
             }
             else if (currentPlayerNumber == players.Length - 1)

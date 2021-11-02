@@ -192,7 +192,7 @@ public class AIFunction: MonoBehaviour
 
     public static void generateBetAmount(Player player)
     {
-        int bet = Random.Range(2, player.playerTotalMoney + 1);
+        int bet = Random.Range(2, PlayerPrefs.GetInt("playersMoney" + player.playerNumber) + 1);
         player.betAmount = bet;
 
     }

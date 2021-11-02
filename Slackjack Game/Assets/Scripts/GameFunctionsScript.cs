@@ -304,8 +304,12 @@ public class GameFunctionsScript : MonoBehaviour
                         //disable "you" player's buttons
                         GameObject standButton = GameObject.Find("StandButton");
                         GameObject hitButton = GameObject.Find("HitButton");
-                        standButton.SetActive(false);
-                        hitButton.SetActive(false);
+
+                        if (standButton != null && hitButton != null)
+                        {
+                            standButton.SetActive(false);
+                            hitButton.SetActive(false);
+                        }
                     }
 
                     player.status = "win"; //update player status
@@ -470,25 +474,33 @@ public class GameFunctionsScript : MonoBehaviour
             {
                 //win; collect money
                 players[i].playerTotalMoney += players[i].betAmount;
+                players[i].status = "Win";
                 
             }
             else if(players[i].handTotal > 21 || (players[i].handTotal < dealerScore && dealerScore <= 21) )
             {
                 //bust or less than dealer; lose money 
                 players[i].playerTotalMoney -= players[i].betAmount;
+                players[i].status = "Lose";
+
             }
             else if (players[i].handTotal == dealerScore && dealerScore <= 21)
             {
                 //tie, no payout
-                players[i].playerTotalMoney -= 0;
+                players[i].status = "Tie";
+
             }
             else if(players[i].handTotal <= 21 && dealerScore > 21)
             {
                 //win, dealer bust; win money
                 players[i].playerTotalMoney += players[i].betAmount;
+                players[i].status = "win";
+
             }
 
-            Debug.Log(players[i].playerName + " bet " + players[i].betAmount + ". New totalMoney is " + players[i].playerTotalMoney);
+            PlayerPrefs.SetInt("playersMoney" + i, players[i].playerTotalMoney);
+            Debug.Log(players[i].playerName + " bet " + players[i].betAmount + ". New totalMoney is " + PlayerPrefs.GetInt("playersMoney" + i));
+            PlayerPrefs.Save();
         }
     }
 

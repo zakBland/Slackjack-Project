@@ -77,9 +77,13 @@ public class TitleButtonScript : MonoBehaviour
         //MIN_PAGE = 1;
         whichPage = 0;
 
+        if(PlayerPrefs.GetInt("bettingEnabled") == 0)
+        {
+            PlayerPrefs.SetInt("bettingEnabled", 1);
+        }
         //default player settings
         PlayerPrefs.SetInt("soundEnabled", 0); //no == 0, yes == 1
-        PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
+        //PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
        // PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
         PlayerPrefs.Save();
     }
@@ -246,7 +250,7 @@ public class TitleButtonScript : MonoBehaviour
         difficultyMedButton();
 
         PlayerPrefs.SetInt("soundEnabled", 0); //min 0, max 5
-        PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
+        PlayerPrefs.SetInt("bettingEnabled", 1); //0 == false, 1 == true
         PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
         PlayerPrefs.SetInt("difficultyLevel", 2); // 0 == beginner, 1 == normal, 2 == expert
 
@@ -509,7 +513,7 @@ public class TitleButtonScript : MonoBehaviour
 
     public void bettingNoEnabled()
     {
-        PlayerPrefs.SetInt("bettingEnabled", 0);
+        PlayerPrefs.SetInt("bettingEnabled", 1);
 
         GameObject difficultyButtonObject = GameObject.Find("NoButton");
         Image difficultyText = difficultyButtonObject.GetComponent<Image>();
@@ -526,7 +530,7 @@ public class TitleButtonScript : MonoBehaviour
 
     public void bettingYesEnabled()
     {
-        PlayerPrefs.SetInt("bettingEnabled", 1);
+        PlayerPrefs.SetInt("bettingEnabled", 2);
 
         GameObject difficultyButtonObject = GameObject.Find("YesButton");
         Image difficultyText = difficultyButtonObject.GetComponent<Image>();
@@ -577,6 +581,11 @@ public class TitleButtonScript : MonoBehaviour
     {
         optionalDisplayGameObject.SetActive(true);
         settingsBlockGameObject.SetActive(true);
+        
+        for(int i = 1; i < 4; i++)
+        {
+            PlayerPrefs.SetInt("playersMoney" + i, 500);
+        }
         resetButtonAction(); //this causes problems
         #if UNITY_EDITOR
         

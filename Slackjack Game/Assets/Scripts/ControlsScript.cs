@@ -24,6 +24,7 @@ public class ControlsScript : MonoBehaviour
     GameObject leftArrowBettingObject;
     GameObject rightArrowBettingObject;
     GameObject bettingTextObject;
+    public static GameObject resultsGroupBlock;
 
     public const int MIN_PAGE = 1; //declares constant for page minimum
     static GameObject playAgainClassObject;
@@ -35,7 +36,9 @@ public class ControlsScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        helpGroupBlockObject.SetActive(false); //sets help screen to inactive        
+        helpGroupBlockObject.SetActive(false); //sets help screen to inactive   
+        bettingGroupBlockObject.SetActive(false);
+        resultsGroupBlock = GameObject.Find("ResultsGroupBlock");
         currentRounds = 1;
         index = 0;
         Debug.Log($"rounds at start are {PlayerPrefs.GetInt("rounds")}");
@@ -47,8 +50,8 @@ public class ControlsScript : MonoBehaviour
         }
 
         cardPage = 0;
-
-        if (PlayerPrefs.GetInt("bettingEnabled") == 1)
+        Debug.Log("bettingEnabled is " + PlayerPrefs.GetInt("bettingEnabled"));
+        if (PlayerPrefs.GetInt("bettingEnabled") == 2)
         {
             currentBet = 2;
             bettingGroupBlockObject.SetActive(true);
@@ -58,6 +61,9 @@ public class ControlsScript : MonoBehaviour
         {
             bettingGroupBlockObject.SetActive(false);
         }
+
+        resultsGroupBlock.SetActive(false);
+
     }
 
     void Awake()
@@ -78,6 +84,7 @@ public class ControlsScript : MonoBehaviour
         leftArrowBettingObject = GameObject.Find("LeftBetButton");
         rightArrowBettingObject = GameObject.Find("RightBetButton");
         bettingTextObject = GameObject.Find("BetNumberText");
+
 
     }
 
@@ -169,6 +176,11 @@ public class ControlsScript : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScreenScene"); //loads title screen
         PlayerPrefs.SetInt("rounds", 1);
+        for (int i = 1; i < MainClass.players.Length; i++)
+        {
+            PlayerPrefs.SetInt("playersMoney" + i, 500);
+        }
+
     }
 
     //StandButtonAction (NOT FULLY IMPLEMENTED)
@@ -260,6 +272,11 @@ public class ControlsScript : MonoBehaviour
         SceneManager.LoadScene("TitleScreenScene"); //loads title screen
         PlayerPrefs.SetInt("rounds", 1);
 
+        for (int i = 1; i < MainClass.players.Length; i++)
+        {
+            PlayerPrefs.SetInt("playersMoney" + i, 500);
+        }
+
     }
 
     public void leftArrowRoundsButtonAction()
@@ -340,7 +357,7 @@ public class ControlsScript : MonoBehaviour
         PlayerPrefs.SetInt("setRounds", 1);
         Debug.Log($"player rounds are {currentRounds}");
         roundsGroupBlockObject.SetActive(false);
-        bettingGroupBlockObject.SetActive(true);
+        //bettingGroupBlockObject.SetActive(true);
     }
 
 

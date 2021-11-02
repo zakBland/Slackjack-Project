@@ -12,17 +12,21 @@ public class Dealer : MonoBehaviour
     public static GameObject playAgainClassObject;
     public static bool dealerStart;
     public static Player player;
+    public static GameObject resultsGroupBlock;
 
     void Start()
     {
         playAgainClassObject.SetActive(false);
-        dealerStart = false;
+        dealerStart = false;       
+        resultsGroupBlock.SetActive(false);
+
 
     }
 
     void Awake()
     {
         playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
+        resultsGroupBlock = GameObject.Find("ResultsGroupBlock");
     }
 
     void Update()
@@ -159,8 +163,116 @@ public class Dealer : MonoBehaviour
         Debug.Log("Done1");
         PlayerPrefs.SetInt("continueGame", 0);
         Debug.Log("Done2");
-        playAgainClassObject.SetActive(true);
-        Debug.Log("Done3");            
+        //playAgainClassObject.SetActive(true);
+        Debug.Log("Done3");
+        GameFunctionsScript.calculateResults(MainClass.players);
+            
+        Player[] players = MainClass.players;
+        GameObject gameobject;
+
+        resultsGroupBlock.SetActive(true);
+
+        GameObject gameObject;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if(i == 0)
+            {
+                gameobject = GameObject.Find(players[i].playerName + "NameText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                gameobject = GameObject.Find(players[i].playerName + "TotalText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + "";  
+                gameobject = GameObject.Find(players[i].playerName + "BetText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                
+            }
+            else if (i < players.Length)
+            {
+                if (i == 1)
+                {
+                    gameobject = GameObject.Find(players[i].playerName + "NameText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                    gameobject = GameObject.Find(players[i].playerName + "TotalText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
+                   
+
+                    if (PlayerPrefs.GetInt("setRounds") == 1)
+                    {
+                        gameobject = GameObject.Find(players[i].playerName + "BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                        gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
+                    }
+                    else
+                    {
+                        gameobject = GameObject.Find(players[i].playerName + "BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                        gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                    }
+                }
+                else if(i == 2)
+                {
+                    gameobject = GameObject.Find("AI1NameText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                    gameobject = GameObject.Find("AI1TotalText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
+                    
+
+                    if (PlayerPrefs.GetInt("setRounds") == 1)
+                    {
+                        gameobject = GameObject.Find("AI1BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                        gameobject = GameObject.Find("AI1ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
+                    }
+                    else
+                    {
+                        gameobject = GameObject.Find("AI1BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                        gameobject = GameObject.Find("AI1ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                    }
+                }
+                else
+                {
+                    gameobject = GameObject.Find("AI2NameText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                    gameobject = GameObject.Find("AI2TotalText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
+                    
+
+                    if (PlayerPrefs.GetInt("setRounds") == 1)
+                    {
+                        gameobject = GameObject.Find("AI2BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                        gameobject = GameObject.Find("AI2ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
+                    }
+                    else
+                    {
+                        gameobject = GameObject.Find("AI2BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                        gameobject = GameObject.Find("AI2ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                    }
+                }
+            }
+            else
+            {
+                gameobject = GameObject.Find(players[i].playerName + "NameText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+                gameobject = GameObject.Find(players[i].playerName + "TotalText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+                gameobject = GameObject.Find(players[i].playerName + "BetText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+                gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+            }
+        }
+
         yield return new WaitForSeconds(2);
 
 
