@@ -9,8 +9,6 @@ using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 public class GameFunctionsScript : MonoBehaviour
 {
-    public static GameFunctionsScript instance;
-
     static GameObject standButton; //reference to stand button
     GameObject hitButton; //reference to hit button
     public Sprite[] spriteArray; //reference to card image list
@@ -18,18 +16,17 @@ public class GameFunctionsScript : MonoBehaviour
     public Sprite dealerCard; //dealer's hidden card reference
     public static List<string> usedDeck; //variable for all unused cards
 
-    static bool start;
-    static bool startDelay;
-    static Card cardRoutine;
-    static Player playerRoutine;
+    static bool start; //declares start boolean for starting game
+    static bool startDelay; //declares start boolean for starting delays in game
+    static Card cardRoutine; //card reference declaration for coroutine
+    static Player playerRoutine; //player reference declaration for coroutine
 
     void Start()
     {
-        startDelay = false;
-        cardRoutine = null;
-        playerRoutine = null;
-
-        start = false;
+        startDelay = false; //sets startDelay to false
+        cardRoutine = null; //sets cardRoutine to null
+        playerRoutine = null; //sets playerRoutine to null
+        start = false; //sets start to false
 
         //disable (you) player buttons
         standButton.SetActive(false);
@@ -44,13 +41,12 @@ public class GameFunctionsScript : MonoBehaviour
         //initializes deck
         deck = new List<Card>();
 
-
         //adds to deck of cards
         for (int i = 1, k = 0; i <= MainClass.SUIT_COUNT; i++)
         {
             for (int j = 1; j <= MainClass.PIP_COUNT; j++)
             {
-                deck.Add(new Card(i, j, spriteArray[k]));
+                deck.Add(new Card(i, j, spriteArray[k])); 
                 k++; //increments variable to get card sprite from sprite array
             }
         }
@@ -61,34 +57,30 @@ public class GameFunctionsScript : MonoBehaviour
     {
         //finds and initializes objects for (you) player buttons
         standButton = GameObject.Find("StandButton");
-        hitButton = GameObject.Find("HitButton");
-
-        instance = this;
-        
+        hitButton = GameObject.Find("HitButton");        
     }
 
     void Update()
     {
-        MainClass.deck = deck;
-        //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
+        MainClass.deck = deck; //updates MainClass deck of any changes made to GameFunctionsScript deck reference; may not be necessary
+
+        //if start is true, start coroutine "delayDisplay"
         if (start)
         {
             StartCoroutine("delayDislay");
-
         }
 
     }
 
+    //coroutine that starts game and includes delays
     IEnumerator delayDislay()
     {
-        Debug.Log($"inside deal rounds are {PlayerPrefs.GetInt("rounds")}");
         Player[] players = MainClass.players; //gets reference of players from MainClass
-        start = false;
+        start = false; //sets start to false
         GameObject dealButtonObject = GameObject.Find("DealButton"); //finds deal button
         dealButtonObject.SetActive(false); //disables deal button
-        //enables/sets active player buttons once cards have been dealt
         
-        deck = MainClass.deck;
+        deck = MainClass.deck; // gets deck reference from MainClass
         deck = shuffleDeck(deck); //shuffles deck
 
         //adds cards to players' hands (playerHand) and to their respective GUI area card clot
@@ -96,35 +88,34 @@ public class GameFunctionsScript : MonoBehaviour
         {
             for (int j = 0; j < players.Length; j++) //temporarily just deals to two players rather than the correct amount of players in game
             {
-                Debug.Log("Before adding");
-                Debug.Log("index is " + i + " and player is " + players[j] + ". The deck length " + deck.Count);
                 addToDeck(players[j], pickRandomCard(deck), dealerCard);
-                yield return new WaitForSeconds(0.6f);
-                Debug.Log("After adding");
-
-
+                yield return new WaitForSeconds(0.6f); //waits specific amount of time before dealing next card
             }
         }
 
+        //enables/sets active player buttons once cards have been dealt
         standButton.SetActive(true);
         hitButton.SetActive(true);
+
+        //if hidden card is an ace and is played high, subtract high value
         if (players[0].playerHand[1].aceValue == 1)
         {
             players[0].handTotal -= Card.ACE_HIGH; //subtracts value of hidden card from dealer hand total 
 
         }
+        //if hidden card is an ace and is played low, subtract low value
         else if (players[0].playerHand[1].aceValue == -1)
         {
-            Debug.Log($"Inside low ace. Card is {players[0].playerHand[1].suit}{players[0].playerHand[1].pip} and aceValue is {players[0].playerHand[1].aceValue}");
             players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
         }
+        //else subtract normal pip value from dealer hand total
         else
         {
-            if (players[0].playerHand[1].pip >= 11)
+            if (players[0].playerHand[1].pip >= 11) //if face card
             {
-                players[0].handTotal -= 10;
+                players[0].handTotal -= 10; //subtract 10
             }
-            else
+            else 
             {
                 players[0].handTotal -= players[0].playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
             }
@@ -135,17 +126,13 @@ public class GameFunctionsScript : MonoBehaviour
 
         GameObject playerText = GameObject.Find(players[0].playerName + "CountText"); //finds reference to dealer text box
         playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + ""); //updates dealer value text
-
-        
     }
 
     //shuffles deck
     public static List<Card> shuffleDeck(List<Card> deck)
     {
         List<Card> shuffledDeck = new List<Card>(); //initializes shuffled deck to be returned
-
-        deck = MainClass.deck;
-
+        deck = MainClass.deck; //gets new reference of deck from MainClass
 
         //randomly picks index of card to add to shuffled deck
         for(int i = 0, j = deck.Count; i < j; i++)
@@ -155,46 +142,41 @@ public class GameFunctionsScript : MonoBehaviour
             deck.RemoveAt(index); //removes chosen card so it won't be chosen again
         }
 
-        
-
         return shuffledDeck; //returns shuffled deck
     }
 
-    //deals cards
+    //signals to start game
     public void dealCards()
     {
-        start = true;
+        start = true; //sets start to true
     }
 
     //adds card to deck (gui and playerHand)
     public static void addToDeck(Player player, Card card, Sprite dealerCard)
     {
 
-        player.playerHand.Add(card);     //adds to playerHand    
+        player.playerHand.Add(card); //adds to playerHand    
         usedDeck.Add(card.suit + "" + card.pip); //adds chosen card to used deck     
         displayCard(card, player, dealerCard); //displays card
-        cardRoutine = card;
-        playerRoutine = player;
+        cardRoutine = card; //sets cardRoutine to current card reference
+        playerRoutine = player; //sets playerRoutine to current player reference
         calculateTotal(card, player); //adjusts card total 
-
     }
-
-    
 
     //display cards to screen
     public static void displayCard(Card card, Player player, Sprite dealerCard)
     {
-        Debug.Log("Inside display");
         //(NOT FULLY IMPLEMENTED) setup for if player currently needs to display more than 6 cards
         if (player.playerHand.Count > 6 && !player.playerName.Equals("Player"))
         {
             return;
         }
 
-        //start = true;
         int slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
 
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
+
+        //if current player is dealer and card to be displayed is hidden card
         if (player.playerName.Equals("Dealer") && slot == 3)
         {
             areas[slot].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
@@ -205,7 +187,6 @@ public class GameFunctionsScript : MonoBehaviour
             areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
 
         }
-        //start = true;
 
         //if current player is "you", check to see if card area display needs second page
         if (player.playerName.Equals("Player"))
@@ -228,13 +209,11 @@ public class GameFunctionsScript : MonoBehaviour
         }        
         
         player.cardSlotOrder = player.cardSlotOrder.Substring(1); //updates card order for player
-
     }
 
     //calculate total of hand
     public static void calculateTotal(Card card, Player player)
     {
-        
         //if the card isn't an ace...
         if(card.pip != 1)
         {
@@ -252,7 +231,7 @@ public class GameFunctionsScript : MonoBehaviour
             //if total is above 21...
             if(player.handTotal > 21)
             {
-                bool loweredAce = false;
+                bool loweredAce = false; //sets loweredAce to false
 
                 //if there is an ace that is played as a high, play it as low
                 for (int i = 0; i < player.playerHand.Count; i++)
@@ -262,20 +241,14 @@ public class GameFunctionsScript : MonoBehaviour
                         player.playerHand[i].aceValue = -1; //sets ace value to indicate it's played low
                         player.handTotal -= 10; //adjust hand total to show it's played low
                         loweredAce = true; //sets loweredAce flag to true
-                        break;
+                        break; //if ace value is adjusted, leave
                     }
                 }
            
                 //player busted
-
                 if (!loweredAce) //not able to play low, then player bust
                 {
-
-                    //end turn, move to next player
-
-
                     player.status = "bust"; //set player status to bust
-
 
                     //disable (you) player buttons
                     if (player.playerName.Equals("Player")) //disable buttons if "you" is playing
@@ -292,31 +265,32 @@ public class GameFunctionsScript : MonoBehaviour
         //else, if card is an ace...
         else
         {
+            //if playing ace high doesn't make player bust, play high
             if(player.handTotal + Card.ACE_HIGH <= 21)
             {
-                player.handTotal += Card.ACE_HIGH;
-                card.aceValue = 1;
+                player.handTotal += Card.ACE_HIGH; //adds high ace to player total
+                card.aceValue = 1; //sets ace card to high ace value
 
+                //if player total is 21, player wins
                 if (player.handTotal == 21)
                 {
-                    if (player.playerName.Equals("Player"))
+                    if (player.playerName.Equals("Player")) //if current player is "you", disable hit and stand buttons
                     {
                         //disable "you" player's buttons
-                        GameObject standButton = GameObject.Find("StandButton");
-                        GameObject hitButton = GameObject.Find("HitButton");
+                        GameObject standButton = GameObject.Find("StandButton"); //finds stand button
+                        GameObject hitButton = GameObject.Find("HitButton"); //finds hit button
 
+                        //if found...
                         if (standButton != null && hitButton != null)
                         {
-                            standButton.SetActive(false);
-                            hitButton.SetActive(false);
+                            standButton.SetActive(false); //hide stand button
+                            hitButton.SetActive(false); //hide hit button
                         }
                     }
 
-                    player.status = "win"; //update player status
-                    showOutcome(null, player, "stand");
-
+                    player.status = "win"; //update player status to win
+                    showOutcome(null, player, "stand"); //show outcome of calculation
                 }
-
             }
 
             //if playing ace high will result in bust, play low
@@ -337,7 +311,7 @@ public class GameFunctionsScript : MonoBehaviour
                         hitButton.SetActive(false);
                     }
 
-                    player.status = "win"; //update player status
+                    player.status = "win"; //update player status to win
                 }
             }
             //play card as high ace as default
@@ -354,22 +328,19 @@ public class GameFunctionsScript : MonoBehaviour
                     hitButton.SetActive(false);
                 }
 
-                player.status = "bust";
+                player.status = "bust"; //updates player status to bust/lose
             }
         }
 
-        //update player handTotal text
-
-        if(player.playerName.Equals("Dealer") && player.playerHand.Count == 2)
+        //if current player is dealer and second (hidden) card is being calculated, skip to hide actual value
+        if(player.playerName.Equals("Dealer") && player.playerHand.Count == 2) 
         {
-            Debug.Log("inside dealer skip");
             return;
         }
 
-        GameObject playerText = GameObject.Find(player.playerName + "CountText");
-        playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + "");
-
-        Debug.Log("Inside calculate. " + player.playerName + "'s hand total is " + player.handTotal);
+        //update player handTotal text
+        GameObject playerText = GameObject.Find(player.playerName + "CountText"); //finds player count text
+        playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + ""); // updates text to current handTotal value
     }
 
     //shows outcome of card draw
@@ -403,44 +374,43 @@ public class GameFunctionsScript : MonoBehaviour
         //if player stands (presses stand button), show text
         else if (hitOrStand.Equals("stand"))
         {
-            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! "; //shows player and action if  //fix to have specific name (FINISH)
+            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} stood! "; //shows player and action
+
             if (player.playerName.Equals("Dealer"))
             {
-                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += "Game Over!"; //shows player and action if  //fix to have specific name (FINISH)
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += "Game Over!"; //adds "game over", if dealer finished
 
             }
             else
             {
-                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += $" {MainClass.players[next].playerName} is next! "; //shows player and action if  //fix to have specific name (FINISH)
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += $" {MainClass.players[next].playerName} is next! "; //shows player and action
             }
+
             resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0); //hides card
 
         }
         else
         {
-            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} Bust!"; //shows player and action if  //fix to have specific name (FINISH)
+            resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = $"{player.playerName} Bust!"; //shows player and action
+
             if (player.playerName.Equals("Dealer"))
             {
-                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += " Game Over!"; //shows player and action if  //fix to have specific name (FINISH)
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += " Game Over!"; //adds "game over", if dealer finished
 
             }
             else
             {
-                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += $" {MainClass.players[next].playerName} is next! "; //shows player and action if  //fix to have specific name (FINISH)
+                resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text += $" {MainClass.players[next].playerName} is next! "; //shows player and action 
+
 
             }
             resultsAreaObject.GetComponent<Image>().color = new Color32(255, 255, 255, 0); //hides card
-
         }        
-        
-        //IMPLEMENT WAIT FOR X amount of seconds then hide outcome again
-
     }
 
     //picks random card from deck
     public static Card pickRandomCard(List<Card> deck)
     {
-        Debug.Log("Deck pickRandom length is " + deck.Count);
         Card card = deck[0]; //pulls first card from shuffled deck
         deck.RemoveAt(0); //removes from deck
         return card; //returns card
@@ -464,43 +434,44 @@ public class GameFunctionsScript : MonoBehaviour
         return $"{suitChar}{pip}"; //returns card string
     }
 
+    //calculates end game results and displays to screen
     public static void calculateResults(Player[] players)
     {
-        int dealerScore = players[0].handTotal;
+        int dealerScore = players[0].handTotal; //sets dealer score to dealerScore variable
 
+        //for each player, excluding the dealer
         for(int i = 1; i < players.Length; i++)
         {
+            //if player hand total is greater than deal and less than or equal to 21
             if(players[i].handTotal > dealerScore && players[i].handTotal <= 21)
             {
                 //win; collect money
-                players[i].playerTotalMoney += players[i].betAmount;
-                players[i].status = "Win";
-                
+                players[i].playerTotalMoney += players[i].betAmount; //adds bet from player total money
+                players[i].status = "Win"; //set player status to win       
             }
+            //if player hand total is greater than 21 or less than dealer score and dealer score is less than or equal to 21
             else if(players[i].handTotal > 21 || (players[i].handTotal < dealerScore && dealerScore <= 21) )
             {
                 //bust or less than dealer; lose money 
-                players[i].playerTotalMoney -= players[i].betAmount;
-                players[i].status = "Lose";
-
+                players[i].playerTotalMoney -= players[i].betAmount; //subtracts bet from player total money
+                players[i].status = "Lose"; //set player status to lose
             }
+            //if player total equals dealer score and dealer score is less than or equal to 21
             else if (players[i].handTotal == dealerScore && dealerScore <= 21)
             {
                 //tie, no payout
-                players[i].status = "Tie";
-
+                players[i].status = "Tie"; //set player status to tiw
             }
+            //if player score is less than or equal to 21 and dealer score is greater than 21
             else if(players[i].handTotal <= 21 && dealerScore > 21)
             {
                 //win, dealer bust; win money
-                players[i].playerTotalMoney += players[i].betAmount;
-                players[i].status = "win";
-
+                players[i].playerTotalMoney += players[i].betAmount; //adds bet from player total money
+                players[i].status = "win"; //set player status to win
             }
 
-            PlayerPrefs.SetInt("playersMoney" + i, players[i].playerTotalMoney);
-            Debug.Log(players[i].playerName + " bet " + players[i].betAmount + ". New totalMoney is " + PlayerPrefs.GetInt("playersMoney" + i));
-            PlayerPrefs.Save();
+            PlayerPrefs.SetInt("playersMoney" + i, players[i].playerTotalMoney); //set playerMoney to new current value
+            PlayerPrefs.Save(); //save PlayerPrefs values
         }
     }
 

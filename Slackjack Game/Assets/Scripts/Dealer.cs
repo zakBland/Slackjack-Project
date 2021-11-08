@@ -19,8 +19,6 @@ public class Dealer : MonoBehaviour
         playAgainClassObject.SetActive(false);
         dealerStart = false;       
         resultsGroupBlock.SetActive(false);
-
-
     }
 
     void Awake()
@@ -37,10 +35,10 @@ public class Dealer : MonoBehaviour
         }
     }
 
-
+    //
     IEnumerator dealerPlayFunction()
     {
-        dealerStart = false;
+        dealerStart = false; //sets dealer start variable to false
 
         //yield return new WaitForSeconds(2);
 
@@ -48,37 +46,39 @@ public class Dealer : MonoBehaviour
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
         areas[3].GetComponent<Image>().sprite = player.playerHand[1].sprite; ; //sets specific slot area to sprite/image
 
-        //update hand total
-
+        //if dealer hidden card is played high, update hand total to reflect it
         if (player.playerHand[1].aceValue == 1)
         {
             player.handTotal += Card.ACE_HIGH; //subtracts value of hidden card from dealer hand total 
 
         }
+        //if dealer hidden card is played low, update hand total to reflect it
         else if (player.playerHand[1].aceValue == -1)
         {
             Debug.Log($"Inside low ace. Card is {player.playerHand[1].suit}{player.playerHand[1].pip} and aceValue is {player.playerHand[1].aceValue}");
             player.handTotal += player.playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
         }
+        //else add normal pip value to dealer total
         else
         {
+            //if face card, add 10
             if (player.playerHand[1].pip >= 11)
             {
                 player.handTotal += 10;
             }
+            //else add normal pip value
             else
             {
                 player.handTotal += player.playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
             }
         }
 
-
         //player.handTotal += player.playerHand[1].pip; //adds to total
         GameObject playerText = GameObject.Find(player.playerName + "CountText"); //finds textbox
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + ""); //update textbox
 
         Debug.Log("Dealer handTotal is " + player.handTotal);
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed"));  //delays game for specific amount of time
 
         //if total is 17 or more, stand
         if (player.handTotal >= 17)
@@ -87,7 +87,7 @@ public class Dealer : MonoBehaviour
             GameFunctionsScript.showOutcome(null, player, "stand"); //show outcome
             player.status = "stand"; //update player status to stand
             Debug.Log("Dealer stands");
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); // delays game for specific amount of time
         }
 
         //else, hit
@@ -104,7 +104,7 @@ public class Dealer : MonoBehaviour
                     if (player.playerHand[i].aceValue == -1 && (player.handTotal + Card.ACE_HIGH >= 16) && (player.handTotal + Card.ACE_HIGH <= 21))
                     {
                         player.playerHand[i].aceValue = 1; //update ace value to high, if possible
-                        player.handTotal += 10;
+                        player.handTotal += 10; //adds 10 to hand total 
                         loweredAce = true;
                         break;
                     }
@@ -114,16 +114,14 @@ public class Dealer : MonoBehaviour
                 Card card = GameFunctionsScript.pickRandomCard(deck); //picks random card from MainClass deck
 
                 player.playerHand.Add(card);     //adds to playerHand 
-                GameFunctionsScript.showOutcome(card, player, "hit");
+                GameFunctionsScript.showOutcome(card, player, "hit"); //show outome
                 GameFunctionsScript.usedDeck.Add(GameFunctionsScript.convertSuit(card.suit, card.pip)); //adds chosen card to used deck   
-                //calculate total
-                GameFunctionsScript.calculateTotal(card, player);
-
-                //display card to player area
-                GameFunctionsScript.displayCard(card, player, null);
+                GameFunctionsScript.calculateTotal(card, player); //calculate total
+                GameFunctionsScript.displayCard(card, player, null); //display card to player are
 
                 Debug.Log($"Dealer hand total is {player.handTotal}");
-                yield return new WaitForSeconds(1.5f);
+                yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); //waits for a specific amount of seconds
+
                 //display outcome
                 if (player.handTotal > 21)
                 {
@@ -149,13 +147,13 @@ public class Dealer : MonoBehaviour
                  //   GameFunctionsScript.showOutcome(card, player, "hit"); //show outcome
                 }
 
-                yield return new WaitForSeconds(1.5f);
+                yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed"));
 
             }
             //keep hitting until 17 or above
             while (player.handTotal < 17);
 
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed") + 0.5f);
 
 
         }
@@ -198,7 +196,7 @@ public class Dealer : MonoBehaviour
                     gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
                    
 
-                    if (PlayerPrefs.GetInt("setRounds") == 1)
+                    if (PlayerPrefs.GetInt("bettingEnabled") == 2)
                     {
                         gameobject = GameObject.Find(players[i].playerName + "BetText");
                         gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
@@ -221,7 +219,7 @@ public class Dealer : MonoBehaviour
                     gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
                     
 
-                    if (PlayerPrefs.GetInt("setRounds") == 1)
+                    if (PlayerPrefs.GetInt("bettingEnabled") == 2)
                     {
                         gameobject = GameObject.Find("AI1BetText");
                         gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
@@ -244,7 +242,7 @@ public class Dealer : MonoBehaviour
                     gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
                     
 
-                    if (PlayerPrefs.GetInt("setRounds") == 1)
+                    if (PlayerPrefs.GetInt("bettingEnabled") == 2)
                     {
                         gameobject = GameObject.Find("AI2BetText");
                         gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";

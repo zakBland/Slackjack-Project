@@ -6,9 +6,6 @@ using TMPro;
 
 public class MainClass : MonoBehaviour
 {
-
-    //add arrows to gui
-
     public const int DECK_SIZE = 52; //constant max card variables
     public const int SUIT_COUNT = 4; //number of suits
     public const int PIP_COUNT = 13; //number of pips
@@ -19,142 +16,142 @@ public class MainClass : MonoBehaviour
 
     void Start()
     {
-        PlayerPrefs.SetInt("continueGame", 1);
-        Debug.Log("EXECUTED");
+        PlayerPrefs.SetInt("continueGame", 1); //sets continueGame to 1
         players = new Player[PlayerPrefs.GetInt("playerCount") + 1]; //initializes the player array with max players; maybe initialize with only amount of actual players
         deck = new List<Card>(); //initialize deck array
 
+        //initializes player array with default constructor
         for (int i = 0; i < players.Length; i++)
         {
             players[i] = new Player();
         }
 
 
-        //initializes the name area of each player
+        //initializes the name area of each player for default players
         players[0].playerNameBlockString = "DealerCardAreaBlock";
         players[1].playerNameBlockString = "PlayerCardAreaBlock";
         
-        //initializes the player turn variable
+        //initializes the player turn variable for default players
         players[0].playerNumber = 0;
         players[1].playerNumber = 1;
 
-        //initializes player name
+        //initializes player name for default players
         players[0].playerName = "Dealer";
         players[1].playerName = "Player";
 
         //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
-            players[2].playerNameBlockString = "SamCardAreaBlock";
-            players[2].playerNumber = 2;        
-            players[2].playerName = "Sam";
+            players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
+            players[2].playerNumber = 2; // initializes player number
+            players[2].playerName = "Sam"; //initializes name
 
-            GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock");
-            jillAreaObject.SetActive(false);
+            GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
+            jillAreaObject.SetActive(false); //hides block object
         }
 
         //else initialize Sam and Jill players
         else if(players.Length == 4)
         {
-            players[2].playerNameBlockString = "SamCardAreaBlock";
-            players[2].playerNumber = 2;
-            players[2].playerName = "Sam";
+            players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area
+            players[2].playerNumber = 2; //initializes the player number
+            players[2].playerName = "Sam"; //initializes name
 
-            players[3].playerNameBlockString = "JillCardAreaBlock";
-            players[3].playerNumber = 3;    
-            players[3].playerName = "Jill";
-
+            players[3].playerNameBlockString = "JillCardAreaBlock"; //initializes the name area
+            players[3].playerNumber = 3; //initializes the player number
+            players[3].playerName = "Jill"; //initializes name
         }
+
         //else hide Sam and Jill
         else
         {
-            GameObject samAreaObject = GameObject.Find("SamCardAreaBlock");
-            samAreaObject.SetActive(false);
+            GameObject samAreaObject = GameObject.Find("SamCardAreaBlock"); //finds sam player object
+            samAreaObject.SetActive(false); //hides block object
 
-            GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock");
-            jillAreaObject.SetActive(false);
+            GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player object
+            jillAreaObject.SetActive(false); //hides block object
         }
 
-        
+        currentPlayerNumber = 1; //sets current player number/turn to 0;
 
-        //sets current player number/turn to 0;
-        currentPlayerNumber = 1;
-
+        //if betting is enabled
         if (PlayerPrefs.GetInt("bettingEnabled") == 2)
         {
+            //for each player, not including the dealer (player[0])
             for (int i = 1; i < players.Length; i++)
             {
                 //show betBlocks
-                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingAmountBlock");
-                playerBetBlockObject.SetActive(true);
+                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingAmountBlock"); //finds player bet block
+                playerBetBlockObject.SetActive(true); //shows block object
 
                 //calculate bets for AI
-                if (i != 1)
+                if (i != 1) //if AI player
                 {
-                    AIFunction.generateBetAmount(players[i]);
+                    AIFunction.generateBetAmount(players[i]); //generates bet amount for AI
                 }
 
-                if (PlayerPrefs.GetInt("playersMoney" + i) == 0) {
-                    PlayerPrefs.SetInt("playersMoney" + i, 500);
-
+                //sets player money amount
+                if (PlayerPrefs.GetInt("playersMoney" + i) == 0) 
+                {
+                    PlayerPrefs.SetInt("playersMoney" + i, 500); //sets player money to 0
                 }
 
-                players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i);
+                players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i); //sets playerMoney to player money field in Player object
 
                 //update text to accurately reflect this
-                playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountBetText");
-                playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
-                Debug.Log(players[i].playerName + " money amount is " + players[i].playerTotalMoney);
-                playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountText");
-                Debug.Log(playerBetBlockObject == null);
-                playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
-                Debug.Log("DONEEEE");
+                playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountBetText"); //finds player bet amount text
+                playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + ""; //gets text object and sets to bet amount
+                playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountText"); //find money amount text for player
+                playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + ""; //gets text object and sets player money to text
             }
         }
         else
         {
+            //if betting isn't enabled
             for(int i = 1; i < players.Length; i++)
             {
-                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingAmountBlock");
-                playerBetBlockObject.SetActive(false);
+                GameObject playerBetBlockObject = GameObject.Find(players[i].playerName + "BettingAmountBlock"); //find all betting blocks
+                playerBetBlockObject.SetActive(false); //hide block objects
             }
         }
 
-        PlayerPrefs.Save();
+        PlayerPrefs.Save(); //save changes to PlayerPref values
         
     }
 
     void Update()
     {
+        //if game is still active, check to see which player is next
         if (PlayerPrefs.GetInt("continueGame") == 1);
         {
             testPlayer();
         }
 
-        AIFunction.player = players[currentPlayerNumber];
-        Dealer.player = players[currentPlayerNumber];
+        //this code could cause issues later; might need to specify when to set these variables
+        AIFunction.player = players[currentPlayerNumber]; //sets current player reference for player variable in AIFunction class
+        Dealer.player = players[currentPlayerNumber]; //sets current player reference for player variable in Dealer class;
     }
 
+    //checks to see which player is next
     public static void testPlayer()
     {
-        //if current player isn't playing anymore, move to next player
+        //if game is over (continueGame == 0), skip testing player
         if(PlayerPrefs.GetInt("continueGame") == 0)
         {
             return;
         }
-
+        
+        //if current player isn't playing anymore, move to next player
         if (!players[currentPlayerNumber].status.Equals("playing"))
         {
-            Debug.Log(players[currentPlayerNumber].playerName);
-
+            //if current player is dealer, skip
             if (currentPlayerNumber == 0)
             {
-                Debug.Log("inside results");
                 return;
             }
-            else if (currentPlayerNumber == players.Length - 1)
+            else if (currentPlayerNumber == players.Length - 1) //if last AI player
             {
-                currentPlayerNumber = 0; //sets to dealer if on last AI player
+                currentPlayerNumber = 0; //sets dealer to be next (last) if on last AI player
 
             }
             else
@@ -162,7 +159,6 @@ public class MainClass : MonoBehaviour
                 currentPlayerNumber++; //else, increments to next AI player
             }
 
-            Debug.Log(players[currentPlayerNumber].playerName);
             changePlayerAction(players[currentPlayerNumber]); //changes player method
         }
     }
@@ -170,16 +166,14 @@ public class MainClass : MonoBehaviour
     //changes player once they win, stand, or bust after "you" gameplay
     public static void changePlayerAction(Player player)
     {
-        Debug.Log($"{player.playerName}{player.playerNumber}");
+        //if player is dealer
         if(player.playerNumber == 0)
         {
-            Debug.Log("Starting debug");
-            Dealer.dealerStart = true;
+            Dealer.dealerStart = true; //starts dealer play
         }
         else
         {
-            Debug.Log("Inside AI");
-            AIFunction.startAIPlay = true;
+            AIFunction.startAIPlay = true; //starts AI play
         }
     }
 
