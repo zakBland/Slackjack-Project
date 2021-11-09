@@ -20,6 +20,26 @@ public class MainClass : MonoBehaviour
         players = new Player[PlayerPrefs.GetInt("playerCount") + 1]; //initializes the player array with max players; maybe initialize with only amount of actual players
         deck = new List<Card>(); //initialize deck array
 
+        //find out if betting player is out of money; if so, remove from game
+
+        int newPlayerLength = PlayerPrefs.GetInt("playerCount") + 1;
+        string removedPlayers = "";
+
+        for(int i = 0; i < players.Length; i++)
+        {
+            if (i == 0 || i == 1) continue;
+
+            if(PlayerPrefs.GetInt("playersMoney" + i) == -1) //set playerMoney to new current value
+            {
+                newPlayerLength--;
+                removedPlayers += "" + i;
+            }
+
+        }
+
+        players = new Player[newPlayerLength];
+
+
         //initializes player array with default constructor
         for (int i = 0; i < players.Length; i++)
         {
@@ -42,12 +62,24 @@ public class MainClass : MonoBehaviour
         //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
-            players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
-            players[2].playerNumber = 2; // initializes player number
-            players[2].playerName = "Sam"; //initializes name
+            if (removedPlayers.Length == 1 && removedPlayers[0] == '2')
+            {
+                players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
+                players[2].playerNumber = 2; // initializes player number
+                players[2].playerName = "Sam"; //initializes name
 
-            GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
-            jillAreaObject.SetActive(false); //hides block object
+                GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
+                jillAreaObject.SetActive(false); //hides block object
+            }
+            else
+            {
+                players[2].playerNameBlockString = "JillCardAreaBlock"; //initializes the name area
+                players[2].playerNumber = 2; //initializes the player number
+                players[2].playerName = "Jill"; //initializes name
+
+                GameObject samAreaObject = GameObject.Find("SamCardAreaBlock"); //finds jill player block
+                samAreaObject.SetActive(false); //hides block object
+            }
         }
 
         //else initialize Sam and Jill players

@@ -16,14 +16,14 @@ public class Dealer : MonoBehaviour
 
     void Start()
     {
-        playAgainClassObject.SetActive(false);
+        //playAgainClassObject.SetActive(false);
         dealerStart = false;       
         resultsGroupBlock.SetActive(false);
     }
 
     void Awake()
     {
-        playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
+        //playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
         resultsGroupBlock = GameObject.Find("ResultsGroupBlock");
     }
 

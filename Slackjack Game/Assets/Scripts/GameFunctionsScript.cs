@@ -23,6 +23,8 @@ public class GameFunctionsScript : MonoBehaviour
 
     void Start()
     {
+        
+
         startDelay = false; //sets startDelay to false
         cardRoutine = null; //sets cardRoutine to null
         playerRoutine = null; //sets playerRoutine to null
@@ -50,6 +52,7 @@ public class GameFunctionsScript : MonoBehaviour
                 k++; //increments variable to get card sprite from sprite array
             }
         }
+
 
     }
 
@@ -126,6 +129,9 @@ public class GameFunctionsScript : MonoBehaviour
 
         GameObject playerText = GameObject.Find(players[0].playerName + "CountText"); //finds reference to dealer text box
         playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + ""); //updates dealer value text
+
+        GameObject resultsAreaTextObject = GameObject.Find("ResultText"); //finds result text reference
+        resultsAreaTextObject.GetComponent<TextMeshProUGUI>().text = ""; //displays text of name and action
     }
 
     //shuffles deck
@@ -470,7 +476,14 @@ public class GameFunctionsScript : MonoBehaviour
                 players[i].status = "win"; //set player status to win
             }
 
-            PlayerPrefs.SetInt("playersMoney" + i, players[i].playerTotalMoney); //set playerMoney to new current value
+            if (players[i].playerTotalMoney < 2)
+            {
+                PlayerPrefs.SetInt("playersMoney" + i, -1); //set playerMoney to -1 to indicate removing the player
+            }
+            else
+            {
+                PlayerPrefs.SetInt("playersMoney" + i, players[i].playerTotalMoney); //set playerMoney to new current value
+            }
             PlayerPrefs.Save(); //save PlayerPrefs values
         }
     }

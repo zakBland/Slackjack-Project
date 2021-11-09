@@ -259,8 +259,8 @@ public class ControlsScript : MonoBehaviour
     public static void playAgainAction()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); //loads game scene to reset it
-        playAgainClassObject = GameObject.Find("PlayAgainGroupBlock"); //finds play again screen object
-        playAgainClassObject.SetActive(false); //hides object
+        //playAgainClassObject = GameObject.Find("PlayAgainGroupBlock"); //finds play again screen object
+        //playAgainClassObject.SetActive(false); //hides object
 
     }
 
@@ -271,7 +271,7 @@ public class ControlsScript : MonoBehaviour
         PlayerPrefs.SetInt("rounds", 1); //resets rounds variable to 1
 
         //resets player money amounts
-        for (int i = 1; i < MainClass.players.Length; i++)
+        for (int i = 1; i < 4; i++)
         {
             PlayerPrefs.SetInt("playersMoney" + i, 500);
         }
@@ -358,7 +358,7 @@ public class ControlsScript : MonoBehaviour
     {
         int maxBet = 500;
 
-        TextMeshProUGUI bettingArrowText = roundTextObject.GetComponent<TextMeshProUGUI>();  //finds bet text
+        TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>();  //finds bet text
         Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>(); //get image for right arrow
         Button rightArrowButtonObject = rightArrowRoundsObject.GetComponent<Button>(); //gets button for right arrow
         Image leftArrowImageObject = leftArrowRoundsObject.GetComponent<Image>(); //gets image for left arrow
