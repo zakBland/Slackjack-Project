@@ -15,6 +15,10 @@ public class GameFunctionsScript : MonoBehaviour
     List<Card> deck; //deck variable reference from MainClass class
     public Sprite dealerCard; //dealer's hidden card reference
     public static List<string> usedDeck; //variable for all unused cards
+    static GameObject gameOverTextObject;
+    static GameObject leaveButtonObject;
+    static GameObject playAgainButtonObject;
+
 
     static bool start; //declares start boolean for starting game
     static bool startDelay; //declares start boolean for starting delays in game
@@ -53,14 +57,18 @@ public class GameFunctionsScript : MonoBehaviour
             }
         }
 
-
+        gameOverTextObject.SetActive(false); //hides gameOver text 
     }
 
     void Awake()
     {
         //finds and initializes objects for (you) player buttons
         standButton = GameObject.Find("StandButton");
-        hitButton = GameObject.Find("HitButton");        
+        hitButton = GameObject.Find("HitButton");
+
+        gameOverTextObject = GameObject.Find("GameOverText"); //finds gameOver button
+        leaveButtonObject = GameObject.Find("LeaveGameButton"); //finds leaveGame button
+        playAgainButtonObject = GameObject.Find("PlayAgainButton"); //finds playAgain button
     }
 
     void Update()
@@ -280,7 +288,7 @@ public class GameFunctionsScript : MonoBehaviour
                 //if player total is 21, player wins
                 if (player.handTotal == 21)
                 {
-                    if (player.playerName.Equals("Player")) //if current player is "you", disable hit and stand buttons
+                    /*if (player.playerName.Equals("Player")) //if current player is "you", disable hit and stand buttons
                     {
                         //disable "you" player's buttons
                         GameObject standButton = GameObject.Find("StandButton"); //finds stand button
@@ -296,6 +304,7 @@ public class GameFunctionsScript : MonoBehaviour
 
                     player.status = "win"; //update player status to win
                     showOutcome(null, player, "stand"); //show outcome of calculation
+                    */
                 }
             }
 
@@ -308,6 +317,7 @@ public class GameFunctionsScript : MonoBehaviour
                 //if player hand total is equal to 21, player wins, move turns (NOT FULLY IMPLEMENTED)
                 if (player.handTotal == 21)
                 {
+                    /*
                     if (player.playerName.Equals("Player"))
                     {
                         //disable "you" player's buttons
@@ -318,6 +328,7 @@ public class GameFunctionsScript : MonoBehaviour
                     }
 
                     player.status = "win"; //update player status to win
+                    */
                 }
             }
             //play card as high ace as default
@@ -485,6 +496,14 @@ public class GameFunctionsScript : MonoBehaviour
                 PlayerPrefs.SetInt("playersMoney" + i, players[i].playerTotalMoney); //set playerMoney to new current value
             }
             PlayerPrefs.Save(); //save PlayerPrefs values
+        }
+
+        //if player has no more money....
+        if(PlayerPrefs.GetInt("playersMoney1") == -1)
+        {
+            leaveButtonObject.transform.position = new Vector3(-0.5f, -0.5f, 0); //center leave button
+            playAgainButtonObject.SetActive(false); //hide playAgain button
+            gameOverTextObject.SetActive(true); //show gameOver text
         }
     }
 
