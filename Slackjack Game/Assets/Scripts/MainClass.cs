@@ -13,7 +13,8 @@ public class MainClass : MonoBehaviour
     public static Player[] players; //array of all players
     public static List<Card> deck; //deck of cards list varaible
     public static int currentPlayerNumber; //a variable that represents which player's turn it is
-
+    public static string removedPlayers; //index list of removed Players
+    
     void Start()
     {
         PlayerPrefs.SetInt("continueGame", 1); //sets continueGame to 1
@@ -22,7 +23,7 @@ public class MainClass : MonoBehaviour
 
         //find out if betting player is out of money; if so, remove from game
         int newPlayerLength = PlayerPrefs.GetInt("playerCount") + 1; //sets newPlayerLength to current players amount
-        string removedPlayers = ""; //initializes removed player
+        removedPlayers = ""; //initializes removed player
 
         for(int i = 0; i < players.Length; i++)
         {
@@ -32,7 +33,7 @@ public class MainClass : MonoBehaviour
             if(PlayerPrefs.GetInt("playersMoney" + i) == -1)
             {
                 newPlayerLength--; //decrement length
-                removedPlayers += "" + i; //add player index to removedPlayers string
+                removedPlayers += "" + players[i].playerName[0]; //add player index to removedPlayers string
             }
         }
 
@@ -61,7 +62,7 @@ public class MainClass : MonoBehaviour
         //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
-            if (removedPlayers.Length == 1 && removedPlayers[0] == '3')
+            if(removedPlayers.Length == 0)
             {
                 players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
                 players[2].playerNumber = 2; // initializes player number
@@ -70,7 +71,16 @@ public class MainClass : MonoBehaviour
                 GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
                 jillAreaObject.SetActive(false); //hides block object
             }
-            else
+            else if (removedPlayers.Length == 1 && removedPlayers[0] == 'S')
+            {
+                players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
+                players[2].playerNumber = 2; // initializes player number
+                players[2].playerName = "Sam"; //initializes name
+
+                GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
+                jillAreaObject.SetActive(false); //hides block object
+            }
+            else if (removedPlayers.Length == 1 && removedPlayers[0] == 'J')
             {
                 players[2].playerNameBlockString = "JillCardAreaBlock"; //initializes the name area
                 players[2].playerNumber = 2; //initializes the player number
