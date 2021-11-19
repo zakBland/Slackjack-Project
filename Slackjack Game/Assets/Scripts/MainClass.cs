@@ -13,6 +13,7 @@ public class MainClass : MonoBehaviour
     public static Player[] players; //array of all players
     public static List<Card> deck; //deck of cards list varaible
     public static int currentPlayerNumber; //a variable that represents which player's turn it is
+    public static string removedPlayers;
 
     void Start()
     {
@@ -22,17 +23,20 @@ public class MainClass : MonoBehaviour
 
         //find out if betting player is out of money; if so, remove from game
         int newPlayerLength = PlayerPrefs.GetInt("playerCount") + 1; //sets newPlayerLength to current players amount
-        string removedPlayers = ""; //initializes removed player
-
+        removedPlayers = ""; //initializes removed player
+        Debug.Log("Players length is " + newPlayerLength);
         for(int i = 0; i < players.Length; i++)
         {
             if (i == 0 || i == 1) continue; //if on player(you) or dealer, skip
-            
+
             //if player ran out of money
+
+            Debug.Log(i + " money is " + PlayerPrefs.GetInt("playersMoney" + i));
             if(PlayerPrefs.GetInt("playersMoney" + i) == -1)
             {
                 newPlayerLength--; //decrement length
-                removedPlayers += "" + i; //add player index to removedPlayers string
+                removedPlayers += "" + players[i].playerName[0]; //add player index to removedPlayers string
+                Debug.Log("Player removed is " + players[i].playerName);
             }
         }
 
@@ -45,6 +49,7 @@ public class MainClass : MonoBehaviour
             players[i] = new Player();
         }
 
+        Debug.Log("Player Length is " + players.Length);
 
         //initializes the name area of each player for default players
         players[0].playerNameBlockString = "DealerCardAreaBlock";
@@ -61,8 +66,31 @@ public class MainClass : MonoBehaviour
         //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
-            if (removedPlayers.Length == 1 && removedPlayers[0] == '3')
+            Debug.Log("inside 3 player length");
+
+            if (removedPlayers.Length == 0)
             {
+                Debug.Log("no removed players, sam is third and last player");
+                players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
+                players[2].playerNumber = 2; // initializes player number
+                players[2].playerName = "Sam"; //initializes name
+
+                GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
+                jillAreaObject.SetActive(false); //hides block object
+            }
+            else if (removedPlayers.Length == 1 && removedPlayers[0] == 'J')
+            {
+                Debug.Log("Jill is removed Player, four players once existed");
+                players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
+                players[2].playerNumber = 2; // initializes player number
+                players[2].playerName = "Sam"; //initializes name
+
+                GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
+                jillAreaObject.SetActive(false); //hides block object
+            }
+            else if (removedPlayers.Length == 1 && removedPlayers[0] == 'S')
+            {
+                Debug.Log("Sam is removed Player, four players once existed. Jill is still here");
                 players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
                 players[2].playerNumber = 2; // initializes player number
                 players[2].playerName = "Sam"; //initializes name
@@ -72,6 +100,7 @@ public class MainClass : MonoBehaviour
             }
             else
             {
+                Debug.Log("something went wrong");
                 players[2].playerNameBlockString = "JillCardAreaBlock"; //initializes the name area
                 players[2].playerNumber = 2; //initializes the player number
                 players[2].playerName = "Jill"; //initializes name
@@ -84,6 +113,7 @@ public class MainClass : MonoBehaviour
         //else initialize Sam and Jill players
         else if(players.Length == 4)
         {
+            Debug.Log("Inside four player length");
             players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area
             players[2].playerNumber = 2; //initializes the player number
             players[2].playerName = "Sam"; //initializes name
@@ -96,6 +126,8 @@ public class MainClass : MonoBehaviour
         //else hide Sam and Jill
         else
         {
+            Debug.Log("inside two player length");
+
             GameObject samAreaObject = GameObject.Find("SamCardAreaBlock"); //finds sam player object
             samAreaObject.SetActive(false); //hides block object
 

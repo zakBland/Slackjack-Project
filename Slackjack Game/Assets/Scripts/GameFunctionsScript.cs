@@ -490,17 +490,21 @@ public class GameFunctionsScript : MonoBehaviour
             if (players[i].playerTotalMoney < 2)
             {
                 PlayerPrefs.SetInt("playersMoney" + i, -1); //set playerMoney to -1 to indicate removing the player
+                Debug.Log(players[i] + " has no more money. Remove from game");
+
             }
             else
             {
                 PlayerPrefs.SetInt("playersMoney" + i, players[i].playerTotalMoney); //set playerMoney to new current value
             }
+
             PlayerPrefs.Save(); //save PlayerPrefs values
         }
 
         //if player has no more money....
         if(PlayerPrefs.GetInt("playersMoney1") == -1)
         {
+
             leaveButtonObject.transform.position = new Vector3(-0.5f, -0.5f, 0); //center leave button
             playAgainButtonObject.SetActive(false); //hide playAgain button
             gameOverTextObject.SetActive(true); //show gameOver text
