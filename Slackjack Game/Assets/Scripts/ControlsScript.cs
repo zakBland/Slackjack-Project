@@ -65,13 +65,7 @@ public class ControlsScript : MonoBehaviour
             bettingGroupBlockObject.SetActive(false); //hide betting screen
         }
 
-        //check if right bet arrow needs to be disabled
-        Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow
 
-        if(currentBet == MainClass.players[1].playerTotalMoney)
-        {
-            rightArrowImageObject.color = new Color32(102, 94, 94, 255); //change arrow to disabled color (gray/black)
-        }
     }
 
     void Awake()
@@ -183,7 +177,7 @@ public class ControlsScript : MonoBehaviour
         PlayerPrefs.SetInt("rounds", 1); //resets rounds variable to 1 after leaving game
 
         //reset player money amounts to 500
-        for (int i = 1; i < 4; i++)
+        for (int i = 1; i < MainClass.players.Length; i++)
         {
             PlayerPrefs.SetInt("playersMoney" + i, 500);
         }
@@ -362,7 +356,7 @@ public class ControlsScript : MonoBehaviour
     //left arrow betting button
     public void leftArrowBettingButtonAction()
     {
-        int maxBet = 500; //max bet amount
+        int maxBet = 500;
 
         TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>();  //finds bet text
         Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>(); //get image for right arrow
@@ -396,7 +390,7 @@ public class ControlsScript : MonoBehaviour
     //right arrow betting button
     public void rightArrowBettingButtonAction()
     {
-        int maxBet = MainClass.players[1].playerTotalMoney; //max bet is 500
+        int maxBet = 500; //max bet is 500
 
         TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>(); //finds bet text
         Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow

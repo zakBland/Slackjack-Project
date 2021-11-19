@@ -22,6 +22,7 @@ public class MainClass : MonoBehaviour
         deck = new List<Card>(); //initialize deck array
 
         //find out if betting player is out of money; if so, remove from game
+<<<<<<< HEAD
         int newPlayerLength = PlayerPrefs.GetInt("playerCount") + 1; //sets newPlayerLength to current players amount
         removedPlayers = ""; //initializes removed player
         Debug.Log("Players length is " + newPlayerLength);
@@ -37,10 +38,25 @@ public class MainClass : MonoBehaviour
                 newPlayerLength--; //decrement length
                 removedPlayers += "" + players[i].playerName[0]; //add player index to removedPlayers string
                 Debug.Log("Player removed is " + players[i].playerName);
+=======
+
+        int newPlayerLength = PlayerPrefs.GetInt("playerCount") + 1;
+        string removedPlayers = "";
+
+        for(int i = 0; i < players.Length; i++)
+        {
+            if (i == 0 || i == 1) continue;
+
+            if(PlayerPrefs.GetInt("playersMoney" + i) == -1) //set playerMoney to new current value
+            {
+                newPlayerLength--;
+                removedPlayers += "" + i;
+>>>>>>> parent of 176130d (Update 5?)
             }
+
         }
 
-        players = new Player[newPlayerLength]; //sets new player length after removing a player
+        players = new Player[newPlayerLength];
 
 
         //initializes player array with default constructor
@@ -66,9 +82,13 @@ public class MainClass : MonoBehaviour
         //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
+<<<<<<< HEAD
             Debug.Log("inside 3 player length");
 
             if (removedPlayers.Length == 0)
+=======
+            if (removedPlayers.Length == 1 && removedPlayers[0] == '2')
+>>>>>>> parent of 176130d (Update 5?)
             {
                 Debug.Log("no removed players, sam is third and last player");
                 players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
@@ -157,7 +177,6 @@ public class MainClass : MonoBehaviour
                 if (PlayerPrefs.GetInt("playersMoney" + i) == 0) 
                 {
                     PlayerPrefs.SetInt("playersMoney" + i, 500); //sets player money to 0
-                    players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i);
                 }
 
                 players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i); //sets playerMoney to player money field in Player object

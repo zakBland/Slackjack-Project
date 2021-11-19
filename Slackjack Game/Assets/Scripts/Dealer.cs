@@ -9,30 +9,29 @@ using UnityEngine.SceneManagement;
 
 public class Dealer : MonoBehaviour
 {
-    //public static GameObject playAgainClassObject; 
-    public static bool dealerStart; //declares bool variable to indicate start of dealerPlay
-    public static Player player; //declares reference to current player
-    public static GameObject resultsGroupBlock; //declares reference to resultsGroup in Scene
+    public static GameObject playAgainClassObject;
+    public static bool dealerStart;
+    public static Player player;
+    public static GameObject resultsGroupBlock;
 
     void Start()
     {
         //playAgainClassObject.SetActive(false);
-        dealerStart = false;  //sets variable to false
-        resultsGroupBlock.SetActive(false); //hides resultsGroupBlock
+        dealerStart = false;       
+        resultsGroupBlock.SetActive(false);
     }
 
     void Awake()
     {
         //playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
-        resultsGroupBlock = GameObject.Find("ResultsGroupBlock"); //finds reference to ResultsGroupBlock
+        resultsGroupBlock = GameObject.Find("ResultsGroupBlock");
     }
 
     void Update()
     {
-        //if time to start dealer play
         if (dealerStart)
         {
-            StartCoroutine("dealerPlayFunction"); //executes coroutine with dealerPlayFunction function
+            StartCoroutine("dealerPlayFunction");
         }
     }
 
@@ -56,6 +55,7 @@ public class Dealer : MonoBehaviour
         //if dealer hidden card is played low, update hand total to reflect it
         else if (player.playerHand[1].aceValue == -1)
         {
+            Debug.Log($"Inside low ace. Card is {player.playerHand[1].suit}{player.playerHand[1].pip} and aceValue is {player.playerHand[1].aceValue}");
             player.handTotal += player.playerHand[1].pip; //subtracts value of hidden card from dealer hand total 
         }
         //else add normal pip value to dealer total
@@ -73,6 +73,7 @@ public class Dealer : MonoBehaviour
             }
         }
 
+        //player.handTotal += player.playerHand[1].pip; //adds to total
         GameObject playerText = GameObject.Find(player.playerName + "CountText"); //finds textbox
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + ""); //update textbox
 
@@ -104,7 +105,7 @@ public class Dealer : MonoBehaviour
                     {
                         player.playerHand[i].aceValue = 1; //update ace value to high, if possible
                         player.handTotal += 10; //adds 10 to hand total 
-                        loweredAce = true; //sets lowered ace to true
+                        loweredAce = true;
                         break;
                     }
                 }
@@ -121,7 +122,7 @@ public class Dealer : MonoBehaviour
                 Debug.Log($"Dealer hand total is {player.handTotal}");
                 yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); //waits for a specific amount of seconds
 
-                //if player bust...
+                //display outcome
                 if (player.handTotal > 21)
                 {
                     GameFunctionsScript.showOutcome(null, player, "bust"); //show outcome
@@ -129,18 +130,16 @@ public class Dealer : MonoBehaviour
                     break;
 
                 }
-                //if player wins...
                 else if (player.handTotal == 21)
                 {
-                    GameFunctionsScript.showOutcome(null, player, "stand"); //show outcome
-                    player.status = "win"; //update status to win
+                    GameFunctionsScript.showOutcome(null, player, "stand");
+                    player.status = "win";
                     break;
                 }
-                //if player hand it greater than or equal to 17...
                 else if (player.handTotal >= 17)
                 {
-                    GameFunctionsScript.showOutcome(null, player, "stand"); //show outcome
-                    player.status = "stand"; //set status to stand
+                    GameFunctionsScript.showOutcome(null, player, "stand");
+                    player.status = "stand";
                     break;
                 }     
                 else
@@ -148,124 +147,120 @@ public class Dealer : MonoBehaviour
                  //   GameFunctionsScript.showOutcome(card, player, "hit"); //show outcome
                 }
 
-                yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); //delays the game for specified amount of secconds
+                yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed"));
 
             }
             //keep hitting until 17 or above
             while (player.handTotal < 17);
 
-            yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed") + 0.5f); //delays the game for specified amount of secconds
+            yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed") + 0.5f);
+
+
         }
 
         Debug.Log("Done1");
-        PlayerPrefs.SetInt("continueGame", 0); //sets continueGame to false
+        PlayerPrefs.SetInt("continueGame", 0);
         Debug.Log("Done2");
         //playAgainClassObject.SetActive(true);
         Debug.Log("Done3");
-        GameFunctionsScript.calculateResults(MainClass.players); //calculates results at end of game
+        GameFunctionsScript.calculateResults(MainClass.players);
             
-        Player[] players = MainClass.players; //gets references to all players
-        GameObject gameobject; //declares gameObject variable
+        Player[] players = MainClass.players;
+        GameObject gameobject;
 
-        resultsGroupBlock.SetActive(true); //shows resultsGroupBlock
+        resultsGroupBlock.SetActive(true);
+
+        GameObject gameObject;
 
         for (int i = 0; i < 4; i++)
         {
-            //if dealer...
             if(i == 0)
             {
-                gameobject = GameObject.Find(players[i].playerName + "NameText"); //finds reference to NameText
-                gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName; //sets text to playerName
-                gameobject = GameObject.Find(players[i].playerName + "TotalText"); //finds reference to TotalText
-                gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + ""; //sets text to handTotal
-                gameobject = GameObject.Find(players[i].playerName + "BetText"); //finds reference to BetText
-                gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
-                gameobject = GameObject.Find(players[i].playerName + "ScoreText"); //finds reference to ScoreText
-                gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
-
+                gameobject = GameObject.Find(players[i].playerName + "NameText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                gameobject = GameObject.Find(players[i].playerName + "TotalText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + "";  
+                gameobject = GameObject.Find(players[i].playerName + "BetText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                
             }
-            //else if current player...
             else if (i < players.Length)
             {
-                //if player(you)...
                 if (i == 1)
                 {
-                    gameobject = GameObject.Find(players[i].playerName + "NameText"); //finds reference to NameText
-                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName; //sets text to playerName
-                    gameobject = GameObject.Find(players[i].playerName + "TotalText"); //finds reference to TotalText
-                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")"; //sets text to handTotal and player game status
+                    gameobject = GameObject.Find(players[i].playerName + "NameText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                    gameobject = GameObject.Find(players[i].playerName + "TotalText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
+                   
 
-                    //if betting is enabled....
                     if (PlayerPrefs.GetInt("bettingEnabled") == 2)
                     {
-                        gameobject = GameObject.Find(players[i].playerName + "BetText"); //finds reference to BetText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + ""; //sets text to betAmount
-                        gameobject = GameObject.Find(players[i].playerName + "ScoreText"); //finds reference to ScoreText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + ""; //sets text to current player money
+                        gameobject = GameObject.Find(players[i].playerName + "BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                        gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
                     }
-                    //else if not enabed....
                     else
                     {
-                        gameobject = GameObject.Find(players[i].playerName + "BetText"); //finds reference to BetText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
-                        gameobject = GameObject.Find(players[i].playerName + "ScoreText"); //finds reference to ScoreText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
+                        gameobject = GameObject.Find(players[i].playerName + "BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                        gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
                     }
                 }
-                //else if AI1....
                 else if(i == 2)
                 {
-                    gameobject = GameObject.Find("AI1NameText"); //finds reference to NameText
-                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName; //sets text to playerName
-                    gameobject = GameObject.Find("AI1TotalText"); //finds reference to TotalText
-                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")"; //sets text to handTotal and player game status
+                    gameobject = GameObject.Find("AI1NameText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                    gameobject = GameObject.Find("AI1TotalText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
+                    
 
-                    //if betting is enabled...
                     if (PlayerPrefs.GetInt("bettingEnabled") == 2)
                     {
-                        gameobject = GameObject.Find("AI1BetText");  //finds reference to BetText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + ""; //sets text to betAmount
-                        gameobject = GameObject.Find("AI1ScoreText"); //finds reference to ScoreText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + ""; //sets text to current player money
+                        gameobject = GameObject.Find("AI1BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                        gameobject = GameObject.Find("AI1ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
                     }
-                    //else if not enabled...
                     else
                     {
-                        gameobject = GameObject.Find("AI1BetText"); //finds reference to BetText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
-                        gameobject = GameObject.Find("AI1ScoreText"); //finds reference to ScoreText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
+                        gameobject = GameObject.Find("AI1BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                        gameobject = GameObject.Find("AI1ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
                     }
                 }
-                //else if AI2
                 else
                 {
-                    gameobject = GameObject.Find("AI2NameText"); //finds reference to NameText
-                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName; //sets text to playerName
-                    gameobject = GameObject.Find("AI2TotalText"); //finds reference to TotalText
-                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")"; //sets text to handTotal and player game status
+                    gameobject = GameObject.Find("AI2NameText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerName;
+                    gameobject = GameObject.Find("AI2TotalText");
+                    gameobject.GetComponent<TextMeshProUGUI>().text = players[i].handTotal + " (" + players[i].status + ")";
+                    
 
-                    //if betting is enabled....
                     if (PlayerPrefs.GetInt("bettingEnabled") == 2)
                     {
-                        gameobject = GameObject.Find("AI2BetText"); //finds reference to BetText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + ""; //sets text to betAmount
-                        gameobject = GameObject.Find("AI2ScoreText"); //finds reference to ScoreText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + ""; //sets text to current player money
+                        gameobject = GameObject.Find("AI2BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + "";
+                        gameobject = GameObject.Find("AI2ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = players[i].playerTotalMoney + "";
                     }
-                    //else if betting is not enabled....
                     else
                     {
-                        gameobject = GameObject.Find("AI2BetText"); //finds reference to BetText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
-                        gameobject = GameObject.Find("AI2ScoreText"); //finds reference to ScoreText
-                        gameobject.GetComponent<TextMeshProUGUI>().text = "-"; //sets text to dash to indicate inactive player
+                        gameobject = GameObject.Find("AI2BetText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
+                        gameobject = GameObject.Find("AI2ScoreText");
+                        gameobject.GetComponent<TextMeshProUGUI>().text = "-";
                     }
                 }
             }
-            //if player isn't in game, hide player sections
             else
             {
+<<<<<<< HEAD
                 string name = "";
 
                 if(MainClass.removedPlayers.Length != 0 && "S".Equals(MainClass.removedPlayers[i - 2] + ""))
@@ -286,10 +281,24 @@ public class Dealer : MonoBehaviour
                 gameobject.GetComponent<TextMeshProUGUI>().text = ""; //sets text to blank
                 gameobject = GameObject.Find(name + "ScoreText"); //finds reference to ScoreText
                 gameobject.GetComponent<TextMeshProUGUI>().text = ""; //sets text to blank
+=======
+                gameobject = GameObject.Find(players[i].playerName + "NameText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+                gameobject = GameObject.Find(players[i].playerName + "TotalText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+                gameobject = GameObject.Find(players[i].playerName + "BetText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+                gameobject = GameObject.Find(players[i].playerName + "ScoreText");
+                gameobject.GetComponent<TextMeshProUGUI>().text = "";
+>>>>>>> parent of 176130d (Update 5?)
             }
         }
 
-        yield return new WaitForSeconds(2); //delays game for specified amount of time
+        yield return new WaitForSeconds(2);
+
+
+       
+
     }
 
 }

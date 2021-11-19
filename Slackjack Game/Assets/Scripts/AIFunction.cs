@@ -39,8 +39,6 @@ public class AIFunction: MonoBehaviour
     //starts AI game play with delays
     IEnumerator AIPlayFunction()
     {
-        if (player.playerName.Equals("Dealer")) yield break;
-
         startAIPlay = false; //sets start variable to false
         yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed") + 1.5f); // delays game for specific amount of seconds
 
@@ -119,7 +117,7 @@ public class AIFunction: MonoBehaviour
             }
         }
         Debug.Log("AIEnd");
-        yield return new WaitForSeconds(1.5f);
+        //yield return new WaitForSeconds(1.5f);
     }
 
     //Calculate probability of finding card
