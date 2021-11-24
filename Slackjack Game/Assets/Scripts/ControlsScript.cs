@@ -181,7 +181,7 @@ public class ControlsScript : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScreenScene"); //loads title screen
         PlayerPrefs.SetInt("rounds", 1); //resets rounds variable to 1 after leaving game
-
+        PlayerPrefs.SetString("removedPlayerList", ""); //resets removed player list
         //reset player money amounts to 500
         for (int i = 1; i < 4; i++)
         {
@@ -275,7 +275,7 @@ public class ControlsScript : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScreenScene"); //loads title screen
         PlayerPrefs.SetInt("rounds", 1); //resets rounds variable to 1
-
+        PlayerPrefs.GetString("removedPlayerList", ""); //resets removed player list
         //resets player money amounts
         for (int i = 1; i < 4; i++)
         {

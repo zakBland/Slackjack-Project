@@ -27,9 +27,9 @@ public class MainClass : MonoBehaviour
         for(int i = 0; i < players.Length; i++)
         {
             if (i == 0 || i == 1) continue; //if on player(you) or dealer, skip
-            
+
             //if player ran out of money
-            if(PlayerPrefs.GetInt("playersMoney" + i) == -1)
+            if (PlayerPrefs.GetInt("playersMoney" + i) == -1 || PlayerPrefs.GetString("removedPlayerList", i + "").Contains(i + "")) 
             {
                 newPlayerLength--; //decrement length
                 removedPlayers += "" + i; //add player index to removedPlayers string
@@ -75,6 +75,17 @@ public class MainClass : MonoBehaviour
                 players[2].playerNameBlockString = "JillCardAreaBlock"; //initializes the name area
                 players[2].playerNumber = 2; //initializes the player number
                 players[2].playerName = "Jill"; //initializes name
+
+                //if player 3 money variable hasn't been changed
+                if (PlayerPrefs.GetInt("playersMoney3") != -99)
+                {
+                    PlayerPrefs.SetInt("playersMoney2", PlayerPrefs.GetInt("playersMoney3"));   //switch from index 3 to 2              
+                    PlayerPrefs.SetInt("playersMoney3", -99); //set flag to "true/changed"
+
+                }
+
+                players[2].playerTotalMoney = PlayerPrefs.GetInt("playersMoney2");  //sets player 2's (old player 3) money
+
 
                 GameObject samAreaObject = GameObject.Find("SamCardAreaBlock"); //finds jill player block
                 samAreaObject.SetActive(false); //hides block object

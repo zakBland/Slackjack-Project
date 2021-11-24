@@ -490,6 +490,8 @@ public class GameFunctionsScript : MonoBehaviour
             if (players[i].playerTotalMoney < 2)
             {
                 PlayerPrefs.SetInt("playersMoney" + i, -1); //set playerMoney to -1 to indicate removing the player
+                PlayerPrefs.SetString("removedPlayerList", i + ""); //adds player to removed player list
+
             }
             else
             {
