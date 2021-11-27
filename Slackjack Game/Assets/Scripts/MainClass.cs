@@ -27,9 +27,9 @@ public class MainClass : MonoBehaviour
         for(int i = 0; i < players.Length; i++)
         {
             if (i == 0 || i == 1) continue; //if on player(you) or dealer, skip
-
+            //fix it so that it takes out correct players at the correct time
             //if player ran out of money
-            if (PlayerPrefs.GetInt("playersMoney" + i) == -1 || PlayerPrefs.GetString("removedPlayerList", i + "").Contains(i + "")) 
+            if (PlayerPrefs.GetInt("playersMoney" + i) <= -1 || PlayerPrefs.GetString("removedPlayerList", i + "").Contains(i + "")) 
             {
                 newPlayerLength--; //decrement length
                 removedPlayers += "" + i; //add player index to removedPlayers string

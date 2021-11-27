@@ -215,9 +215,9 @@ public class GameFunctionsScript : MonoBehaviour
             else
             {
                 //display hover card
-                GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
-                zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-                zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
+                //GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
+                //zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+                //zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
             }
 
         }        
@@ -489,9 +489,11 @@ public class GameFunctionsScript : MonoBehaviour
 
             if (players[i].playerTotalMoney < 2)
             {
+                if (i == 1) continue; //skip player (you)
+
                 PlayerPrefs.SetInt("playersMoney" + i, -1); //set playerMoney to -1 to indicate removing the player
                 PlayerPrefs.SetString("removedPlayerList", i + ""); //adds player to removed player list
-
+                Debug.Log(players[i].playerName + " has " + players[i].playerTotalMoney + " total money. PlayerPrefs money AI1 is" + PlayerPrefs.GetInt("playersMoney" + 2) + " and AI2 is " + PlayerPrefs.GetInt("playersMoney" + 3));
             }
             else
             {

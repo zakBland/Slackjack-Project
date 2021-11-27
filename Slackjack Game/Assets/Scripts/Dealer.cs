@@ -266,13 +266,24 @@ public class Dealer : MonoBehaviour
             //if player isn't in game, hide player sections
             else
             {
-                gameobject = GameObject.Find(players[i].playerName + "NameText"); //finds reference to NameText
+                string name = "";
+
+                if(i == 2)
+                {
+                    name = "AI1";
+                }
+                else if(i == 3)
+                {
+                    name = "AI2";
+                }
+
+                gameobject = GameObject.Find(name + "NameText"); //finds reference to NameText
                 gameobject.GetComponent<TextMeshProUGUI>().text = ""; //sets text to blank
-                gameobject = GameObject.Find(players[i].playerName + "TotalText"); //finds reference to TotalText
+                gameobject = GameObject.Find(name + "TotalText"); //finds reference to TotalText
                 gameobject.GetComponent<TextMeshProUGUI>().text = ""; //sets text to blank
-                gameobject = GameObject.Find(players[i].playerName + "BetText"); //finds reference to BetText
+                gameobject = GameObject.Find(name + "BetText"); //finds reference to BetText
                 gameobject.GetComponent<TextMeshProUGUI>().text = ""; //sets text to blank
-                gameobject = GameObject.Find(players[i].playerName + "ScoreText"); //finds reference to ScoreText
+                gameobject = GameObject.Find(name + "ScoreText"); //finds reference to ScoreText
                 gameobject.GetComponent<TextMeshProUGUI>().text = ""; //sets text to blank
             }
         }
