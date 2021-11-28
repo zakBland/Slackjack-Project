@@ -15,9 +15,9 @@ public class GameFunctionsScript : MonoBehaviour
     List<Card> deck; //deck variable reference from MainClass class
     public Sprite dealerCard; //dealer's hidden card reference
     public static List<string> usedDeck; //variable for all unused cards
-    static GameObject gameOverTextObject;
-    static GameObject leaveButtonObject;
-    static GameObject playAgainButtonObject;
+    static GameObject gameOverTextObject; //reference to gameOverText 
+    static GameObject leaveButtonObject; //reference to leaveButton
+    static GameObject playAgainButtonObject; //reference to playAgain button
 
 
     static bool start; //declares start boolean for starting game
@@ -27,8 +27,6 @@ public class GameFunctionsScript : MonoBehaviour
 
     void Start()
     {
-        
-
         startDelay = false; //sets startDelay to false
         cardRoutine = null; //sets cardRoutine to null
         playerRoutine = null; //sets playerRoutine to null
@@ -132,9 +130,6 @@ public class GameFunctionsScript : MonoBehaviour
             }
         }
 
-        Debug.Log($"Dealers cards are {players[0].playerHand[0].suit}{players[0].playerHand[0].pip} and {players[0].playerHand[1].suit}{players[0].playerHand[1].pip}");
-        Debug.Log($"Dealer hand is {players[0].handTotal}");
-
         GameObject playerText = GameObject.Find(players[0].playerName + "CountText"); //finds reference to dealer text box
         playerText.GetComponent<TextMeshProUGUI>().text = (players[0].handTotal + ""); //updates dealer value text
 
@@ -180,8 +175,8 @@ public class GameFunctionsScript : MonoBehaviour
     //display cards to screen
     public static void displayCard(Card card, Player player, Sprite dealerCard)
     {
-        //(NOT FULLY IMPLEMENTED) setup for if player currently needs to display more than 6 cards
-        if (player.playerHand.Count > 6 && !player.playerName.Equals("Player"))
+        //if players have more than six cards to display, then don't display them
+        if (player.playerHand.Count > 6)
         {
             return;
         }
@@ -199,26 +194,6 @@ public class GameFunctionsScript : MonoBehaviour
         else
         {
             areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
-
-        }
-
-        //if current player is "you", check to see if card area display needs second page
-        if (player.playerName.Equals("Player"))
-        {
-            if (player.playerHand.Count > 6)
-            {
-                //(NOT IMPLEMENTED) Show second row of cards
-                /*GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock2");
-                zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-                zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;*/
-            }
-            else
-            {
-                //display hover card
-                //GameObject[] zoomAreas = GameObject.FindGameObjectsWithTag("PlayerZoomCardAreaBlock");
-                //zoomAreas[slot].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-                //zoomAreas[slot].GetComponent<Image>().sprite = card.sprite;
-            }
 
         }        
         
@@ -285,27 +260,6 @@ public class GameFunctionsScript : MonoBehaviour
                 player.handTotal += Card.ACE_HIGH; //adds high ace to player total
                 card.aceValue = 1; //sets ace card to high ace value
 
-                //if player total is 21, player wins
-                if (player.handTotal == 21)
-                {
-                    /*if (player.playerName.Equals("Player")) //if current player is "you", disable hit and stand buttons
-                    {
-                        //disable "you" player's buttons
-                        GameObject standButton = GameObject.Find("StandButton"); //finds stand button
-                        GameObject hitButton = GameObject.Find("HitButton"); //finds hit button
-
-                        //if found...
-                        if (standButton != null && hitButton != null)
-                        {
-                            standButton.SetActive(false); //hide stand button
-                            hitButton.SetActive(false); //hide hit button
-                        }
-                    }
-
-                    player.status = "win"; //update player status to win
-                    showOutcome(null, player, "stand"); //show outcome of calculation
-                    */
-                }
             }
 
             //if playing ace high will result in bust, play low
@@ -314,22 +268,6 @@ public class GameFunctionsScript : MonoBehaviour
                 player.handTotal += Card.ACE_LOW; //adds l
                 card.aceValue = -1; //sets ace type to -1(low ace)
 
-                //if player hand total is equal to 21, player wins, move turns (NOT FULLY IMPLEMENTED)
-                if (player.handTotal == 21)
-                {
-                    /*
-                    if (player.playerName.Equals("Player"))
-                    {
-                        //disable "you" player's buttons
-                        GameObject standButton = GameObject.Find("StandButton");
-                        GameObject hitButton = GameObject.Find("HitButton");
-                        standButton.SetActive(false);
-                        hitButton.SetActive(false);
-                    }
-
-                    player.status = "win"; //update player status to win
-                    */
-                }
             }
             //play card as high ace as default
             else
@@ -363,7 +301,6 @@ public class GameFunctionsScript : MonoBehaviour
     //shows outcome of card draw
     public static void showOutcome(Card card, Player player, string hitOrStand)
     {
-        //show for few seconds, then disappear (NOT IMPLEMENTED)
 
         GameObject resultsAreaTextObject = GameObject.Find("ResultText"); //finds result text reference
         GameObject resultsAreaObject = GameObject.Find("ResultImage"); //Finds result area reference
@@ -433,7 +370,7 @@ public class GameFunctionsScript : MonoBehaviour
         return card; //returns card
     }
 
-    //converts suit to suitable sprite/image card name
+   //converts suit to suitable sprite/image card name
     public static string convertSuit(int suit, int pip)
     {
         char suitChar = 'a'; //initializes string variable
@@ -487,13 +424,15 @@ public class GameFunctionsScript : MonoBehaviour
                 players[i].status = "win"; //set player status to win
             }
 
+            //if player is out of money
             if (players[i].playerTotalMoney < 2)
             {
-                if (i == 1) continue; //skip player (you)
 
                 PlayerPrefs.SetInt("playersMoney" + i, -1); //set playerMoney to -1 to indicate removing the player
-                PlayerPrefs.SetString("removedPlayerList", i + ""); //adds player to removed player list
-                Debug.Log(players[i].playerName + " has " + players[i].playerTotalMoney + " total money. PlayerPrefs money AI1 is" + PlayerPrefs.GetInt("playersMoney" + 2) + " and AI2 is " + PlayerPrefs.GetInt("playersMoney" + 3));
+                               
+                if (i == 1) continue; //skip player (you)
+
+                PlayerPrefs.SetString("removedPlayerList", PlayerPrefs.GetString("removedPlayerList") + (i + "")); //adds player to removed player list
             }
             else
             {
@@ -505,7 +444,7 @@ public class GameFunctionsScript : MonoBehaviour
         //if player has no more money....
         if(PlayerPrefs.GetInt("playersMoney1") == -1)
         {
-            leaveButtonObject.transform.position = new Vector3(-0.5f, -0.5f, 0); //center leave button
+            leaveButtonObject.transform.position = new Vector3(-0.5f, -3.5f, 0); //center leave button
             playAgainButtonObject.SetActive(false); //hide playAgain button
             gameOverTextObject.SetActive(true); //show gameOver text
         }

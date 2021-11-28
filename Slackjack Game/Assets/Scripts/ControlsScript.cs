@@ -31,9 +31,6 @@ public class ControlsScript : MonoBehaviour
     public static int currentRounds; //declares current rounds variable
     public static int currentBet; //declares current bet amount variable
 
-    //public static int cardPage; //declares 
-    //public static int index;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -41,9 +38,6 @@ public class ControlsScript : MonoBehaviour
         bettingGroupBlockObject.SetActive(false); //sets betting screen to inactive to hide it
         resultsGroupBlock.SetActive(false); //sets results screen to inactive to hide it
         currentRounds = 1; //sets current rounds amount to 1
-
-        //index = 0;
-        //cardPage = 0;
 
         //check to see if player set rounds amount
         if(PlayerPrefs.GetInt("rounds") > 1)
@@ -68,10 +62,6 @@ public class ControlsScript : MonoBehaviour
         //check if right bet arrow needs to be disabled
         Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow
 
-        if(currentBet == MainClass.players[1].playerTotalMoney)
-        {
-            rightArrowImageObject.color = new Color32(102, 94, 94, 255); //change arrow to disabled color (gray/black)
-        }
     }
 
     void Awake()
@@ -82,8 +72,6 @@ public class ControlsScript : MonoBehaviour
         rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>(); // finds all rules pages
         rulesPagesBlockObject = GameObject.Find("RulesPagesBlock"); //finds rules block
         howToPagesBlockObject = GameObject.Find("HowToPagesBlock"); //finds howToPages block
-        //leftArrowGameObject = GameObject.Find("LeftArrowButton"); //finds left arrow button
-        //rightArrowGameObject = GameObject.Find("RightArrowButton"); //finds right arrow button
         roundTextObject = GameObject.Find("RoundsNumberText"); //finds rounds number text 
         leftArrowRoundsObject = GameObject.Find("LeftRoundsButton"); //finds left arrow button
         rightArrowRoundsObject = GameObject.Find("RightRoundsButton"); //finds right arrow button
@@ -204,70 +192,10 @@ public class ControlsScript : MonoBehaviour
         hitButton.SetActive(false); // hides hit button
     }
 
-    /*//LeftArrowAction (NOT IMPLEMENTED
-    public void leftArrowAction()
-    {
-        if (true)//cardPage > 0 )//&& MainClass.players[1].playerHand.Count > 6)
-        {
-            GameObject[] playArea = GameObject.FindGameObjectsWithTag(MainClass.players[1].playerNameBlockString);
-
-            for (int i = 0; i < 6; i++)
-            {
-                if (i < 5)
-                {
-                    playArea[i].GetComponent<Image>().sprite = playArea[i + 1].GetComponent<Image>().sprite;
-                }
-                else
-                {
-                    playArea[i].GetComponent<Image>().sprite = MainClass.players[1].playerHand[6 + index].sprite;
-                    index--;
-                }
-            }
-            cardPage--;
-        }
-    }
-    */
-
-    /*
-    //RightArrowAction (NOT IMPLEMENTED)
-    public void rightArrowAction()
-    {
-        if (true) //cardPage > 0 )&& MainClass.players[1].playerHand.Count > 6)
-        {
-            GameObject[] playArea = GameObject.FindGameObjectsWithTag(MainClass.players[1].playerNameBlockString);
-            Debug.Log(playArea.Length + " is area size");
-            for (int i = 4; i >= 0; i--)
-            {
-                /*if (i == 0)
-                {
-                    playArea[i].GetComponent<Image>().sprite = playArea[i + 1].GetComponent<Image>().sprite;
-                }
-                else
-                {
-                Debug.Log("Inside rightArrow. i is " + i);
-                //Debug.Log(playArea[i].GetComponent<Image>().sprite == null);
-                if (i - 1 < MainClass.players[1].playerHand.Count)
-                {
-                    playArea[i].GetComponent<Image>().sprite = MainClass.players[1].playerHand[i - 1].sprite;
-
-                    index--;
-                }
-                //}
-            }
-
-
-            cardPage++;
-        }
-    }
-*/
-
     //restarts game to replay
     public static void playAgainAction()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); //loads game scene to reset it
-        //playAgainClassObject = GameObject.Find("PlayAgainGroupBlock"); //finds play again screen object
-        //playAgainClassObject.SetActive(false); //hides object
-
     }
 
     //leaves game and returns to title scene
@@ -356,19 +284,18 @@ public class ControlsScript : MonoBehaviour
         PlayerPrefs.SetInt("rounds", currentRounds); //sets rounds to currentRounds
         PlayerPrefs.SetInt("setRounds", 1); //sets setRounds to 1 (MAYBE SET TO 2)
         roundsGroupBlockObject.SetActive(false); //hides rounds block object
-        //bettingGroupBlockObject.SetActive(true);
     }
 
     //left arrow betting button
     public void leftArrowBettingButtonAction()
     {
-        int maxBet = 500; //max bet amount
+        int maxBet = MainClass.players[1].playerTotalMoney; //max bet is set to player current money amount
 
         TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>();  //finds bet text
-        Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>(); //get image for right arrow
-        Button rightArrowButtonObject = rightArrowRoundsObject.GetComponent<Button>(); //gets button for right arrow
-        Image leftArrowImageObject = leftArrowRoundsObject.GetComponent<Image>(); //gets image for left arrow
-        Button leftArrowButtonObject = leftArrowRoundsObject.GetComponent<Button>(); //gets image for left arrow
+        Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow
+        Button rightArrowButtonObject = rightArrowBettingObject.GetComponent<Button>(); //gets button for right arrow
+        Image leftArrowImageObject = leftArrowBettingObject.GetComponent<Image>(); //gets image for left arrow
+        Button leftArrowButtonObject = leftArrowBettingObject.GetComponent<Button>(); //gets image for left arrow
 
 
         //determine which page is active
@@ -396,15 +323,13 @@ public class ControlsScript : MonoBehaviour
     //right arrow betting button
     public void rightArrowBettingButtonAction()
     {
-        int maxBet = MainClass.players[1].playerTotalMoney; //max bet is 500
+        int maxBet = MainClass.players[1].playerTotalMoney; //max bet is set to player current money amount
 
         TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>(); //finds bet text
         Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow
         Button rightArrowButtonObject = rightArrowBettingObject.GetComponent<Button>(); //gets button for right arrow
         Image leftArrowImageObject = leftArrowBettingObject.GetComponent<Image>(); //gets image for left arrow
         Button leftArrowButtonObject = leftArrowBettingObject.GetComponent<Button>(); //gets image for left arrow
-
-
 
         if (currentBet + 1 <= maxBet) //if current bet + 1 is less than or equal to max bet; check to see if it is possible to increment current bet
         {

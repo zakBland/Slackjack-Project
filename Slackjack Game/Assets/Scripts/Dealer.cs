@@ -76,7 +76,6 @@ public class Dealer : MonoBehaviour
         GameObject playerText = GameObject.Find(player.playerName + "CountText"); //finds textbox
         playerText.GetComponent<TextMeshProUGUI>().text = (player.handTotal + ""); //update textbox
 
-        Debug.Log("Dealer handTotal is " + player.handTotal);
         yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed"));  //delays game for specific amount of time
 
         //if total is 17 or more, stand
@@ -85,7 +84,6 @@ public class Dealer : MonoBehaviour
             //end game, show outcome of dealer, show results of all players
             GameFunctionsScript.showOutcome(null, player, "stand"); //show outcome
             player.status = "stand"; //update player status to stand
-            Debug.Log("Dealer stands");
             yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); // delays game for specific amount of time
         }
 
@@ -118,7 +116,6 @@ public class Dealer : MonoBehaviour
                 GameFunctionsScript.calculateTotal(card, player); //calculate total
                 GameFunctionsScript.displayCard(card, player, null); //display card to player are
 
-                Debug.Log($"Dealer hand total is {player.handTotal}");
                 yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); //waits for a specific amount of seconds
 
                 //if player bust...
@@ -143,10 +140,6 @@ public class Dealer : MonoBehaviour
                     player.status = "stand"; //set status to stand
                     break;
                 }     
-                else
-                {
-                 //   GameFunctionsScript.showOutcome(card, player, "hit"); //show outcome
-                }
 
                 yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); //delays the game for specified amount of secconds
 
@@ -157,11 +150,7 @@ public class Dealer : MonoBehaviour
             yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed") + 0.5f); //delays the game for specified amount of secconds
         }
 
-        Debug.Log("Done1");
         PlayerPrefs.SetInt("continueGame", 0); //sets continueGame to false
-        Debug.Log("Done2");
-        //playAgainClassObject.SetActive(true);
-        Debug.Log("Done3");
         GameFunctionsScript.calculateResults(MainClass.players); //calculates results at end of game
             
         Player[] players = MainClass.players; //gets references to all players
@@ -266,8 +255,9 @@ public class Dealer : MonoBehaviour
             //if player isn't in game, hide player sections
             else
             {
-                string name = "";
+                string name = ""; //initializes string variable
 
+                //if on AI1, set name to AI1, else set to AI2
                 if(i == 2)
                 {
                     name = "AI1";

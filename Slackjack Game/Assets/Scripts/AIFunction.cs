@@ -11,6 +11,7 @@ public class AIFunction: MonoBehaviour
     public static int difficulty; //declaure difficulty variable
     public static bool startAIPlay; //declare start boolean to start AI gameplay variable
     public static Player player; //declare Player reference variable
+    static bool playedLow; //boolean that shows if player plays ace low
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,7 @@ public class AIFunction: MonoBehaviour
         probability = 0; //sets probability to 0
         usedDeck = GameFunctionsScript.usedDeck; //get and set reference from GamFunctionsScript
         difficulty = PlayerPrefs.GetInt("difficultyLevel"); //get and set difficultyLevel
+        playedLow = false; //sets playLow to false
     }
 
     // Update is called once per frame
@@ -39,7 +41,7 @@ public class AIFunction: MonoBehaviour
     //starts AI game play with delays
     IEnumerator AIPlayFunction()
     {
-        if (player.playerName.Equals("Dealer")) yield break;
+        if (player.playerName.Equals("Dealer")) yield break; //if game tries to make dealer play as AI, leave function
 
         startAIPlay = false; //sets start variable to false
         yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed") + 1.5f); // delays game for specific amount of seconds
@@ -49,8 +51,6 @@ public class AIFunction: MonoBehaviour
         {
             probability = probabilityOfCard(player); //get probability of getting needed card and set to probability
 
-            Debug.Log($"probability of drawing valid card is {probability}%");
-            Debug.Log($"difficulty is {PlayerPrefs.GetInt("difficultyLevel")}");
             difficulty = PlayerPrefs.GetInt("difficultyLevel"); //get new difficulty level amount
 
             bool loweredAce = false; // set lowered ace to false
@@ -71,28 +71,11 @@ public class AIFunction: MonoBehaviour
                 }
             }
 
-            //if player hand total is greater than 21
-            /*if (player.handTotal > 21)
-            {
-                for (int i = 0; i < player.playerHand.Count; i++)
-                {
-                    //
-                    if ((player.handTotal > 21) && player.playerHand[i].aceValue == -1)
-                    {
-                        player.playerHand[i].aceValue = 1; //update ace value to high, if possible
-                        player.handTotal += 10;
-                        loweredAce = true;
-                        break;
-                    }
-                }
-            }*/
-
             //if player hand total is 21
             if (player.handTotal == 21)
             {
                 stand(player); //player stands
                 player.status = "win"; //sets players status to win
-                Debug.Log("player won");
                 break; //leave loop
             }
             //if player hand total is greater than 21
@@ -100,25 +83,37 @@ public class AIFunction: MonoBehaviour
             {
                 GameFunctionsScript.showOutcome(null, player, "bust"); //shows outcome of player busting
                 player.status = "bust"; //sets player status to bust
-                Debug.Log("Player bust");
                 break; //leave loop
             }
             //if at a specific difficulty, the probability is greater than specificed value, hit
             else if ((difficulty == 1 && probability > 30) || (difficulty == 2 && probability > 45) || (difficulty == 3 && probability > 55) && player.handTotal < 21) // respectively: easy, medium, hard
             {
-                Debug.Log("player hit");
-                hit(player); //player hits       
+                hit(player); //player hits 
+                
+                //sets ace value to be low if played low
+                if (playedLow)
+                {
+                    for (int i = 0; i < player.playerHand.Count; i++)
+                    {
+                        //if an ace is played high, treat as if played low
+                        if (player.playerHand[i].aceValue == 1)
+                        {
+                            player.playerHand[i].aceValue = -1;
+                            break; //leave loop
+                        }
+                    }
+                }
                 yield return new WaitForSeconds(PlayerPrefs.GetFloat("gameSpeed")); //delays for specified amount of time
             }
             //else, probaility was to low, stand
             else
             {
-                Debug.Log("Probability was too low. Current player stood");
                 stand(player); //player stands
                 break; //leave loop
             }
         }
-        Debug.Log("AIEnd");
+
+        playedLow = false; //resets playLow to false
         yield return new WaitForSeconds(1.5f);
     }
 
@@ -126,13 +121,14 @@ public class AIFunction: MonoBehaviour
     public static double probabilityOfCard(Player player)
     {
         int playerHandTotal = player.handTotal; //sets player hand total to variable
-        
+
         for(int i = 0; i < player.playerHand.Count; i++)
         {
             //if an ace is played high, treat as if played low
-            if(player.playerHand[i].aceValue == 1)
+            if(player.playerHand[i].aceValue == 1 && player.handTotal <= 16)
             {
                 playerHandTotal -= 10; //subtract 10 to make playertotal be treated as if it has low ace
+                playedLow = true;
                 break; //leave loop
             }
         }
@@ -141,10 +137,6 @@ public class AIFunction: MonoBehaviour
 
         cardsRemaining = MainClass.deck.Count; //get deck count from MainClass
         int possibleCards = 0; //set possibleCard value to 0
-
-        Debug.Log($"max value is {maxValue}");
-        Debug.Log("AI player " + player.playerName + " hand total is " + player.handTotal);
-        Debug.Log(GameFunctionsScript.usedDeck == null);
 
         //if maxValue is greated than 13
         if (maxValue > 13)
@@ -163,17 +155,12 @@ public class AIFunction: MonoBehaviour
             {
                 if (GameFunctionsScript.usedDeck.Contains($"{i}{j}"))
                 {
-                    Debug.Log($"{possibleCards} inside possible cards");
                     possibleCards--; //if card exist in usedDeck array, decrement from variable
                 }
             }
         }
 
-        Debug.Log(MainClass.deck == null);
-        Debug.Log($"possible cards are {possibleCards} and cards remaining is {cardsRemaining}");
         probability = (possibleCards / (cardsRemaining * 1.0)) * 100.0; //calculate probability
-        Debug.Log($"Prob inside is {probability}");
-        Debug.Log("Difficulty is " + difficulty);
         return probability;
     } 
     
@@ -185,7 +172,6 @@ public class AIFunction: MonoBehaviour
         GameFunctionsScript.usedDeck.Add(card.suit + "" + card.pip); //adds to used deck
         GameFunctionsScript.showOutcome(card, player, "hit"); //shows outcome
 
-        Debug.Log($"The card drawn is {card.suit}{card.pip}");
     }
 
     //stand and move turn

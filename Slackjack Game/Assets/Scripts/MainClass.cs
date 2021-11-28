@@ -27,12 +27,11 @@ public class MainClass : MonoBehaviour
         for(int i = 0; i < players.Length; i++)
         {
             if (i == 0 || i == 1) continue; //if on player(you) or dealer, skip
-            //fix it so that it takes out correct players at the correct time
-            //if player ran out of money
-            if (PlayerPrefs.GetInt("playersMoney" + i) <= -1 || PlayerPrefs.GetString("removedPlayerList", i + "").Contains(i + "")) 
+
+            if (PlayerPrefs.GetInt("playersMoney" + i) <= -1 )//PlayerPrefs.GetString("removedPlayerList").Contains(i + "")) 
             {
                 newPlayerLength--; //decrement length
-                removedPlayers += "" + i; //add player index to removedPlayers string
+                removedPlayers += "" + PlayerPrefs.GetString("removedPlayerList").Contains(i + ""); //add player index to removedPlayers string
             }
         }
 
@@ -61,6 +60,7 @@ public class MainClass : MonoBehaviour
         //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
+            //if a player was removed and it was jill (last player)
             if (removedPlayers.Length == 1 && removedPlayers[0] == '3')
             {
                 players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
@@ -136,7 +136,7 @@ public class MainClass : MonoBehaviour
                 if (PlayerPrefs.GetInt("playersMoney" + i) == 0) 
                 {
                     PlayerPrefs.SetInt("playersMoney" + i, 500); //sets player money to 0
-                    players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i);
+                    players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i); 
                 }
 
                 players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i); //sets playerMoney to player money field in Player object

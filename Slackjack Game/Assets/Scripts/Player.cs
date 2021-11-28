@@ -12,8 +12,8 @@ public class Player
     public string playerName; // declaration of player name
     public int playerNumber; //declaration of player order
     public string status; //declaration of status variable
-    public int betAmount;
-    public int playerTotalMoney;
+    public int betAmount; //declaration of betAmount variable
+    public int playerTotalMoney; //declaration of player's total money variable
 
     //Player constructor
     public Player()

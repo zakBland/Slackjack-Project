@@ -643,12 +643,12 @@ public class TitleButtonScript : MonoBehaviour
 
         resetButtonAction(); //reset game values
 
-        #if UNITY_EDITOR //preprocessor directive to test if Unity Editor is defined
+        //#if UNITY_EDITOR //preprocessor directive to test if Unity Editor is defined
         
         Application.Quit(); //quits application
 
         //if editor is stopped, also resets
-        #endif
-        UnityEditor.EditorApplication.isPlaying = false;
+        //#endif
+        //UnityEditor.EditorApplication.isPlaying = false;
     }
 }
