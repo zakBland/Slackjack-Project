@@ -183,18 +183,21 @@ public class GameFunctionsScript : MonoBehaviour
 
         int slot = int.Parse(player.cardSlotOrder[0] + ""); //finds correct slot number
 
-        GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
+        GameObject gameObject = GameObject.Find(player.playerName + "CardSlotBlock");
+        Image[] areas = gameObject.GetComponentsInChildren<Image>();
+
+        //GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
 
         //if current player is dealer and card to be displayed is hidden card
         if (player.playerName.Equals("Dealer") && slot == 3)
         {
-            areas[slot].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
-
+            //areas[slot].GetComponent<Image>().sprite = dealerCard; //sets specific slot area to sprite/image
+            areas[slot].sprite = dealerCard;
         }
         else
         {
-            areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
-
+            //areas[slot].GetComponent<Image>().sprite = card.sprite; //sets specific slot area to sprite/image
+            areas[slot].sprite = card.sprite;
         }        
         
         player.cardSlotOrder = player.cardSlotOrder.Substring(1); //updates card order for player

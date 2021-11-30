@@ -26,6 +26,7 @@ public class ControlsScript : MonoBehaviour
     GameObject bettingTextObject; //declares betting text object
     GameObject resultsGroupBlock; //declares resultsGroup block object
     static GameObject playAgainClassObject; //declares playAgainClass block object
+    GameObject helpButtonObject; //declares help button object
 
     public const int MIN_PAGE = 1; //declares constant for page minimum
     public static int currentRounds; //declares current rounds variable
@@ -82,8 +83,10 @@ public class ControlsScript : MonoBehaviour
         bettingTextObject = GameObject.Find("BetNumberText"); //finds bet number text
         resultsGroupBlock = GameObject.Find("ResultsGroupBlock"); //finds results block/screen in scene
 
-
+        helpButtonObject = GameObject.Find("HelpButton"); //finds HelpButton object in scene
+        leftArrowGameObject = GameObject.Find("LeftArrowButton"); //finds LeftArrow button in scene
     }
+
 
     //HitButtonAction
     public void hitButtonAction()
@@ -121,6 +124,7 @@ public class ControlsScript : MonoBehaviour
         rightArrowGameObject.SetActive(true); //set right arrow active
         leftArrowGameObject.GetComponent<Button>().enabled = false; //disables left arrow
         rulesPagesBlockObject.SetActive(true); //sets rules page block active
+        helpButtonObject.GetComponent<Button>().enabled = false; //disables help button;
 
         //disable background buttons
         for (int i = 0; i < buttonsBlockObject.Length; i++)
@@ -152,7 +156,7 @@ public class ControlsScript : MonoBehaviour
     {
 
         helpGroupBlockObject.SetActive(false); //sets help button block to inactive
-
+        helpButtonObject.GetComponent<Button>().enabled = true;
         //sets normal game buttons active
         for(int i = 0; i < buttonsBlockObject.Length; i++)
         {
@@ -349,8 +353,10 @@ public class ControlsScript : MonoBehaviour
 
             bettingArrowText.text = currentBet + ""; //update bet text in scene
         }
-    } 
-    
+    }
+
+
+
     //done betting button
     public void doneBettingButtonAction()
     {

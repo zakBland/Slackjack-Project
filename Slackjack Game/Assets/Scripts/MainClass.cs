@@ -60,8 +60,18 @@ public class MainClass : MonoBehaviour
         //if total players includes Sam, add Sam, hide Jill
         if(players.Length == 3)
         {
+            //if normal game with 3 people
+            if (removedPlayers == null || removedPlayers.Length == 0)
+            {
+                players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
+                players[2].playerNumber = 2; // initializes player number
+                players[2].playerName = "Sam"; //initializes name
+
+                GameObject jillAreaObject = GameObject.Find("JillCardAreaBlock"); //finds jill player block
+                jillAreaObject.SetActive(false); //hides block object
+            }
             //if a player was removed and it was jill (last player)
-            if (removedPlayers.Length == 1 && removedPlayers[0] == '3')
+            else if (removedPlayers.Length == 1 && removedPlayers[0] == '3')
             {
                 players[2].playerNameBlockString = "SamCardAreaBlock"; //initializes the name area 
                 players[2].playerNumber = 2; // initializes player number

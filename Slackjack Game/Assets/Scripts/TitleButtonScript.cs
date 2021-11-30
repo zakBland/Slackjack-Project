@@ -22,7 +22,7 @@ public class TitleButtonScript : MonoBehaviour
     GameObject rulesPagesBlockObject; //declares rulesPages block object
     GameObject howToPagesBlockObject; //declare howToPages block object
  
-    int whichPage; // 0 == rules, 1 == howTo
+    public static int whichPage; // 0 == rules, 1 == howTo
 
     // Start is called before the first frame update
     void Start()
