@@ -16,6 +16,9 @@ public class AIFunction: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /////
+        ///
+        ////
         startAIPlay = false; //sets startAI to false
         deck = MainClass.deck; // gets reference to MainClass deck
         cardsRemaining = deck.Count; //gets deck count and sets to cardsRemaining
