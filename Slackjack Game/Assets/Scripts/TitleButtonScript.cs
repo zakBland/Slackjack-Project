@@ -7,502 +7,650 @@ using TMPro;
 
 public class TitleButtonScript : MonoBehaviour
 {
-    //comment out code
-    GameObject settingsGameObject;
-    GameObject helpGameObject;
-    GameObject playGameObject;
-    GameObject settingsBlockGameObject;
-    GameObject leftArrowGameObject;
-    GameObject rightArrowGameObject;
-    GameObject leftArrowTextGameObject;
-    GameObject rightArrowTextGameObject;
-    GameObject optionalDisplayGameObject;
-    GameObject helpBlockGameObject;
-    GameObject[] howToPagesGameObjects;
-    TextMeshProUGUI[] rulesPagesGameObjects;
-    GameObject rulesPagesBlockObject;
-    GameObject howToPagesBlockObject;
+    GameObject settingsGameObject; //declares settings button object
+    GameObject helpGameObject; //declares help button object
+    GameObject playGameObject; //declares play button object
+    GameObject settingsBlockGameObject; //declares settingsBlock object
+    GameObject leftArrowGameObject; //declares left arrow object
+    GameObject rightArrowGameObject; //declares right arrow object
+    GameObject leftArrowTextGameObject; //declares left text arrow object
+    GameObject rightArrowTextGameObject; //declares right text arrow object
+    GameObject optionalDisplayGameObject; //declares optionalDisplay block object
+    GameObject helpBlockGameObject; //declares help block object
+    GameObject[] howToPagesGameObjects; //declares howToPages block (text) objects
+    TextMeshProUGUI[] rulesPagesGameObjects; // declares rulesPages block text objects
+    GameObject rulesPagesBlockObject; //declares rulesPages block object
+    GameObject howToPagesBlockObject; //declare howToPages block object
  
     int whichPage; // 0 == rules, 1 == howTo
 
     // Start is called before the first frame update
     void Start()
     {
-        optionalDisplayGameObject.SetActive(false);
-        PlayerPrefs.SetInt("currentPage", 1);
-        
-        settingsBlockGameObject.SetActive(false);
-        helpBlockGameObject.SetActive(false);
-        
-        //MIN_PAGE = 1;
-        whichPage = 0;
+        //if rounds aren't set, set rounds amount to 0
+        if (PlayerPrefs.GetInt("setRounds") == 0)
+        {
+            PlayerPrefs.SetInt("rounds", 0);
+        }
 
-        //default player settings
-        PlayerPrefs.SetInt("soundEnabled", 0); //no == 0, yes == 1
-        PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
-        PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
-        PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert 
+        //if player amount is not set, set to default 1
+        if (PlayerPrefs.GetInt("playerCount") == 0)
+        {
+            PlayerPrefs.SetInt("playerCount", 1);
+        }
+
+        //if player amount is set to 1, execute associated function
+        else if(PlayerPrefs.GetInt("playerCount") == 1)
+        {
+            playerOneButton();
+        }
+        //if player amount is set to 2, execute associated function
+        else if (PlayerPrefs.GetInt("playerCount") == 2)
+        {
+            playerTwoButton();
+        }
+        //if player amount is set to 3, execute associated function
+        else if (PlayerPrefs.GetInt("playerCount") == 3)
+        {
+            playerThreeButton();
+        }
+
+        //if difficulty is set to 0, set to default 2 (medium)
+        if (PlayerPrefs.GetInt("difficultyLevel") == 0)
+        {
+            PlayerPrefs.SetInt("difficultyLevel", 2);
+        }
+        //if difficulty is set to 1, execute associated function
+        else if (PlayerPrefs.GetInt("difficultyLevel") == 1)
+        {
+            difficultyEasyButton();
+        }
+        //if difficulty is set to 2, execute associated function
+        else if (PlayerPrefs.GetInt("difficultyLevel") == 2)
+        {
+            difficultyMedButton();
+        }
+        //if difficulty is set to 3, execute associated function
+        else if (PlayerPrefs.GetInt("difficultyLevel") == 3)
+        {
+            difficultyHardButton();
+        }
+
+        //if gameSpeed is set to 0, set to default (medium)
+        if(PlayerPrefs.GetFloat("gameSpeed") == 0)
+        {
+            mediumButton();
+        }
+        //if gameSpeed is set to 1, execute associated function
+        else if (PlayerPrefs.GetFloat("gameSpeed") == 1)
+        {
+            slowButton();
+        }
+        //if gameSpeed is set to 2, execute associated function
+        else if (PlayerPrefs.GetFloat("gameSpeed") == 2)
+        {
+            mediumButton();
+        }
+        //if gameSpeed is set to 3, execute associated function
+        else if (PlayerPrefs.GetFloat("gameSpeed") == 3)
+        {
+            fastButton();
+        }        
+       
+        //if betting isn't initialized, set to default 0 (false/off)
+        if(PlayerPrefs.GetInt("bettingEnabled") == 0)
+        {
+            PlayerPrefs.SetInt("bettingEnabled", 1);
+        }
+        //if betting is set to 1, execute associated function
+        else if (PlayerPrefs.GetInt("bettingEnabled") == 1)
+        {
+            bettingNoEnabled();
+        }
+        //if betting is set to 2, execute associated function
+        else if (PlayerPrefs.GetInt("bettingEnabled") == 2)
+        {
+            bettingYesEnabled();
+        }
+
+        optionalDisplayGameObject.SetActive(false); //hide all optionalDisplays
+        settingsBlockGameObject.SetActive(false); //hides settings block 
+        helpBlockGameObject.SetActive(false); //hides help block
+        PlayerPrefs.SetInt("currentPage", 1); //sets currentPage to 1 
+        whichPage = 0; //sets the page section to 0 (rules pages)
+
+        PlayerPrefs.Save(); //saves all PlayerPrefs variables
     }
 
     void Awake()
     {
-        howToPagesGameObjects = GameObject.FindGameObjectsWithTag("Pages");
-        rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>();
-        rulesPagesBlockObject = GameObject.Find("RulesPagesBlock");
-        howToPagesBlockObject= GameObject.Find("HowToPagesBlock");
-        
-
-        settingsBlockGameObject = GameObject.Find("SettingsGroupBlock");
-        helpBlockGameObject = GameObject.Find("HelpGroupBlock");
-        settingsGameObject = GameObject.Find("SettingsButton");
-        playGameObject = GameObject.Find("PlayButton");
-        helpGameObject = GameObject.Find("HelpButton");
-        optionalDisplayGameObject = GameObject.Find("OptionalDisplay");
-        leftArrowGameObject = GameObject.Find("LeftArrowButton");
-        rightArrowGameObject = GameObject.Find("RightArrowButton");
-        leftArrowTextGameObject = GameObject.Find("BackText");
-        rightArrowTextGameObject = GameObject.Find("NextText");
-
-
+        howToPagesGameObjects = GameObject.FindGameObjectsWithTag("Pages"); //finds all pages for howToPages
+        rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>(); // finds all pages for rulesPages
+        rulesPagesBlockObject = GameObject.Find("RulesPagesBlock"); //finds rulesPages block
+        howToPagesBlockObject= GameObject.Find("HowToPagesBlock"); //finds howToPages block
+        settingsBlockGameObject = GameObject.Find("SettingsGroupBlock"); //finds settings block
+        helpBlockGameObject = GameObject.Find("HelpGroupBlock"); //finds help block
+        settingsGameObject = GameObject.Find("SettingsButton"); //finds settings button
+        playGameObject = GameObject.Find("PlayButton"); //finds play button
+        helpGameObject = GameObject.Find("HelpButton"); //finds help button
+        optionalDisplayGameObject = GameObject.Find("OptionalDisplay"); //finds optionalDisplay block
+        leftArrowGameObject = GameObject.Find("LeftArrowButton"); //finds left arrow button
+        rightArrowGameObject = GameObject.Find("RightArrowButton"); //finds right arrow button
+        leftArrowTextGameObject = GameObject.Find("BackText"); //finds left button text 
+        rightArrowTextGameObject = GameObject.Find("NextText"); //finds right button text 
     }
 
-    //method that reacts to clicking the play button on titleScreenScene
-    public void playButtonAction()
+    /**Requirements documentation 3.1.3: action for "Displays button for accessing the main game screen which 
+     * begins the game loop"*/
+    public void playButtonAction()    //starts game
     {
-        SceneManager.LoadScene("GameplayScene");
+        SceneManager.LoadScene("GameplayScene"); //loads game scene
     }
 
-    public void settingsButtonAction()
+    /**Requirements documentation 3.1.1: action for "Displays button for accessing the user settings"*/
+    public void settingsButtonAction()//settings button
     {
-        if (optionalDisplayGameObject != null)
+        if (optionalDisplayGameObject != null) //if parent block is accessible (not null)
         {
-            PlayerPrefs.SetInt("currentPage", 1);
+            PlayerPrefs.SetInt("currentPage", 1); //set current page to first page
 
-            optionalDisplayGameObject.SetActive(true);
-            settingsGameObject.GetComponent<Button>().enabled = false;
-            helpGameObject.GetComponent<Button>().enabled = false;
-            playGameObject.GetComponent<Button>().enabled = false;
-            settingsBlockGameObject.SetActive(true);
-            helpBlockGameObject.SetActive(false);
-
-
+            optionalDisplayGameObject.SetActive(true); //set parent block active
+            settingsGameObject.GetComponent<Button>().enabled = false; //disables setting button
+            helpGameObject.GetComponent<Button>().enabled = false; //disables help button
+            playGameObject.GetComponent<Button>().enabled = false; //disables play button
+            settingsBlockGameObject.SetActive(true); // shows/enables setting block screen
+            helpBlockGameObject.SetActive(false); // hides help block screen
         }
     }
 
-    //help button
-    public void helpButtonAction()
+    /**Requirements documentation 3.1.3/3.3.1: action for "Displays button for accessing the help screen"*/
+    public void helpButtonAction()    //help button
     {
-
+        //if parent block is accessible (not null)
         if (optionalDisplayGameObject != null)
         {
-            PlayerPrefs.SetInt("currentPage", 1);
+            PlayerPrefs.SetInt("currentPage", 1); //set currentPage to first page
 
-            optionalDisplayGameObject.SetActive(true);
-            settingsGameObject.GetComponent<Button>().enabled = false;
-            helpGameObject.GetComponent<Button>().enabled = false;
-            playGameObject.GetComponent<Button>().enabled = false;
-            helpBlockGameObject.SetActive(true);
-            settingsBlockGameObject.SetActive(false);
-            leftArrowGameObject.SetActive(true);
-            rightArrowGameObject.SetActive(true);
+            optionalDisplayGameObject.SetActive(true); // sets parent block active
+            settingsGameObject.GetComponent<Button>().enabled = false; //disables setting button
+            helpGameObject.GetComponent<Button>().enabled = false; //disables help button
+            playGameObject.GetComponent<Button>().enabled = false; //disables play button
+            helpBlockGameObject.SetActive(true); //shows/enables help block screen
+            settingsBlockGameObject.SetActive(false); //hides setting block screen
+            leftArrowGameObject.SetActive(true); //enables left button
+            rightArrowGameObject.SetActive(true); //enable right button
+             
+            (GameObject.Find("HowToPagesBlock")).SetActive(true); //enables howToPages block
+            (GameObject.Find("RulesPagesBlock")).SetActive(true); //enables rulePages block
 
-            (GameObject.Find("HowToPagesBlock")).SetActive(true);
-            (GameObject.Find("RulesPagesBlock")).SetActive(true);
-
-
+            //hides each howToPages block page
             foreach (GameObject obj in howToPagesGameObjects) 
             {
                 obj.SetActive(false);
             }
 
+            //hides each rulesPages block page
             foreach(TextMeshProUGUI obj in rulesPagesGameObjects)
             {
                 obj.gameObject.SetActive(false);
             }
 
-            rulesPagesGameObjects[0].gameObject.SetActive(true);
-
+            rulesPagesGameObjects[0].gameObject.SetActive(true); //show first page for rulesPages block
         }
-
     }
 
-     public void rulesButtonAction()
-     {
+    /**Requirements documentation 3.3.1.1: rules button*/
+    public void rulesButtonAction()//rules button
+    {
+        //hides each howToPages block page
         foreach (GameObject obj in howToPagesGameObjects)
         {
             obj.SetActive(false);
         }
 
+        //hides each rulePages block page
         foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
         {
             obj.gameObject.SetActive(false);
         }
 
-        rulesPagesBlockObject.SetActive(true);
-        howToPagesBlockObject.SetActive(false);
-        whichPage = 0;
-        PlayerPrefs.SetInt("currentPage", 1);
+        rulesPagesBlockObject.SetActive(true); //shows rulesPages block
+        howToPagesBlockObject.SetActive(false); //hides howToPages block
+        whichPage = 0; //sets which page to 0 (rules page)
+        PlayerPrefs.SetInt("currentPage", 1); //sets current page to first page
 
-        GameObject ruleButtonObject = GameObject.Find("RulesText");
-        GameObject howToButtonObject = GameObject.Find("HowToPlayText");
+        GameObject ruleButtonObject = GameObject.Find("RulesText"); //finds rules object
+        GameObject howToButtonObject = GameObject.Find("HowToPlayText"); //finds howToPlay object
 
-        TextMeshProUGUI rulesText = ruleButtonObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI howToText = howToButtonObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI rulesText = ruleButtonObject.GetComponent<TextMeshProUGUI>(); //gets rules text object
+        TextMeshProUGUI howToText = howToButtonObject.GetComponent<TextMeshProUGUI>(); //gets howToPlay text object
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //gets left arrow text object
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //gets right arrow text object
         
-        rulesText.color = new Color32(255, 255, 255, 255);
-        howToText.color = new Color32(102, 94, 94, 255);
+        rulesText.color = new Color32(255, 255, 255, 255); //changes rules text to white (actively in use section)
+        howToText.color = new Color32(102, 94, 94, 255); //chages howTo text to gray (inactive section)
 
-        rulesPagesGameObjects[0].gameObject.SetActive(true);
+        rulesPagesGameObjects[0].gameObject.SetActive(true); //shows first rulesPages page
        
-        leftArrowGameObject.gameObject.GetComponent<Button>().enabled = false;
-        leftArrowText.color = new Color32(102, 94, 94, 255);
-        rightArrowGameObject.gameObject.GetComponent<Button>().enabled = true;
-        rightArrowText.color = new Color32(255, 255, 255, 255); 
+        leftArrowGameObject.gameObject.GetComponent<Button>().enabled = false; //disables left arrow button
+        leftArrowText.color = new Color32(102, 94, 94, 255); //changes arrow color to gray (disabled color)
+        rightArrowGameObject.gameObject.GetComponent<Button>().enabled = true; //enables right arrow button
+        rightArrowText.color = new Color32(255, 255, 255, 255);  //changes arrow color to white (enabled color)
     }
 
-    public void howToPlayButtonAction()
+    /**Requirements documentation 3.3.1.2: controls button*/
+    public void howToPlayButtonAction()//howToPlay button
     {
+        //hides each howToPages block page
         foreach (GameObject obj in howToPagesGameObjects)
         {
             obj.SetActive(false);
         }
 
+        //hides each rulePages block page
         foreach (TextMeshProUGUI obj in rulesPagesGameObjects)
         {
             obj.gameObject.SetActive(false);
         }
-        rulesPagesBlockObject.SetActive(false);
-        howToPagesBlockObject.SetActive(true);
 
-        whichPage = 1;
-        PlayerPrefs.SetInt("currentPage", 1);
+        rulesPagesBlockObject.SetActive(false); //hides rulesPages block
+        howToPagesBlockObject.SetActive(true); //shows howToPages block
 
-        GameObject ruleButtonObject = GameObject.Find("RulesText");
-        GameObject howToButtonObject = GameObject.Find("HowToPlayText");
+        whichPage = 1; //sets which page to 0 (howTo page)
+        PlayerPrefs.SetInt("currentPage", 1); //sets current page to first page
 
-        TextMeshProUGUI rulesText = ruleButtonObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI howToText = howToButtonObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+        GameObject ruleButtonObject = GameObject.Find("RulesText"); //finds rules object
+        GameObject howToButtonObject = GameObject.Find("HowToPlayText"); //finds howToPlay object
 
-        leftArrowGameObject.gameObject.GetComponent<Button>().enabled = false;
-        leftArrowText.color = new Color32(102, 94, 94, 255); ;
-        rightArrowGameObject.gameObject.GetComponent<Button>().enabled = true;
-        rightArrowText.color = new Color32(255, 255, 255, 255);
+        TextMeshProUGUI rulesText = ruleButtonObject.GetComponent<TextMeshProUGUI>(); //gets rules text object
+        TextMeshProUGUI howToText = howToButtonObject.GetComponent<TextMeshProUGUI>(); //gets howToPlay text object
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //gets left arrow text object
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //gets right arrow text object
 
-        rulesText.color = new Color32(102, 94, 94, 255);
-        howToText.color = new Color32(255, 255, 255, 255);
+        leftArrowGameObject.gameObject.GetComponent<Button>().enabled = false; //disables left arrow button
+        leftArrowText.color = new Color32(102, 94, 94, 255); ; //changes arrow color to gray (disabled color)
+        rightArrowGameObject.gameObject.GetComponent<Button>().enabled = true; //enables right arrow button
+        rightArrowText.color = new Color32(255, 255, 255, 255); //changes arrow color to white (enabled color)
 
-        howToPagesGameObjects[0].gameObject.SetActive(true);
-    } 
+        rulesText.color = new Color32(102, 94, 94, 255); //changes rules text to gray (inactive section)
+        howToText.color = new Color32(255, 255, 255, 255); //chages howTo text to white (actively in use section)
 
-    public void resetButtonAction()
+        howToPagesGameObjects[0].gameObject.SetActive(true); //shows howToPlay first page
+    }
+
+    /**Requirements documentation 3.2.6: action for reseting settings to the default settings*/
+    public void resetButtonAction()//reset button
     {
-        bettingNoEnabled();
-        volumeNoLevel();
-        playerOneButton();
-        difficultyMedButton();
+        //resets settings values to default values 
+        bettingNoEnabled(); //executes default betting function, no
+        playerOneButton(); //executes default player amount function, 1 
+        difficultyMedButton(); //executes default difficulty function, medium
+        mediumButton(); //executes default game speed function, medium
 
-        PlayerPrefs.SetInt("soundEnabled", 0); //min 0, max 5
-        PlayerPrefs.SetInt("bettingEnabled", 0); //0 == false, 1 == true
+        PlayerPrefs.SetInt("bettingEnabled", 1); //1 == false, 2 == true
         PlayerPrefs.SetInt("playerCount", 1); //min 1, max 3
-        PlayerPrefs.SetInt("difficultyLevel", 1); // 0 == beginner, 1 == normal, 2 == expert
-
-                
+        PlayerPrefs.SetInt("difficultyLevel", 2); // 1 == beginner, 2 == normal, 3 == expert   
+        PlayerPrefs.SetFloat("gameSpeed", 1.5f); //sets gamespeed to default value, medium
     }
 
-    public void saveButtonAction()
+    /**Requirements documentation 3.2.5: action for saving setting choices and exiting the settings screen*/
+    public void saveButtonAction()//save button
     {
-
-        optionalDisplayGameObject.SetActive(false);
-        settingsGameObject.GetComponent<Button>().enabled = true;
-        helpGameObject.GetComponent<Button>().enabled = true;
-        playGameObject.GetComponent<Button>().enabled = true;
-        settingsBlockGameObject.SetActive(false);
+        optionalDisplayGameObject.SetActive(false); //hides optionalDisplay screen
+        settingsGameObject.GetComponent<Button>().enabled = true; //enables setting button
+        helpGameObject.GetComponent<Button>().enabled = true; //enables help button
+        playGameObject.GetComponent<Button>().enabled = true; // enables play button
+        settingsBlockGameObject.SetActive(false); //hides setting block screen
+        PlayerPrefs.Save(); //saves PlayerPrefs variable values
 
     }
 
-    public void doneButtonAction()
+    /**Requirements documentation 3.3.1.4: check mark button*/
+    public void doneButtonAction()//done button
     {
-
-        optionalDisplayGameObject.SetActive(false);
-        settingsGameObject.GetComponent<Button>().enabled = true;
-        helpGameObject.GetComponent<Button>().enabled = true;
-        playGameObject.GetComponent<Button>().enabled = true;
-        helpBlockGameObject.SetActive(false);
+        optionalDisplayGameObject.SetActive(false); //hides optionalDisplay screen
+        settingsGameObject.GetComponent<Button>().enabled = true; //enables setting button
+        helpGameObject.GetComponent<Button>().enabled = true; //enables help button
+        playGameObject.GetComponent<Button>().enabled = true; //enables play button
+        helpBlockGameObject.SetActive(false); // hides help block screen
     }
 
+    /**Requirements documentation 3.3.1.3 back button*/
 
-    public void leftArrowButtonAction()
+    public void leftArrowButtonAction()    //left arrow button
     {
-        int maxPage;
+        int maxPage; //declares max page value
+
+        //if whichPage is 0 (rulesPage)
         if (whichPage == 0)
         {
-            maxPage = rulesPagesGameObjects.Length;
+            maxPage = rulesPagesGameObjects.Length; //get length of rulesPages
         }
         else
         {
-            maxPage = howToPagesGameObjects.Length;
+            maxPage = howToPagesGameObjects.Length; //get length of howToPages 
         }
-            TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-            TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-
-            //determine which page is active
-
-
-            if (PlayerPrefs.GetInt("currentPage") - 1 >= 1)
-            {
-                if (PlayerPrefs.GetInt("currentPage") == maxPage)
-                {
-                    rightArrowText.color = new Color32(255, 255, 255, 255);
-                    rightArrowGameObject.GetComponent<Button>().enabled = true;
-
-                }
-                PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") - 1);
-
-                if (PlayerPrefs.GetInt("currentPage") == 1)
-                {
-                    leftArrowText.color = new Color32(102, 94, 94, 255);
-                    leftArrowGameObject.GetComponent<Button>().enabled = false;
-
-                }
-
-                if (whichPage == 0)
-                {
-                    (rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage")]).gameObject.SetActive(false);
-
-                    rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
-                }
-                else
-                {
-                    howToPagesGameObjects[PlayerPrefs.GetInt("currentPage")].gameObject.SetActive(false);
-                    howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
-                }
-            }
-
-
-    }
-
-
-
-    
-
-    public void rightArrowButtonAction()
-    {
-        int maxPage;
-        if (whichPage == 0)
-        {
-            maxPage = rulesPagesGameObjects.Length;
-        }
-        else
-        {
-            maxPage = howToPagesGameObjects.Length;
-
-        }
-
-        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>();
+       
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //finds left arrow text object
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //finds right arrow text object
 
         //determine which page is active
-
-
-        if (PlayerPrefs.GetInt("currentPage", 1) + 1 <= maxPage)
+        if (PlayerPrefs.GetInt("currentPage") - 1 >= 1)
         {
-            if (PlayerPrefs.GetInt("currentPage", 1) == 1)
+            //if currentPage equals max possible page
+            if (PlayerPrefs.GetInt("currentPage") == maxPage)
             {
-                leftArrowText.color = new Color32(255, 255, 255, 255);
-                Debug.Log(leftArrowGameObject == null);
-                leftArrowGameObject.GetComponent<Button>().enabled = true;
+                rightArrowText.color = new Color32(255, 255, 255, 255); //change right arrow text to white (enabled color)
+                rightArrowGameObject.GetComponent<Button>().enabled = true; //enable right arrow
             }
-            PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") + 1);
+            
+            PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") - 1); //decrement currentPage variable
 
-            if (PlayerPrefs.GetInt("currentPage", 1) == maxPage)
+            //if currentPage is min value
+            if (PlayerPrefs.GetInt("currentPage") == 1)
             {
-                rightArrowText.color = new Color32(102, 94, 94, 255);
-                rightArrowGameObject.GetComponent<Button>().enabled = false;
-
+                leftArrowText.color = new Color32(102, 94, 94, 255); //change left arrow text to grey (disabled color)
+                leftArrowGameObject.GetComponent<Button>().enabled = false; //disable left arrow
             }
 
+            //if on rulesPage
             if (whichPage == 0)
             {
-
-                rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false);
-
-                rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
+                (rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage")]).gameObject.SetActive(false); //hide previous rules page
+                rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true); //show current rules page
             }
             else
             {
-
-                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false);
-                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true);
+                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage")].gameObject.SetActive(false); //hide previous howTo page
+                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true); //show current howTo page
             }
+        }
+    }
 
+    /**Requirements documentation 3.3.1.3: next button*/
+    public void rightArrowButtonAction()//right arrow button
+    {
+        int maxPage; //declares max page value
+
+        //if whichPage is 0 (rulesPage)
+        if (whichPage == 0)
+        {
+            maxPage = rulesPagesGameObjects.Length; //get length of rulesPages
+        }
+        else
+        {
+            maxPage = howToPagesGameObjects.Length; //get length of howToPages 
         }
 
+        TextMeshProUGUI leftArrowText = leftArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //finds left arrow text object
+        TextMeshProUGUI rightArrowText = rightArrowTextGameObject.GetComponent<TextMeshProUGUI>(); //finds right arrow text object
+
+        //determine which page is active
+        if (PlayerPrefs.GetInt("currentPage") + 1 <= maxPage)
+        {
+            //if currentPage equals min possible page
+            if (PlayerPrefs.GetInt("currentPage") == 1)
+            {
+                leftArrowText.color = new Color32(255, 255, 255, 255); //change left text color to white (enabled color)
+                leftArrowGameObject.GetComponent<Button>().enabled = true; //enable left arrow button
+            }
+
+            PlayerPrefs.SetInt("currentPage", PlayerPrefs.GetInt("currentPage") + 1); //increments currentPage variable
+
+            //if currentPage equals maxPage
+            if (PlayerPrefs.GetInt("currentPage") == maxPage)
+            {
+                rightArrowText.color = new Color32(102, 94, 94, 255); //change right text color to gray (disabled color)
+                rightArrowGameObject.GetComponent<Button>().enabled = false; //disable right arrow button
+            }
+
+            //if on rulesPage
+            if (whichPage == 0)
+            {
+                rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false); //hide previous rules page
+                rulesPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true); //show current rules page
+            }
+            else
+            {
+                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 2].gameObject.SetActive(false); //hide previous howTo page
+                howToPagesGameObjects[PlayerPrefs.GetInt("currentPage") - 1].gameObject.SetActive(true); //show current howTo page
+            }
+        }   
+    }
+
+    /**Requirements documentation 3.2.2: action for choosing the difficult of the AI players*/
+    public void difficultyEasyButton()    //easy difficulty button
+    {
+        PlayerPrefs.SetInt("difficultyLevel", 1); //sets difficultly to 1 (easy)
+        GameObject difficultyButtonObject = GameObject.Find("EasyButton"); //finds easy button
+        Image difficultyImage = difficultyButtonObject.GetComponent<Image>(); // finds easy button image
+        difficultyImage.color = new Color32(29, 255, 3, 255); //sets easy button color to green
+
+        difficultyButtonObject = GameObject.Find("HardButton"); // finds hard button 
+        difficultyImage = difficultyButtonObject.GetComponent<Image>(); //finds hard button image
+        difficultyImage.color = new Color32(255, 255, 255, 255); //sets color to white
+
+        difficultyButtonObject = GameObject.Find("MediumButton"); //finds medium button
+        difficultyImage = difficultyButtonObject.GetComponent<Image>(); //finds image
+        difficultyImage.color = new Color32(255, 255, 255, 255); //sets color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+    /**Requirements documentation 3.2.2: action for choosing the difficult of the AI players*/
+    public void difficultyMedButton()    //medium difficulty button
+    {
+        PlayerPrefs.SetInt("difficultyLevel", 2); //sets difficulty to 2 (medium)
+        GameObject difficultyButtonObject = GameObject.Find("MediumButton"); // find medium button
+        Image difficultyImage = difficultyButtonObject.GetComponent<Image>(); //find image
+        difficultyImage.color = new Color32(29, 255, 3, 255); //change color to green
+
+        difficultyButtonObject = GameObject.Find("EasyButton"); //find easy button
+        difficultyImage = difficultyButtonObject.GetComponent<Image>(); //find image
+        difficultyImage.color = new Color32(255, 255, 255, 255); //change color to white
+
+        difficultyButtonObject = GameObject.Find("HardButton"); //find hard button
+        difficultyImage = difficultyButtonObject.GetComponent<Image>(); //find image
+        difficultyImage.color = new Color32(255, 255, 255, 255); //change color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+    /**Requirements documentation 3.2.2: action for choosing the difficult of the AI players*/
+    public void difficultyHardButton() //hard difficulty button
+    {
+        PlayerPrefs.SetInt("difficultyLevel", 3); //sets difficulty level to 3 (hard)
+        GameObject difficultyButtonObject = GameObject.Find("HardButton"); //finds hard button
+        Image difficultyImage = difficultyButtonObject.GetComponent<Image>(); //finds image
+        difficultyImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        difficultyButtonObject = GameObject.Find("EasyButton"); //finds easy button
+        difficultyImage = difficultyButtonObject.GetComponent<Image>(); // finds image
+        difficultyImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        difficultyButtonObject = GameObject.Find("MediumButton"); //finds medium button
+        difficultyImage = difficultyButtonObject.GetComponent<Image>(); //finds image
+        difficultyImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+    /**Requirements documentation 3.2.3: action for choosing the number of players*/
+    public void playerOneButton() //one player button
+    {
+        PlayerPrefs.SetInt("playerCount", 1); //sets player count to 1
+
+        GameObject playerButtonObject = GameObject.Find("OneButton"); //finds "one" button
+        Image playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        playerButtonObject = GameObject.Find("TwoButton"); //finds "two" button
+        playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        playerButtonObject = GameObject.Find("ThreeButton"); //finds "three" button
+        playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+    /**Requirements documentation 3.2.3: action for choosing the number of players*/
+    public void playerTwoButton()//two player button
+    {
+        PlayerPrefs.SetInt("playerCount", 2); //sets player count to 2
+
+        GameObject playerButtonObject = GameObject.Find("TwoButton"); //finds "two" button
+        Image playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        playerButtonObject = GameObject.Find("OneButton"); //finds "one" button
+        playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        playerButtonObject = GameObject.Find("ThreeButton"); //finds "three" button
+        playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+    /**Requirements documentation 3.2.3: action for choosing the number of players*/
+    public void playerThreeButton()//three player button
+    {
+        PlayerPrefs.SetInt("playerCount", 3); //sets player count to 3
+
+        GameObject playerButtonObject = GameObject.Find("ThreeButton"); //finds "three" button
+        Image playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        playerButtonObject = GameObject.Find("OneButton"); //finds "one" button
+        playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        playerButtonObject = GameObject.Find("TwoButton"); //finds "two" button
+        playerImage = playerButtonObject.GetComponent<Image>(); //finds image
+        playerImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+    /**Requirements documentation 3.2.4: action for enabling betting*/
+    public void bettingNoEnabled() //betting not enabled button
+    {
+        PlayerPrefs.SetInt("bettingEnabled", 1); //sets betting enabled to 1 (not enabled)
+
+        GameObject bettingButtonObject = GameObject.Find("NoButton"); //finds "no" button
+        Image bettingImage = bettingButtonObject.GetComponent<Image>(); //finds image
+        bettingImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        bettingButtonObject = GameObject.Find("YesButton"); //finds "yes" button
+        bettingImage= bettingButtonObject.GetComponent<Image>(); //finds image
+        bettingImage.color = new Color32(255, 255, 255, 255); //changs color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+    /**Requirements documentation 3.2.4: action for enabling betting*/
+    public void bettingYesEnabled()//betting enabled button
+    {
+        PlayerPrefs.SetInt("bettingEnabled", 2); //sets betting enabled to 2 (enabled)
+
+        GameObject bettingButtonObject = GameObject.Find("YesButton"); //finds "yes" button
+        Image bettingImage = bettingButtonObject.GetComponent<Image>(); //finds image
+        bettingImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        bettingButtonObject = GameObject.Find("NoButton"); //finds "no" button
+        bettingImage = bettingButtonObject.GetComponent<Image>(); //finds image
+        bettingImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+    }
+
+
+    /**Requirements documentation 3.2.1: action for choosing the number of players*/
+    public void slowButton()//slow button
+    {    
+        PlayerPrefs.SetFloat("gameSpeed", 1.25f); //sets game speed to 
+
+        GameObject speedButtonObject = GameObject.Find("SlowButton"); //finds "slow" button
+        Image speedImage = speedButtonObject.GetComponent<Image>(); //find image
+        speedImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        speedButtonObject = GameObject.Find("FastButton"); //finds "fast" button
+        speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        speedButtonObject = GameObject.Find("MediumSpeedButton"); //finds "medium" button
+        speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+
+    }
+
+    /**Requirements documentation 3.2.1: action for choosing the number of players*/
+    public void mediumButton() //medium button
+    {
+        PlayerPrefs.SetFloat("gameSpeed", 1.5f); //sets game speed to 1.5
+
+        GameObject speedButtonObject = GameObject.Find("MediumSpeedButton"); //finds "medium" button
+        Image speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        speedButtonObject = GameObject.Find("FastButton"); //finds "fast" button
+        speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        speedButtonObject = GameObject.Find("SlowButton"); //finds "slow" button
+        speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+
+    }
+
+    /**Requirements documentation 3.2.1: action for choosing the number of players*/
+    public void fastButton() //fast button
+    {
+        PlayerPrefs.SetFloat("gameSpeed", .75f); //sets game speed to .75
+
+        GameObject speedButtonObject = GameObject.Find("FastButton"); //finds "fast" button
+        Image speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(29, 255, 3, 255); //changes color to green
+
+        speedButtonObject = GameObject.Find("SlowButton"); //finds "slow" button
+        speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        speedButtonObject = GameObject.Find("MediumSpeedButton"); //finds "medium" button
+        speedImage = speedButtonObject.GetComponent<Image>(); //finds image
+        speedImage.color = new Color32(255, 255, 255, 255); //changes color to white
+
+        PlayerPrefs.Save(); //saves PlayerPrefs values
+
+    }
+
+    /**Requirements documentation 3.1.1: action for "displaying an arrow button for exiting the game"*/
+    public void exitGame()//exit game button
+    {
+        optionalDisplayGameObject.SetActive(true); //shows (briefly) optionalDisplay
+        settingsBlockGameObject.SetActive(true); //shows (briefly) settings screen
         
-    }
-    
-    //maybe disable currently used button?? 
-    public void difficultyEasyButton()
-    {
-        PlayerPrefs.SetInt("difficultyLevel", 0);
-        GameObject difficultyButtonObject = GameObject.Find("EasyButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
+        //resets all player money to 500
+        for(int i = 1; i < 4; i++)
+        {
+            PlayerPrefs.SetInt("playersMoney" + i, 500);
+        }
 
-        difficultyButtonObject = GameObject.Find("HardButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
+        resetButtonAction(); //reset game values
 
-        difficultyButtonObject = GameObject.Find("MediumButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-    }
+        //#if UNITY_EDITOR //preprocessor directive to test if Unity Editor is defined
+        
+        Application.Quit(); //quits application
 
-    public void difficultyMedButton()
-    {
-        PlayerPrefs.SetInt("difficultyLevel", 1);
-        GameObject difficultyButtonObject = GameObject.Find("MediumButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("EasyButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-        difficultyButtonObject = GameObject.Find("HardButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-    }
-
-    public void difficultyHardButton()
-    {
-        Debug.Log(" Inside dif hard");
-        PlayerPrefs.SetInt("difficultyLevel", 2);
-        GameObject difficultyButtonObject = GameObject.Find("HardButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("EasyButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-        difficultyButtonObject = GameObject.Find("MediumButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-    }
-
-    public void playerOneButton()
-    {
-        PlayerPrefs.SetInt("playerCount", 1);
-
-        GameObject difficultyButtonObject = GameObject.Find("OneButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("TwoButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-        difficultyButtonObject = GameObject.Find("ThreeButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-    }
-
-    public void playerTwoButton()
-    {
-        PlayerPrefs.SetInt("playerCount", 2);
-
-        GameObject difficultyButtonObject = GameObject.Find("TwoButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("OneButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-        difficultyButtonObject = GameObject.Find("ThreeButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-    }
-
-    public void playerThreeButton()
-    {
-        PlayerPrefs.SetInt("playerCount", 3);
-
-        GameObject difficultyButtonObject = GameObject.Find("ThreeButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("OneButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-        difficultyButtonObject = GameObject.Find("TwoButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-    }
-
-    public void bettingNoEnabled()
-    {
-        PlayerPrefs.SetInt("bettingEnabled", 0);
-
-        GameObject difficultyButtonObject = GameObject.Find("NoButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("YesButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-
-
-    }
-
-    public void bettingYesEnabled()
-    {
-        PlayerPrefs.SetInt("bettingEnabled", 1);
-
-        GameObject difficultyButtonObject = GameObject.Find("YesButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("NoButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-
-    }
-
-    public void volumeNoLevel()
-     {
-            
-        PlayerPrefs.SetInt("soundEnabled", 0);
-
-        GameObject difficultyButtonObject = GameObject.Find("NoVButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("YesVButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
-    }
-
-    public void volumeYesLevel()
-    {
-        PlayerPrefs.SetInt("soundEnabled", 1);
-
-        GameObject difficultyButtonObject = GameObject.Find("YesVButton");
-        Image difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(29, 255, 3, 255);
-
-        difficultyButtonObject = GameObject.Find("NoVButton");
-        difficultyText = difficultyButtonObject.GetComponent<Image>();
-        difficultyText.color = new Color32(255, 255, 255, 255);
+        //if editor is stopped, also resets
+        //#endif
+        //UnityEditor.EditorApplication.isPlaying = false;
     }
 }

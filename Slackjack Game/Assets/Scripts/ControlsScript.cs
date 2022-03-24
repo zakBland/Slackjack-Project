@@ -12,16 +12,56 @@ public class ControlsScript : MonoBehaviour
     GameObject[] buttonsBlockObject; //declares buttonBlock object
     GameObject leftArrowGameObject; //declares left arrow object
     GameObject rightArrowGameObject; //declares right arrow object
+    GameObject leftArrowRoundsObject; //declares left arrow object
+    GameObject rightArrowRoundsObject; //declares right arrow object
     GameObject[] howToPagesGameObjects; //declares howToPages block object
     TextMeshProUGUI[] rulesPagesGameObjects; //declares rules pages object
     GameObject rulesPagesBlockObject; //declares rules pages block object
     GameObject howToPagesBlockObject; //declares howToPages block object
+    GameObject roundTextObject; //declares roundText object
+    GameObject roundsGroupBlockObject; //declares roundsGroupBlock object
+    GameObject bettingGroupBlockObject; //declares bettingGroupBlock object
+    GameObject leftArrowBettingObject; //declares left arrow betting object
+    GameObject rightArrowBettingObject; // declares right arrow betting object
+    GameObject bettingTextObject; //declares betting text object
+    GameObject resultsGroupBlock; //declares resultsGroup block object
+    static GameObject playAgainClassObject; //declares playAgainClass block object
+
     public const int MIN_PAGE = 1; //declares constant for page minimum
+    public static int currentRounds; //declares current rounds variable
+    public static int currentBet; //declares current bet amount variable
 
     // Start is called before the first frame update
     void Start()
     {
-        helpGroupBlockObject.SetActive(false); //sets help screen to inactive
+        helpGroupBlockObject.SetActive(false); //sets help screen to inactive to hide it
+        bettingGroupBlockObject.SetActive(false); //sets betting screen to inactive to hide it
+        resultsGroupBlock.SetActive(false); //sets results screen to inactive to hide it
+        currentRounds = 1; //sets current rounds amount to 1
+
+        //check to see if player set rounds amount
+        if(PlayerPrefs.GetInt("rounds") > 1)
+        {
+            roundsGroupBlockObject.SetActive(false);  //if already set, hide round screen          
+            PlayerPrefs.SetInt("rounds", PlayerPrefs.GetInt("rounds") - 1); //decrement from rounds amount to show completed round
+
+        }
+
+        //check to see if betting is enabled
+        if (PlayerPrefs.GetInt("bettingEnabled") == 2) //if betting is enabled
+        {
+            currentBet = 2; //set default bet amount
+            bettingGroupBlockObject.SetActive(true); //show betting screen
+
+        }
+        else
+        {
+            bettingGroupBlockObject.SetActive(false); //hide betting screen
+        }
+
+        //check if right bet arrow needs to be disabled
+        Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow
+
     }
 
     void Awake()
@@ -32,8 +72,15 @@ public class ControlsScript : MonoBehaviour
         rulesPagesGameObjects = (GameObject.Find("RulesPagesBlock")).GetComponentsInChildren<TextMeshProUGUI>(); // finds all rules pages
         rulesPagesBlockObject = GameObject.Find("RulesPagesBlock"); //finds rules block
         howToPagesBlockObject = GameObject.Find("HowToPagesBlock"); //finds howToPages block
-        leftArrowGameObject = GameObject.Find("LeftArrowButton"); //finds left arrow button
-        rightArrowGameObject = GameObject.Find("RightArrowButton"); //finds right arrow button
+        roundTextObject = GameObject.Find("RoundsNumberText"); //finds rounds number text 
+        leftArrowRoundsObject = GameObject.Find("LeftRoundsButton"); //finds left arrow button
+        rightArrowRoundsObject = GameObject.Find("RightRoundsButton"); //finds right arrow button
+        roundsGroupBlockObject = GameObject.Find("RoundsGroupBlock"); //finds rounds block/screen in scene
+        bettingGroupBlockObject = GameObject.Find("BettingGroupBlock"); //finds betting block/screen in scene
+        leftArrowBettingObject = GameObject.Find("LeftBetButton"); //finds left bet arrow button
+        rightArrowBettingObject = GameObject.Find("RightBetButton"); //finds right bet arrow button
+        bettingTextObject = GameObject.Find("BetNumberText"); //finds bet number text
+        resultsGroupBlock = GameObject.Find("ResultsGroupBlock"); //finds results block/screen in scene
 
 
     }
@@ -49,7 +96,7 @@ public class ControlsScript : MonoBehaviour
         GameFunctionsScript.calculateTotal(card, player);
 
         //display card to player area
-        GameFunctionsScript.displayCard(card, player);
+        GameFunctionsScript.displayCard(card, player, null);
 
         //display outcome
         if (player.handTotal > 21)
@@ -69,19 +116,20 @@ public class ControlsScript : MonoBehaviour
     public void helpButtonAction()
     {
         PlayerPrefs.SetInt("currentPage", 1); //sets current page to 1;
-        helpGroupBlockObject.SetActive(true); //sets help info block to active
-      
+        helpGroupBlockObject.SetActive(true); //sets help info block to active  
         leftArrowGameObject.SetActive(true); //sets left arrow active
         rightArrowGameObject.SetActive(true); //set right arrow active
         leftArrowGameObject.GetComponent<Button>().enabled = false; //disables left arrow
-
         rulesPagesBlockObject.SetActive(true); //sets rules page block active
 
-
-        //maybe disable background buttons (NOT IMPLEMENTED)
+        //disable background buttons
         for (int i = 0; i < buttonsBlockObject.Length; i++)
         {
-            buttonsBlockObject[i].GetComponent<Button>().enabled = false;
+            //if button in button list isn't null
+            if(buttonsBlockObject[i].GetComponent<Button>() != null)
+            {
+                buttonsBlockObject[i].GetComponent<Button>().enabled = false; //disable button
+            }
         }
 
         //sets how to pages inactive
@@ -108,44 +156,207 @@ public class ControlsScript : MonoBehaviour
         //sets normal game buttons active
         for(int i = 0; i < buttonsBlockObject.Length; i++)
         {
-            buttonsBlockObject[i].GetComponent<Button>().enabled = true;
+            if (buttonsBlockObject[i].GetComponent<Button>() != null)
+            {
+                buttonsBlockObject[i].GetComponent<Button>().enabled = true;
+            }
         }
 
     }
+
     //LeaveButtonAction
     public void leaveButtonAction()
     {
         SceneManager.LoadScene("TitleScreenScene"); //loads title screen
+        PlayerPrefs.SetInt("rounds", 1); //resets rounds variable to 1 after leaving game
+        PlayerPrefs.SetString("removedPlayerList", ""); //resets removed player list
+        //reset player money amounts to 500
+        for (int i = 1; i < 4; i++)
+        {
+            PlayerPrefs.SetInt("playersMoney" + i, 500);
+        }
 
     }
 
-    //StandButtonAction (NOT FULLY IMPLEMENTED)
+    //StandButtonAction
     public void standButtonAction()
     {
-
         Player player = MainClass.players[MainClass.currentPlayerNumber]; //finds current player
-
-        GameFunctionsScript.showOutcome(null, player, "stand"); // shows outcome
-        
+        GameFunctionsScript.showOutcome(null, player, "stand"); // shows outcome   
         player.status = "stand"; //sets player status to stand
 
         //disables "you" player buttons
-        GameObject standButton = GameObject.Find("StandButton"); 
-        GameObject hitButton = GameObject.Find("HitButton");
-        standButton.SetActive(false);
-        hitButton.SetActive(false);
+        GameObject standButton = GameObject.Find("StandButton"); //finds stand button
+        GameObject hitButton = GameObject.Find("HitButton"); //finds hit button
+        standButton.SetActive(false); //hides stand button
+        hitButton.SetActive(false); // hides hit button
     }
 
-    //LeftArrowAction (NOT IMPLEMENTED)
-    public void leftArrowAction()
+    //restarts game to replay
+    public static void playAgainAction()
     {
-
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); //loads game scene to reset it
     }
 
-    //RightArrowAction (NOT IMPLEMENTED)
-    public void rightArrowAction()
+    //leaves game and returns to title scene
+    public static void leaveGameButtonAction()
     {
+        SceneManager.LoadScene("TitleScreenScene"); //loads title screen
+        PlayerPrefs.SetInt("rounds", 1); //resets rounds variable to 1
+        PlayerPrefs.GetString("removedPlayerList", ""); //resets removed player list
+        //resets player money amounts
+        for (int i = 1; i < 4; i++)
+        {
+            PlayerPrefs.SetInt("playersMoney" + i, 500);
+        }
 
     }
 
+    //left arrow button for rounds screen
+    public void leftArrowRoundsButtonAction()
+    {
+        int maxRounds = 10; //set max rounds to 10
+
+        TextMeshProUGUI roundsArrowText = roundTextObject.GetComponent<TextMeshProUGUI>(); //gets text object for rounds
+        Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>(); //get image for right arrow
+        Button rightArrowButtonObject = rightArrowRoundsObject.GetComponent<Button>(); //gets button for right arrow
+        Image leftArrowImageObject = leftArrowRoundsObject.GetComponent<Image>(); //gets image for left arrow
+        Button leftArrowButtonObject = leftArrowRoundsObject.GetComponent<Button>(); //gets image for left arrow
+
+        //determine which page is active
+        if (currentRounds - 1 >= 1) // if current round amount - 1 is still valid number
+        {
+            if (currentRounds == maxRounds) //if current rounds is equal to max rounds
+            {
+                rightArrowImageObject.color = new Color32(255, 255, 255, 255); //change arrow to normal color (white)
+                rightArrowButtonObject.GetComponent<Button>().enabled = true; //enable right arrow
+
+            }
+            
+            currentRounds--; //decrement current rounds    
+
+            if (currentRounds == 1) //if current rounds is at min possible value
+            {
+                leftArrowImageObject.color = new Color32(102, 94, 94, 255); //change arrow to disabled color (gray/black)
+                leftArrowButtonObject.GetComponent<Button>().enabled = false; //disable left arrow
+
+            }
+
+            roundsArrowText.text = currentRounds + ""; //update text amount in scene
+        }
+    }
+
+    //right arrow button for rounds screen
+    public void rightArrowRoundsButtonAction()
+    {
+        int maxRounds = 10; //max rounds is 10
+
+        TextMeshProUGUI roundsArrowText = roundTextObject.GetComponent<TextMeshProUGUI>(); //finds rounds text
+        Image rightArrowImageObject = rightArrowRoundsObject.GetComponent<Image>(); //get image for right arrow
+        Button rightArrowButtonObject = rightArrowRoundsObject.GetComponent<Button>(); //gets button for right arrow
+        Image leftArrowImageObject = leftArrowRoundsObject.GetComponent<Image>(); //gets image for left arrow
+        Button leftArrowButtonObject = leftArrowRoundsObject.GetComponent<Button>(); //gets image for left arrow
+
+        if (currentRounds + 1 <= maxRounds) //if current rounds + 1 is less than or equal to max rounds; check to see if it is possible to increment current rounds
+        {
+            if (currentRounds == 1) // if current rounds equals 1
+            {
+                leftArrowImageObject.color = new Color32(255, 255, 255, 255); // sets left arrow to normal color (white)
+                leftArrowButtonObject.GetComponent<Button>().enabled = true; //enables left arrow
+            }
+
+            currentRounds++; //increment current rounds
+
+            if (currentRounds == maxRounds) //if current rounds equals max rounds
+            {
+                rightArrowImageObject.color = new Color32(102, 94, 94, 255); //sets right arrow to disabled color (black/gray)
+                rightArrowButtonObject.GetComponent<Button>().enabled = false; //disables right arrow
+
+            }
+
+            roundsArrowText.text = currentRounds + ""; //update rounds text in scene
+        }
+    }
+
+    //done rounds button
+    public void doneRoundsButtonAction()
+    {
+        PlayerPrefs.SetInt("rounds", currentRounds); //sets rounds to currentRounds
+        PlayerPrefs.SetInt("setRounds", 1); //sets setRounds to 1 (MAYBE SET TO 2)
+        roundsGroupBlockObject.SetActive(false); //hides rounds block object
+    }
+
+    //left arrow betting button
+    public void leftArrowBettingButtonAction()
+    {
+        int maxBet = MainClass.players[1].playerTotalMoney; //max bet is set to player current money amount
+
+        TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>();  //finds bet text
+        Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow
+        Button rightArrowButtonObject = rightArrowBettingObject.GetComponent<Button>(); //gets button for right arrow
+        Image leftArrowImageObject = leftArrowBettingObject.GetComponent<Image>(); //gets image for left arrow
+        Button leftArrowButtonObject = leftArrowBettingObject.GetComponent<Button>(); //gets image for left arrow
+
+
+        //determine which page is active
+        if (currentBet - 1 >= 2) // if current bet amount - 1 is still valid number
+        {
+            if (currentBet == maxBet) //if current bet is equal to max bet
+            {
+                rightArrowImageObject.color = new Color32(255, 255, 255, 255); //change arrow to normal color (white)
+                rightArrowButtonObject.GetComponent<Button>().enabled = true; //enable right arrow
+
+            }
+
+            currentBet--; //decrement current bet  
+
+            if (currentBet == 2) //if current bet is at min possible value
+            {
+                leftArrowImageObject.color = new Color32(102, 94, 94, 255); //change arrow to disabled color (gray/black)
+                leftArrowButtonObject.GetComponent<Button>().enabled = false; //disable left arrow
+            }
+
+            bettingArrowText.text = currentBet + ""; //update text amount in scene
+        }
+    }
+
+    //right arrow betting button
+    public void rightArrowBettingButtonAction()
+    {
+        int maxBet = MainClass.players[1].playerTotalMoney; //max bet is set to player current money amount
+
+        TextMeshProUGUI bettingArrowText = bettingTextObject.GetComponent<TextMeshProUGUI>(); //finds bet text
+        Image rightArrowImageObject = rightArrowBettingObject.GetComponent<Image>(); //get image for right arrow
+        Button rightArrowButtonObject = rightArrowBettingObject.GetComponent<Button>(); //gets button for right arrow
+        Image leftArrowImageObject = leftArrowBettingObject.GetComponent<Image>(); //gets image for left arrow
+        Button leftArrowButtonObject = leftArrowBettingObject.GetComponent<Button>(); //gets image for left arrow
+
+        if (currentBet + 1 <= maxBet) //if current bet + 1 is less than or equal to max bet; check to see if it is possible to increment current bet
+        {
+            if (currentBet == 2) // if current bet equals 2
+            {
+                leftArrowImageObject.color = new Color32(255, 255, 255, 255); // sets left arrow to normal color (white)
+                leftArrowButtonObject.GetComponent<Button>().enabled = true; //enables left arrow
+            }
+
+            currentBet++; //increment current bet
+
+            if (currentBet == maxBet) //if current bet equals max bet
+            {
+                rightArrowImageObject.color = new Color32(102, 94, 94, 255); //sets right arrow to disabled color (black/gray)
+                rightArrowButtonObject.GetComponent<Button>().enabled = false; //disables right arrow
+            }
+
+            bettingArrowText.text = currentBet + ""; //update bet text in scene
+        }
+    } 
+    
+    //done betting button
+    public void doneBettingButtonAction()
+    {
+        MainClass.players[1].betAmount = currentBet; //sets bet about to player bet field
+        GameObject playerBetText = GameObject.Find("PlayerAmountBetText"); // finds player bet text
+        playerBetText.GetComponent<TextMeshProUGUI>().text = currentBet + ""; //updates/sets player bet amount to scene
+        bettingGroupBlockObject.SetActive(false); //hide bet screen
+    }
 }
