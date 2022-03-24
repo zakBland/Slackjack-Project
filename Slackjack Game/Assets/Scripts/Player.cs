@@ -26,6 +26,8 @@ public class Player
         playerNumber = -1; //The player's turn number
         status = "playing"; //sets default player status to playing
         betAmount = 2; //sets default bet amount to 2
+        
+        /**Requirements documentation 3.6.2*/
         playerTotalMoney = 500; //set default money amount to 500
     }
 

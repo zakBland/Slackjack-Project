@@ -129,6 +129,7 @@ public class MainClass : MonoBehaviour
                 //calculate bets for AI
                 if (i != 1) //if AI player
                 {
+                    /**Requirements documentation 3.4.2.2*/
                     AIFunction.generateBetAmount(players[i]); //generates bet amount for AI
                 }
 
@@ -141,6 +142,7 @@ public class MainClass : MonoBehaviour
 
                 players[i].playerTotalMoney = PlayerPrefs.GetInt("playersMoney" + i); //sets playerMoney to player money field in Player object
 
+                /**Requirements documentation 3.4.3.4*/
                 //update text to accurately reflect this
                 playerBetBlockObject = GameObject.Find(players[i].playerName + "AmountBetText"); //finds player bet amount text
                 playerBetBlockObject.GetComponent<TextMeshProUGUI>().text = players[i].betAmount + ""; //gets text object and sets to bet amount
@@ -194,6 +196,8 @@ public class MainClass : MonoBehaviour
             }
             else if (currentPlayerNumber == players.Length - 1) //if last AI player
             {
+                /**Requirements documentation 3.8.1*/
+
                 currentPlayerNumber = 0; //sets dealer to be next (last) if on last AI player
 
             }
@@ -202,6 +206,7 @@ public class MainClass : MonoBehaviour
                 currentPlayerNumber++; //else, increments to next AI player
             }
 
+            /**Requirements documentation 3.7.1*/
             changePlayerAction(players[currentPlayerNumber]); //changes player method
         }
     }

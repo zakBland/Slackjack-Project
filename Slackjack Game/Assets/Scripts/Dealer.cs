@@ -9,21 +9,18 @@ using UnityEngine.SceneManagement;
 
 public class Dealer : MonoBehaviour
 {
-    //public static GameObject playAgainClassObject; 
     public static bool dealerStart; //declares bool variable to indicate start of dealerPlay
     public static Player player; //declares reference to current player
     public static GameObject resultsGroupBlock; //declares reference to resultsGroup in Scene
 
     void Start()
     {
-        //playAgainClassObject.SetActive(false);
         dealerStart = false;  //sets variable to false
         resultsGroupBlock.SetActive(false); //hides resultsGroupBlock
     }
 
     void Awake()
     {
-        //playAgainClassObject = GameObject.Find("PlayAgainGroupBlock");
         resultsGroupBlock = GameObject.Find("ResultsGroupBlock"); //finds reference to ResultsGroupBlock
     }
 
@@ -41,11 +38,11 @@ public class Dealer : MonoBehaviour
     {
         dealerStart = false; //sets dealer start variable to false
 
-        //yield return new WaitForSeconds(2);
-
         //reveal hidden card
         GameObject[] areas = GameObject.FindGameObjectsWithTag(player.playerNameBlockString); //finds card slot areas for a player
         areas[3].GetComponent<Image>().sprite = player.playerHand[1].sprite; ; //sets specific slot area to sprite/image
+
+        /**Requirements documentation 3.8.2*/
 
         //if dealer hidden card is played high, update hand total to reflect it
         if (player.playerHand[1].aceValue == 1)
@@ -110,6 +107,7 @@ public class Dealer : MonoBehaviour
                 List<Card> deck = MainClass.deck; //gets deck reference
                 Card card = GameFunctionsScript.pickRandomCard(deck); //picks random card from MainClass deck
 
+                /**Requirements documentation 3.8.2.1*/
                 player.playerHand.Add(card);     //adds to playerHand 
                 GameFunctionsScript.showOutcome(card, player, "hit"); //show outome
                 GameFunctionsScript.usedDeck.Add(GameFunctionsScript.convertSuit(card.suit, card.pip)); //adds chosen card to used deck   
@@ -136,6 +134,7 @@ public class Dealer : MonoBehaviour
                 //if player hand it greater than or equal to 17...
                 else if (player.handTotal >= 17)
                 {
+                    /**Requirements documentation 3.8.2.2*/
                     GameFunctionsScript.showOutcome(null, player, "stand"); //show outcome
                     player.status = "stand"; //set status to stand
                     break;
@@ -155,6 +154,8 @@ public class Dealer : MonoBehaviour
             
         Player[] players = MainClass.players; //gets references to all players
         GameObject gameobject; //declares gameObject variable
+
+        /**Requirements documentation 3.4.5.2/3.8.3*/
 
         resultsGroupBlock.SetActive(true); //shows resultsGroupBlock
 

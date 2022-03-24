@@ -140,14 +140,15 @@ public class TitleButtonScript : MonoBehaviour
         rightArrowTextGameObject = GameObject.Find("NextText"); //finds right button text 
     }
 
-    //starts game
-    public void playButtonAction()
+    /**Requirements documentation 3.1.3: action for "Displays button for accessing the main game screen which 
+     * begins the game loop"*/
+    public void playButtonAction()    //starts game
     {
         SceneManager.LoadScene("GameplayScene"); //loads game scene
     }
 
-    //settings button
-    public void settingsButtonAction()
+    /**Requirements documentation 3.1.1: action for "Displays button for accessing the user settings"*/
+    public void settingsButtonAction()//settings button
     {
         if (optionalDisplayGameObject != null) //if parent block is accessible (not null)
         {
@@ -162,8 +163,8 @@ public class TitleButtonScript : MonoBehaviour
         }
     }
 
-    //help button
-    public void helpButtonAction()
+    /**Requirements documentation 3.1.3/3.3.1: action for "Displays button for accessing the help screen"*/
+    public void helpButtonAction()    //help button
     {
         //if parent block is accessible (not null)
         if (optionalDisplayGameObject != null)
@@ -198,8 +199,8 @@ public class TitleButtonScript : MonoBehaviour
         }
     }
 
-    //rules button
-    public void rulesButtonAction()
+    /**Requirements documentation 3.3.1.1: rules button*/
+    public void rulesButtonAction()//rules button
     {
         //hides each howToPages block page
         foreach (GameObject obj in howToPagesGameObjects)
@@ -237,8 +238,8 @@ public class TitleButtonScript : MonoBehaviour
         rightArrowText.color = new Color32(255, 255, 255, 255);  //changes arrow color to white (enabled color)
     }
 
-    //howToPlay button
-    public void howToPlayButtonAction()
+    /**Requirements documentation 3.3.1.2: controls button*/
+    public void howToPlayButtonAction()//howToPlay button
     {
         //hides each howToPages block page
         foreach (GameObject obj in howToPagesGameObjects)
@@ -275,10 +276,10 @@ public class TitleButtonScript : MonoBehaviour
         howToText.color = new Color32(255, 255, 255, 255); //chages howTo text to white (actively in use section)
 
         howToPagesGameObjects[0].gameObject.SetActive(true); //shows howToPlay first page
-    } 
+    }
 
-    //reset button
-    public void resetButtonAction()
+    /**Requirements documentation 3.2.6: action for reseting settings to the default settings*/
+    public void resetButtonAction()//reset button
     {
         //resets settings values to default values 
         bettingNoEnabled(); //executes default betting function, no
@@ -292,8 +293,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.SetFloat("gameSpeed", 1.5f); //sets gamespeed to default value, medium
     }
 
-    //save button
-    public void saveButtonAction()
+    /**Requirements documentation 3.2.5: action for saving setting choices and exiting the settings screen*/
+    public void saveButtonAction()//save button
     {
         optionalDisplayGameObject.SetActive(false); //hides optionalDisplay screen
         settingsGameObject.GetComponent<Button>().enabled = true; //enables setting button
@@ -304,8 +305,8 @@ public class TitleButtonScript : MonoBehaviour
 
     }
 
-    //done button
-    public void doneButtonAction()
+    /**Requirements documentation 3.3.1.4: check mark button*/
+    public void doneButtonAction()//done button
     {
         optionalDisplayGameObject.SetActive(false); //hides optionalDisplay screen
         settingsGameObject.GetComponent<Button>().enabled = true; //enables setting button
@@ -314,8 +315,9 @@ public class TitleButtonScript : MonoBehaviour
         helpBlockGameObject.SetActive(false); // hides help block screen
     }
 
-    //left arrow button
-    public void leftArrowButtonAction()
+    /**Requirements documentation 3.3.1.3 back button*/
+
+    public void leftArrowButtonAction()    //left arrow button
     {
         int maxPage; //declares max page value
 
@@ -365,8 +367,8 @@ public class TitleButtonScript : MonoBehaviour
         }
     }
 
-    //righ arrow button
-    public void rightArrowButtonAction()
+    /**Requirements documentation 3.3.1.3: next button*/
+    public void rightArrowButtonAction()//right arrow button
     {
         int maxPage; //declares max page value
 
@@ -415,9 +417,9 @@ public class TitleButtonScript : MonoBehaviour
             }
         }   
     }
-    
-    //easy difficulty button
-    public void difficultyEasyButton()
+
+    /**Requirements documentation 3.2.2: action for choosing the difficult of the AI players*/
+    public void difficultyEasyButton()    //easy difficulty button
     {
         PlayerPrefs.SetInt("difficultyLevel", 1); //sets difficultly to 1 (easy)
         GameObject difficultyButtonObject = GameObject.Find("EasyButton"); //finds easy button
@@ -435,8 +437,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    //medium difficulty button
-    public void difficultyMedButton()
+    /**Requirements documentation 3.2.2: action for choosing the difficult of the AI players*/
+    public void difficultyMedButton()    //medium difficulty button
     {
         PlayerPrefs.SetInt("difficultyLevel", 2); //sets difficulty to 2 (medium)
         GameObject difficultyButtonObject = GameObject.Find("MediumButton"); // find medium button
@@ -454,8 +456,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    //hard difficulty button
-    public void difficultyHardButton()
+    /**Requirements documentation 3.2.2: action for choosing the difficult of the AI players*/
+    public void difficultyHardButton() //hard difficulty button
     {
         PlayerPrefs.SetInt("difficultyLevel", 3); //sets difficulty level to 3 (hard)
         GameObject difficultyButtonObject = GameObject.Find("HardButton"); //finds hard button
@@ -473,8 +475,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    //one player button
-    public void playerOneButton()
+    /**Requirements documentation 3.2.3: action for choosing the number of players*/
+    public void playerOneButton() //one player button
     {
         PlayerPrefs.SetInt("playerCount", 1); //sets player count to 1
 
@@ -493,8 +495,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    //two player button
-    public void playerTwoButton()
+    /**Requirements documentation 3.2.3: action for choosing the number of players*/
+    public void playerTwoButton()//two player button
     {
         PlayerPrefs.SetInt("playerCount", 2); //sets player count to 2
 
@@ -513,8 +515,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    //three player button
-    public void playerThreeButton()
+    /**Requirements documentation 3.2.3: action for choosing the number of players*/
+    public void playerThreeButton()//three player button
     {
         PlayerPrefs.SetInt("playerCount", 3); //sets player count to 3
 
@@ -533,8 +535,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    //betting not enabled button
-    public void bettingNoEnabled()
+    /**Requirements documentation 3.2.4: action for enabling betting*/
+    public void bettingNoEnabled() //betting not enabled button
     {
         PlayerPrefs.SetInt("bettingEnabled", 1); //sets betting enabled to 1 (not enabled)
 
@@ -549,8 +551,8 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    //betting enabled button
-    public void bettingYesEnabled()
+    /**Requirements documentation 3.2.4: action for enabling betting*/
+    public void bettingYesEnabled()//betting enabled button
     {
         PlayerPrefs.SetInt("bettingEnabled", 2); //sets betting enabled to 2 (enabled)
 
@@ -565,9 +567,9 @@ public class TitleButtonScript : MonoBehaviour
         PlayerPrefs.Save(); //saves PlayerPrefs values
     }
 
-    
-    //slow button
-    public void slowButton()
+
+    /**Requirements documentation 3.2.1: action for choosing the number of players*/
+    public void slowButton()//slow button
     {    
         PlayerPrefs.SetFloat("gameSpeed", 1.25f); //sets game speed to 
 
@@ -587,8 +589,8 @@ public class TitleButtonScript : MonoBehaviour
 
     }
 
-    //medium button
-    public void mediumButton()
+    /**Requirements documentation 3.2.1: action for choosing the number of players*/
+    public void mediumButton() //medium button
     {
         PlayerPrefs.SetFloat("gameSpeed", 1.5f); //sets game speed to 1.5
 
@@ -608,8 +610,8 @@ public class TitleButtonScript : MonoBehaviour
 
     }
 
-    //fast button
-    public void fastButton()
+    /**Requirements documentation 3.2.1: action for choosing the number of players*/
+    public void fastButton() //fast button
     {
         PlayerPrefs.SetFloat("gameSpeed", .75f); //sets game speed to .75
 
@@ -629,8 +631,8 @@ public class TitleButtonScript : MonoBehaviour
 
     }
 
-    //exit game button
-    public void exitGame()
+    /**Requirements documentation 3.1.1: action for "displaying an arrow button for exiting the game"*/
+    public void exitGame()//exit game button
     {
         optionalDisplayGameObject.SetActive(true); //shows (briefly) optionalDisplay
         settingsBlockGameObject.SetActive(true); //shows (briefly) settings screen
